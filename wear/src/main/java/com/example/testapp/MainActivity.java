@@ -1,25 +1,90 @@
 package com.example.testapp;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.wearable.activity.WearableActivity;
-import android.widget.ProgressBar;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
-public class MainActivity extends WearableActivity {
+import androidx.annotation.NonNull;
 
-    private TextView mTextView;
-    private ProgressBar pBar;
+import com.example.testapp.shared.Circuit;
+import com.example.testapp.shared.Serializer;
+import com.example.testapp.shared.Signal;
+import com.google.android.gms.wearable.MessageClient;
+import com.google.android.gms.wearable.MessageEvent;
+import com.google.android.gms.wearable.Wearable;
 
+import java.io.IOException;
+
+public class MainActivity extends WearableActivity implements
+        MessageClient.OnMessageReceivedListener {
+    private byte[] circuit;
+
+    TextView statText;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_wait);
 
-        mTextView = (TextView) findViewById(R.id.text);
-        pBar = (ProgressBar) findViewById(R.id.determinateBar);
 
-        pBar.setProgress(50);
+        Wearable.getMessageClient(this).addListener(this);
+        statText = findViewById(R.id.statusText);
+        statText.setText("Awaiting workout");
         // Enables Always-on
         setAmbientEnabled();
+
+        final Button button = findViewById(R.id.startButton);
+        button.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+
+                openSportActivity(null);
+            }
+        });
+    }
+
+    //    @Override
+    //    protected void onStart() {
+    //        super.onStart();
+    //        Log.d(msg, "Started MainActivity");
+    //    }
+
+    public void openSportActivity(byte[] circuit) {
+
+        Intent intent = new Intent(this, SportActivity.class);
+        intent.putExtra("Circuit", circuit);
+        // Use to pass byte array to sports
+        //intent.putExtra("Circuit", )
+        startActivity(intent);
+    }
+
+    @Override
+    public void onMessageReceived(@NonNull MessageEvent messageEvent) {
+        statText.setText("Received Message");
+        if (messageEvent.getPath().equals("/circuit_path_name")) {
+            byte[] data = messageEvent.getData();
+            try {
+                Object message = Serializer.deserialize(data);
+
+                if (message instanceof Circuit) {
+                    this.circuit = data;
+                    statText.setText("Circuit received");
+                    // TODO: Change status message to "Circuit received"
+                } else if ((message) == Signal.START) {
+                    if (this.circuit != null) {
+                        openSportActivity(circuit);
+                        statText.setText("Starting Circuit");
+                    } else {
+                        statText.setText("Starting Signal received");
+                        System.err.println("Start signal received before circuit received");
+                    }
+                }
+            } catch (ClassNotFoundException | IOException e) {
+                System.err.println("Failed to receive message");
+            }
+        }
     }
 }
+
+
