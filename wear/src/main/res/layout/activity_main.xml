@@ -11,10 +11,11 @@
 
     <ProgressBar
         android:id="@+id/determinateBar"
-        style="@android:style/Widget.DeviceDefault.Light.ProgressBar"
+        style="@android:style/Widget.ProgressBar.Horizontal"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:progress="25"/>
+        android:indeterminate="false"
+        android:progress="20" />
 
     <FrameLayout
         android:layout_width="match_parent"
@@ -48,6 +49,7 @@
                 android:fontFamily="sans-serif-medium"
                 android:text="00.00"
                 android:textAlignment="center" />
+
         </LinearLayout>
     </FrameLayout>
 
