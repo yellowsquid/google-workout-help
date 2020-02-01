@@ -10,47 +10,55 @@
     tools:deviceIds="wear">
 
     <ProgressBar
-        android:id="@+id/determinateBar"
+        android:id="@+id/progressBar"
         style="@android:style/Widget.ProgressBar.Horizontal"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:indeterminate="false"
-        android:progress="20" />
+        android:progress="100"
+        android:progressDrawable="@drawable/circular_progress_bar" />
 
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:padding="@dimen/screen_percentage_15">
 
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:paddingTop="@dimen/screen_percentage_05">
+            android:gravity="center"
+            android:orientation="vertical">
+
 
             <TextView
                 android:id="@+id/exerciseName"
-                android:layout_width="match_parent"
+                android:layout_width="100dp"
                 android:layout_height="wrap_content"
                 android:fontFamily="sans-serif-medium"
                 android:text="Exercise"
-                android:textAlignment="center" />
+                android:textAlignment="center"
+                android:textSize="15dp" />
 
             <ImageView
                 android:id="@+id/imageView"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@android:drawable/sym_def_app_icon" />
+                android:contentDescription="@string/workout_icon"
+                android:paddingHorizontal="@dimen/screen_percentage_15"
+                android:src="@drawable/accept_deny_dialog_negative_bg" />
 
             <TextView
                 android:id="@+id/timeValue"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:fontFamily="sans-serif-medium"
-                android:text="00.00"
-                android:textAlignment="center" />
+                android:text="00.0"
+                android:textAlignment="center"
+                android:textSize="15dp" />
 
         </LinearLayout>
+
     </FrameLayout>
 
 </androidx.wear.widget.BoxInsetLayout>
