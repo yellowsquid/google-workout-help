@@ -6,7 +6,6 @@ import android.os.CountDownTimer;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
 import android.support.wearable.activity.WearableActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
@@ -32,7 +31,9 @@ public class MainActivity extends WearableActivity {
         setContentView(R.layout.activity_wait);
 
 
-        statText = (TextView) findViewById(R.id.statusText) ;
+        statText = findViewById(R.id.statusText) ;
+        // Enables Always-on
+        setAmbientEnabled();
 
 
         final Button button = findViewById(R.id.startButton);
@@ -42,9 +43,6 @@ public class MainActivity extends WearableActivity {
                 openSportActivity();
             }
         });
-
-
-
     }
 
 //    @Override
@@ -59,11 +57,6 @@ public class MainActivity extends WearableActivity {
         //intent.putExtra("Circuit", )
         startActivity(intent);
     }
-
-
-
-
-
 }
 
 
