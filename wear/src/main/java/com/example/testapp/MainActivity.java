@@ -79,16 +79,17 @@ public class MainActivity extends WearableActivity
         byte[] data = messageEvent.getData();
         try {
             Object message = Deserializer.deserialize(data);
+
+            if (message instanceof Circuit) {
+                this.circuit = data;
+                // TODO: Change status message to "Circuit received"
+            } else if (message instanceof StartSignal) {
+                if (this.circuit != null) {
+                    openSportActivity(circuit);
+                }
+            }
         } catch (ClassNotFoundException | IOException e) {
             System.err.println("Failed to receive message");
-        }
-        if (message instanceof Circuit) {
-            this.circuit = data;
-            // TODO: Change status message to "Circuit received"
-        } else if (message instanceof StartSignal) {
-            if (this.circuit != null) {
-                openSportActivity(circuit);
-            }
         }
         // }
     }
