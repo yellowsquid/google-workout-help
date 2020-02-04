@@ -14,6 +14,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
+import com.example.testapp.shared.Circuit;
 import com.google.android.gms.wearable.MessageClient;
 import com.google.android.gms.wearable.MessageEvent;
 
@@ -51,7 +52,7 @@ public class MainActivity extends WearableActivity
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 //statText.setText("Hello World");
-                openSportActivity();
+                //openSportActivity();
             }
         });
     }
