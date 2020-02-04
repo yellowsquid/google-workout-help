@@ -1,3 +1,5 @@
+package com.example.testapp.shared;
+
 /**
  * Enum for a type of exercise. This consists of a name and an icon.
  */

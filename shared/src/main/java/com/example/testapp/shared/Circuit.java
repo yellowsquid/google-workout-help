@@ -1,3 +1,6 @@
+package com.example.testapp.shared;
+
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -21,7 +24,7 @@ public class Circuit {
     }
 
     public List<Exercise> getExercises() {
-        return List.copyOf(exercises);
+        return Collections.unmodifiableList(exercises);
     }
 
     public int getLaps() {
