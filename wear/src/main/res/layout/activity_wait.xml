@@ -9,14 +9,7 @@
     tools:context=".MainActivity"
     tools:deviceIds="wear">
 
-    <ProgressBar
-        android:id="@+id/progressBar"
-        style="@android:style/Widget.ProgressBar.Horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:indeterminate="false"
-        android:progress="100"
-        android:progressDrawable="@drawable/circular_progress_bar" />
+
 
     <FrameLayout
         android:layout_width="match_parent"
@@ -32,29 +25,20 @@
 
 
             <TextView
-                android:id="@+id/exerciseName"
+                android:id="@+id/statusText"
                 android:layout_width="100dp"
                 android:layout_height="wrap_content"
                 android:fontFamily="sans-serif-medium"
-                android:text="Exercise"
+                android:text="Status"
                 android:textAlignment="center"
                 android:textSize="15dp" />
 
-            <ImageView
-                android:id="@+id/sportsIcon"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:contentDescription="@string/workout_icon"
-                android:paddingHorizontal="@dimen/screen_percentage_15" />
-
-            <TextView
-                android:id="@+id/timeValue"
+            <Button
+                android:id="@+id/startButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:fontFamily="sans-serif-medium"
-                android:text="00.0"
-                android:textAlignment="center"
-                android:textSize="15dp" />
+                android:text="Start" />
+
 
         </LinearLayout>
 
