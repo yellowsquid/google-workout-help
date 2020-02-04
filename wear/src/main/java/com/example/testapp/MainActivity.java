@@ -11,11 +11,21 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+
+import com.google.android.gms.wearable.MessageClient;
+import com.google.android.gms.wearable.MessageEvent;
+
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.util.LinkedList;
 import java.util.List;
 
-public class MainActivity extends WearableActivity {
+public class MainActivity extends WearableActivity
+        implements MessageClient.OnMessageReceivedListener {
     String msg = "WatchApp";
 
     private TextView activityText;
@@ -62,8 +72,20 @@ public class MainActivity extends WearableActivity {
 
 
 
-
-
+    @Override
+    public void onMessageReceived(@NonNull MessageEvent messageEvent) {
+        //if (messageEvent.getPath().equals(TEST_MESSAGE_PATH)) {
+        byte[] data = messageEvent.getData();
+        Object message = Deserializer.deserialize(data);
+        if (message instanceof Circuit) {
+            // this.circuit = data;
+        } else if (message instanceof StartSignal) {
+            // if (this.circuit != null) {
+            //     openSportActivity(circuit)
+            // }
+        }
+        // }
+    }
 }
 
 
