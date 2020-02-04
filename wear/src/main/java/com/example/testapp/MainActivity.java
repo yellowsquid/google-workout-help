@@ -27,6 +27,7 @@ import java.util.List;
 public class MainActivity extends WearableActivity
         implements MessageClient.OnMessageReceivedListener {
     String msg = "WatchApp";
+    byte[] circuit;
 
     private TextView activityText;
     private TextView timeText;
@@ -63,7 +64,7 @@ public class MainActivity extends WearableActivity
 //        Log.d(msg, "Started MainActivity");
 //    }
 
-    public void openSportActivity(){
+    public void openSportActivity(byte[] circuit){
         Intent intent = new Intent(this, SportActivity.class);
         // Use to pass byte array to sports
         //intent.putExtra("Circuit", )
@@ -82,11 +83,12 @@ public class MainActivity extends WearableActivity
             System.err.println("Failed to receive message");
         }
         if (message instanceof Circuit) {
-            // this.circuit = data;
+            this.circuit = data;
+            // TODO: Change status message to "Circuit received"
         } else if (message instanceof StartSignal) {
-            // if (this.circuit != null) {
-            //     openSportActivity(circuit)
-            // }
+            if (this.circuit != null) {
+                openSportActivity(circuit);
+            }
         }
         // }
     }
