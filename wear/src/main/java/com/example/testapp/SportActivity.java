@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import com.example.testapp.shared.Circuit;
 import com.example.testapp.shared.Exercise;
+import com.example.testapp.shared.ExerciseType;
 
 import java.util.LinkedList;
 import java.util.List;

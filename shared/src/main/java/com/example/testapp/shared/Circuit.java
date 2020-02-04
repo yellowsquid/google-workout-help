@@ -10,7 +10,7 @@ public class Circuit {
     private final List<Exercise> exercises;
     private final int laps;
 
-    Circuit(List<Exercise> exercises, int laps) {
+    public Circuit(List<Exercise> exercises, int laps) {
         if (exercises.isEmpty()) {
             throw new IllegalArgumentException("Circuit must contain at least one exercise.");
         }
