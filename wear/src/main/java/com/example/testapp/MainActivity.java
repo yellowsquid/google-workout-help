@@ -76,7 +76,11 @@ public class MainActivity extends WearableActivity
     public void onMessageReceived(@NonNull MessageEvent messageEvent) {
         //if (messageEvent.getPath().equals(TEST_MESSAGE_PATH)) {
         byte[] data = messageEvent.getData();
-        Object message = Deserializer.deserialize(data);
+        try {
+            Object message = Deserializer.deserialize(data);
+        } catch (ClassNotFoundException | IOException e) {
+            System.err.println("Failed to receive message");
+        }
         if (message instanceof Circuit) {
             // this.circuit = data;
         } else if (message instanceof StartSignal) {
