@@ -1,12 +1,13 @@
 package com.example.testapp.shared;
 
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
 
 /**
  * A list of exercises and a number of laps.
  */
-public class Circuit {
+public class Circuit implements Serializable {
     private final List<Exercise> exercises;
     private final int laps;
 
