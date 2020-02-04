@@ -11,6 +11,9 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.example.testapp.shared.Circuit;
+import com.example.testapp.shared.Exercise;
+
 import java.util.LinkedList;
 import java.util.List;
 
@@ -74,7 +77,7 @@ public class SportActivity extends WearableActivity {
     public void workout(final Circuit cir, final int currentTask, final int currentLap){
 
         // Exits workout once done
-        if (cir.getNumberOfTasks() <= currentTask ){
+        if (cir.getNumberOfExercises() <= currentTask ){
             if (cir.getLaps() <= currentLap + 1){
                 finish();
             }else{

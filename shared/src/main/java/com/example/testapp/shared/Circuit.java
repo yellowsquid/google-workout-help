@@ -30,4 +30,8 @@ public class Circuit {
     public int getLaps() {
         return laps;
     }
+
+    public int getNumberOfExercises() {
+        return exercises.size();
+    }
 }
