@@ -64,7 +64,7 @@ public class MainActivity extends WearableActivity
 //    }
 
 
-    
+
     public void openSportActivity(byte[] circuit){
         Intent intent = new Intent(this, SportActivity.class);
         // Use to pass byte array to sports
