@@ -31,4 +31,8 @@ public class Circuit implements Serializable {
     public int getLaps() {
         return laps;
     }
+
+    public int getNumberOfExercises() {
+        return exercises.size();
+    }
 }
