@@ -10,12 +10,23 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+
+import com.google.android.gms.wearable.MessageClient;
+import com.google.android.gms.wearable.MessageEvent;
+
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.util.LinkedList;
 import java.util.List;
 
-public class MainActivity extends WearableActivity {
+public class MainActivity extends WearableActivity
+        implements MessageClient.OnMessageReceivedListener {
     String msg = "WatchApp";
+    byte[] circuit;
 
     private TextView activityText;
     private TextView timeText;
@@ -51,11 +62,34 @@ public class MainActivity extends WearableActivity {
 //        Log.d(msg, "Started MainActivity");
 //    }
 
-    public void openSportActivity(){
+    public void openSportActivity(byte[] circuit){
         Intent intent = new Intent(this, SportActivity.class);
         // Use to pass byte array to sports
         //intent.putExtra("Circuit", )
         startActivity(intent);
+    }
+
+
+
+    @Override
+    public void onMessageReceived(@NonNull MessageEvent messageEvent) {
+        //if (messageEvent.getPath().equals(TEST_MESSAGE_PATH)) {
+        byte[] data = messageEvent.getData();
+        try {
+            Object message = Deserializer.deserialize(data);
+
+            if (message instanceof Circuit) {
+                this.circuit = data;
+                // TODO: Change status message to "Circuit received"
+            } else if (message instanceof StartSignal) {
+                if (this.circuit != null) {
+                    openSportActivity(circuit);
+                }
+            }
+        } catch (ClassNotFoundException | IOException e) {
+            System.err.println("Failed to receive message");
+        }
+        // }
     }
 }
 
