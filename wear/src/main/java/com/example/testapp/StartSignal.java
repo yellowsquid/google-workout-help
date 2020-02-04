@@ -1,4 +1,6 @@
 package com.example.testapp;
 
-public class StartSignal {
+import java.io.Serializable;
+
+public class StartSignal  implements Serializable {
 }
