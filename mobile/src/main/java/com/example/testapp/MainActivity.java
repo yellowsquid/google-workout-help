@@ -48,8 +48,8 @@ public class MainActivity extends AppCompatActivity {
         Signal startSignal = new Signal("START");
         byte[] bytesD = Serializer.serialize(startSignal);
         byte[] circuitBytes = Serializer.serialize(circuit);
-        requestTranscription(bytesD);
-       // startActivity(intent);
+        //requestTranscription(bytesD);
+        startActivity(intent);
     }
 
     private Collection<String> getNodes() throws ExecutionException, InterruptedException {

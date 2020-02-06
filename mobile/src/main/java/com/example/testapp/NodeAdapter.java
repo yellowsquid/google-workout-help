@@ -30,7 +30,7 @@ public class NodeAdapter extends ListAdapter<String, NodeAdapter.ViewHolder> {
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-        TextView view = (TextView) inflater.inflate(R.layout.textbox, parent);
+        TextView view = (TextView) inflater.inflate(R.layout.textbox, parent, false);
         return new ViewHolder(view);
     }
 
