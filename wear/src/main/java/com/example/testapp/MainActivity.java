@@ -11,7 +11,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 
 import com.example.testapp.shared.Circuit;
-import com.example.testapp.shared.StartSignal;
+import com.example.testapp.shared.Signal;
 import com.google.android.gms.wearable.MessageClient;
 import com.google.android.gms.wearable.MessageEvent;
 
@@ -77,7 +77,7 @@ public class MainActivity extends WearableActivity
             if (message instanceof Circuit) {
                 this.circuit = data;
                 // TODO: Change status message to "Circuit received"
-            } else if (message instanceof StartSignal) {
+            } else if (message instanceof Signal) {
                 if (this.circuit != null) {
                     openSportActivity(circuit);
                 }
