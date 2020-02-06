@@ -1,6 +1,5 @@
 package com.example.testapp;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -20,14 +19,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.concurrent.ExecutionException;
 
 public class MainActivity extends AppCompatActivity {
-    private Circuit circuit;
     public static final String CIRCUIT_MESSAGE_PATH = "/circuit_path_name";
-    private static final String VOICE_TRANSCRIPTION_CAPABILITY_NAME = "voice_transcription";
-    public static final Context a = null;
+    private Circuit circuit;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,8 +55,25 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+    private void requestTranscription(byte[] bytesData) throws ExecutionException,
+            InterruptedException {
+        //Signal startSignal = new Signal("START");
+        HashSet<String> nodesToSend = (HashSet<String>) getNodes();
+        for (String nodeID : nodesToSend) {
+            if (nodeID != null) {
+
+                Task<Integer> sendTask = Wearable.getMessageClient(getApplicationContext())
+                        .sendMessage(nodeID, CIRCUIT_MESSAGE_PATH, bytesData);
+                //sendTask.addOnSuccessListener(...);
+                //sendTask.addOnFailureListener(...);
+            } else {
+                // TODO: Unable to retrieve node with transcription capability
+            }
+        }
+    }
+
     private Collection<String> getNodes() throws ExecutionException, InterruptedException {
-        HashSet<String> results = new HashSet<String>();
+        HashSet<String> results = new HashSet<>();
         List<Node> nodes =
                 Tasks.await(Wearable.getNodeClient(getApplicationContext()).getConnectedNodes());
         for (Node node : nodes) {
@@ -68,25 +81,4 @@ public class MainActivity extends AppCompatActivity {
         }
         return results;
     }
-    /*
-    * serialialize
-    *
-    * */
-
-    private void requestTranscription(byte[] bytesData) throws ExecutionException, InterruptedException {
-        //Signal startSignal = new Signal("START");
-        HashSet<String> nodesToSend = (HashSet<String>) getNodes();
-        for (String nodeID : nodesToSend){
-            if (nodeID != null) {
-
-                Task<Integer> sendTask = Wearable.getMessageClient(getApplicationContext()).sendMessage(
-                        nodeID, CIRCUIT_MESSAGE_PATH, bytesData);
-                //sendTask.addOnSuccessListener(...);
-                //sendTask.addOnFailureListener(...);
-            } else {
-                // Unable to retrieve node with transcription capability
-            }
-        }
-    }
-
 }

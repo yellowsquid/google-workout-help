@@ -4,8 +4,7 @@ package com.example.testapp.shared;
  * Enum for a type of exercise. This consists of a name and an icon.
  */
 public enum ExerciseType {
-    BURPEES("burpees", R.drawable.workout_burpee),
-    SITUPS("situps", R.drawable.workout_situp),
+    BURPEES("burpees", R.drawable.workout_burpee), SITUPS("situps", R.drawable.workout_situp),
     RUSSIAN_TWISTS("russian twists", R.drawable.workout_russiantwist),
     PUSHUPS("pushups", R.drawable.workout_pushup),
     STAR_JUMPS("star jumps", R.drawable.workout_starjump),

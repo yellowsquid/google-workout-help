@@ -52,5 +52,4 @@ public class WaitingActivity extends AppCompatActivity {
 
         startActivity(intent);
     }
-
 }

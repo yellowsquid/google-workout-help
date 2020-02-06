@@ -27,6 +27,11 @@ public class Circuit implements Serializable {
     }
 
     @Override
+    public int hashCode() {
+        return Objects.hash(exercises, laps);
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
@@ -38,13 +43,7 @@ public class Circuit implements Serializable {
 
         Circuit circuit = (Circuit) o;
 
-        return laps == circuit.laps &&
-                exercises.equals(circuit.exercises);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(exercises, laps);
+        return laps == circuit.laps && exercises.equals(circuit.exercises);
     }
 
     public List<Exercise> getExercises() {
