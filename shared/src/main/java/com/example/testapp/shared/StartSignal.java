@@ -1,4 +1,4 @@
-package com.example.testapp;
+package com.example.testapp.shared;
 
 import java.io.Serializable;
 
