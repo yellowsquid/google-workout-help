@@ -8,6 +8,7 @@ import java.util.List;
  * A list of exercises and a number of laps.
  */
 public class Circuit implements Serializable {
+    private static final long serialVersionUID = 1L;
     private final List<Exercise> exercises;
     private final int laps;
 
