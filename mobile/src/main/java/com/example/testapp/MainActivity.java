@@ -32,7 +32,6 @@ public class MainActivity extends AppCompatActivity {
 
     public void onClick(View v) {
         Intent intent = new Intent(this, WaitingActivity.class);
-        intent.putExtra(WaitingActivity.ACCESS_TOKEN_ID, "tOkEn4T3sT1Ng");
         intent.putExtra(WaitingActivity.CIRCUIT_ID, circuit);
 
         startActivity(intent);
