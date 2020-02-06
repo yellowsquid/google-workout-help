@@ -8,8 +8,13 @@ import androidx.lifecycle.LiveData;
 import com.example.testapp.shared.Circuit;
 
 import java.util.List;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 public class WaitingActivity extends AppCompatActivity {
+    private RecyclerView recyclerView;
+    private RecyclerView.Adapter adaptor;
+    private RecyclerView.LayoutManager layoutManager;
     public final static String CIRCUIT_ID = "com.example.testapp.CIRCUIT_ID";
 
     @Override
@@ -25,5 +30,14 @@ public class WaitingActivity extends AppCompatActivity {
         String accessToken;
 
         // Init UI
+
+        // Testing the recycleViewer
+        recyclerView = (RecyclerView) findViewById(R.id.devicesConnectedRecyclerView);
+        layoutManager = new GridLayoutManager(this, 2);
+        adaptor = null; // Make and implement adaptor
+
+        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.setAdapter(adaptor);
     }
+
 }

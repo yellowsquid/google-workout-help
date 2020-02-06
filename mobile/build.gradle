@@ -29,4 +29,5 @@ dependencies {
     wearApp project(':wear')
     implementation 'com.google.android.gms:play-services-wearable:+'
     implementation project(path: ':shared')
+    implementation "androidx.recyclerview:recyclerview:1.1.0"
 }

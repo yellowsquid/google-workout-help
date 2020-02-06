@@ -32,7 +32,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void onClick(View v) {
         Intent intent = new Intent(this, WaitingActivity.class);
-        intent.putExtra(WaitingActivity.CIRCUIT_ID, circuit);
+
 
         startActivity(intent);
     }
