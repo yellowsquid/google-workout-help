@@ -11,6 +11,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 
 import com.example.testapp.shared.Circuit;
+import com.example.testapp.shared.Deserializer;
 import com.example.testapp.shared.Signal;
 import com.google.android.gms.wearable.MessageClient;
 import com.google.android.gms.wearable.MessageEvent;
