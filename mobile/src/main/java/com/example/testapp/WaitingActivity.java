@@ -4,17 +4,15 @@ import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.LiveData;
-
-import com.example.testapp.shared.Circuit;
-
-import java.util.List;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.testapp.shared.Circuit;
+
+import java.util.ArrayList;
+import java.util.List;
+
 public class WaitingActivity extends AppCompatActivity {
-    private RecyclerView recyclerView;
-    private RecyclerView.Adapter adaptor;
-    private RecyclerView.LayoutManager layoutManager;
     public final static String CIRCUIT_ID = "com.example.testapp.CIRCUIT_ID";
 
     @Override
@@ -26,15 +24,22 @@ public class WaitingActivity extends AppCompatActivity {
         Circuit circuit = (Circuit) getIntent().getSerializableExtra(CIRCUIT_ID);
 
         // FIXME: get token and list of nodes (maybe via server)
-        LiveData<List> connectedNodes;
+        LiveData<List<String>> connectedNodes;
         String accessToken;
 
-        // Init UI
+        // Create list
+        RecyclerView recyclerView = findViewById(R.id.devicesConnectedRecyclerView);
+        RecyclerView.LayoutManager layoutManager = new GridLayoutManager(this, 2);
+        final NodeAdapter adaptor = new NodeAdapter(); // Make and implement adaptor
 
-        // Testing the recycleViewer
-        recyclerView = (RecyclerView) findViewById(R.id.devicesConnectedRecyclerView);
-        layoutManager = new GridLayoutManager(this, 2);
-        adaptor = null; // Make and implement adaptor
+        // FIXME: replace with live data
+        List<String> testData = new ArrayList<>(3);
+        testData.add("first");
+        testData.add("second");
+        testData.add("third");
+        adaptor.submitList(testData);
+
+        // connectedNodes.observe(this, adaptor::submitList);
 
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adaptor);
