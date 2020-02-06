@@ -10,6 +10,7 @@ import androidx.lifecycle.LiveData;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.testapp.adapter.NodeAdapter;
 import com.example.testapp.shared.Circuit;
 import com.example.testapp.shared.Exercise;
 import com.example.testapp.shared.ExerciseType;
@@ -31,7 +32,7 @@ import static com.example.testapp.MainActivity.CIRCUIT_MESSAGE_PATH;
 
 public class WaitingActivity extends AppCompatActivity {
     private Circuit circuit;
-    public final static String CIRCUIT_ID = "com.example.testapp.CIRCUIT_ID";
+    private static final String CIRCUIT_ID = "com.example.testapp.CIRCUIT_ID";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,7 +49,7 @@ public class WaitingActivity extends AppCompatActivity {
         // Create list
         RecyclerView recyclerView = findViewById(R.id.devicesConnectedRecyclerView);
         RecyclerView.LayoutManager layoutManager = new GridLayoutManager(this, 2);
-        final NodeAdapter adaptor = new NodeAdapter(); // Make and implement adaptor
+        NodeAdapter adaptor = new NodeAdapter(); // Make and implement adaptor
 
         // FIXME: replace with live data
         List<String> testData = new ArrayList<>(3);

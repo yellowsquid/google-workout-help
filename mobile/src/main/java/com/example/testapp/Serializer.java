@@ -2,25 +2,26 @@ package com.example.testapp;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
+import java.io.UncheckedIOException;
 
-public class Serializer {
+enum Serializer {
+    ;
 
-    public Serializer() {
+    static byte[] serialize(Object objToWrite) {
+        byte[] output;
 
-    }
-
-    public static byte[] serialize(Object objToWrite) {
-        try (ByteArrayOutputStream bos = new ByteArrayOutputStream()) {
-            ObjectOutputStream out = new ObjectOutputStream(bos);
+        try (ByteArrayOutputStream bos = new ByteArrayOutputStream();
+             ObjectOutput out = new ObjectOutputStream(bos)) {
             out.writeObject(objToWrite);
             out.flush();
-            byte[] yourBytes = bos.toByteArray();
+            output = bos.toByteArray();
         } catch (IOException e) {
             // Can always write to local byte array.
-            e.printStackTrace();
+            throw new UncheckedIOException(e);
         }
-        // ignore close exception
-        return new byte[0];
+
+        return output;
     }
 }

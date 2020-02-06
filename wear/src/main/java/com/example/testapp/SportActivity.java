@@ -1,6 +1,6 @@
 package com.example.testapp;
 
-import android.graphics.drawable.AnimationDrawable;
+import android.graphics.drawable.Animatable;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.VibrationEffect;
@@ -20,25 +20,24 @@ import java.util.List;
 import java.util.Locale;
 
 public class SportActivity extends WearableActivity {
-    public static final long EXERCISE_COUNTDOWN = 3000L;
-    public static final long TICK_RATE = 100L;
-    public static final int MILLIS_IN_SECOND = 1000;
+    private static final long EXERCISE_COUNTDOWN = 3000L;
+    private static final long TICK_RATE = 100L;
+    private static final long MILLIS_IN_SECOND = 1000L;
 
-    String msg = "WatchApp";
+    private static final String MESSAGE = "WatchApp";
+    private static final long[] VIBRATION_PATTERN = {0, 500, 50, 800};
 
     private TextView activityText;
     private TextView timeText;
     private ProgressBar pBar;
-
     private CountDownTimer startTimer;
     private CountDownTimer workoutTimer;
-
     private ImageView iconStill;
 
     // Run on activity creation
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Log.d(msg, "SportActivity Created");
+        Log.d(MESSAGE, "SportActivity Created");
         super.onCreate(savedInstanceState);
 
         // Which view to use
@@ -54,16 +53,16 @@ public class SportActivity extends WearableActivity {
         // Enables Always-on
         setAmbientEnabled();
 
-        List<Exercise> c = new LinkedList<>();
-        c.add(new Exercise(ExerciseType.SITUPS, 6));
-        c.add(new Exercise(ExerciseType.SQUATS, 5));
-        c.add(new Exercise(ExerciseType.REST, 10));
-        c.add(new Exercise(ExerciseType.STAR_JUMPS, 5));
-        c.add(new Exercise(ExerciseType.BURPEES, 10));
-        c.add(new Exercise(ExerciseType.PUSHUPS, 8));
-        c.add(new Exercise(ExerciseType.RUSSIAN_TWISTS, 8));
+        List<Exercise> exercises = new LinkedList<>();
+        exercises.add(new Exercise(ExerciseType.SITUPS, 6));
+        exercises.add(new Exercise(ExerciseType.SQUATS, 5));
+        exercises.add(new Exercise(ExerciseType.REST, 10));
+        exercises.add(new Exercise(ExerciseType.STAR_JUMPS, 5));
+        exercises.add(new Exercise(ExerciseType.BURPEES, 10));
+        exercises.add(new Exercise(ExerciseType.PUSHUPS, 8));
+        exercises.add(new Exercise(ExerciseType.RUSSIAN_TWISTS, 8));
 
-        Circuit cir = new Circuit(c, 2);
+        Circuit cir = new Circuit(exercises, 2);
 
         workout(cir, 0, 0);
         //newSport("StarJumps", 10000);
@@ -77,11 +76,10 @@ public class SportActivity extends WearableActivity {
         super.onDestroy();
         workoutTimer.cancel();
         startTimer.cancel();
-        Log.d(msg, "SportActivity Destroyed");
+        Log.d(MESSAGE, "SportActivity Destroyed");
     }
 
-    public void workout(final Circuit cir, final int currentTask, final int currentLap) {
-
+    private void workout(Circuit cir, int currentTask, int currentLap) {
         // Exits workout once done
         if (cir.getNumberOfExercises() <= currentTask) {
             if (cir.getLaps() <= currentLap + 1) {
@@ -92,18 +90,22 @@ public class SportActivity extends WearableActivity {
 
             return;
         }
-        Log.d(msg, "Init Task:Lap " + currentTask + ":" + currentLap);
 
-        final Exercise currentExercise = cir.getExercises().get(currentTask);
-        final long workoutLength = (long) currentExercise.getTime() * MILLIS_IN_SECOND;
+        if (BuildConfig.DEBUG) {
+            Log.d(MESSAGE, String.format("Init Task:Lap %d:%d", currentTask, currentLap));
+        }
+
+        Exercise currentExercise = cir.getExercises().get(currentTask);
+        long workoutLength = currentExercise.getDuration() * MILLIS_IN_SECOND;
 
         // Count down timer
         workoutTimer = new CountDownTimer(workoutLength, TICK_RATE) {
-
+            @Override
             public void onTick(long millisUntilFinished) {
                 // Progress Bar
 
                 long remaining = workoutLength - millisUntilFinished;
+                //noinspection NumericCastThatLosesPrecision
                 int progress = (int) ((100 * remaining) / workoutLength);
                 pBar.setProgress(progress);
 
@@ -113,22 +115,27 @@ public class SportActivity extends WearableActivity {
             }
 
             // Ends activity
+            @Override
             public void onFinish() {
                 pBar.setProgress(100);
                 hapticFeedback();
-                Log.d(msg, "Finished Task " + currentTask);
+
+                if (BuildConfig.DEBUG) {
+                    Log.d(MESSAGE, String.format("Finished Task %d", currentTask));
+                }
+
                 workout(cir, currentTask + 1, currentLap);
             }
         };
 
-        final String exerciseName = currentExercise.getName();
+        String exerciseName = currentExercise.getName();
 
         startTimer = new CountDownTimer(EXERCISE_COUNTDOWN, TICK_RATE) {
-
             @Override
             public void onTick(long millisUntilFinished) {
                 // Progress Bar
                 long remaining = EXERCISE_COUNTDOWN - millisUntilFinished;
+                //noinspection NumericCastThatLosesPrecision
                 int progress = (int) ((100 * remaining) / EXERCISE_COUNTDOWN);
                 pBar.setProgress(progress);
 
@@ -143,29 +150,32 @@ public class SportActivity extends WearableActivity {
                 //set text to workout name
                 activityText.setText(exerciseName);
                 workoutTimer.start();
-                Log.d(msg, "Started Task " + currentTask);
+
+                if (BuildConfig.DEBUG) {
+                    Log.d(MESSAGE, String.format("Started Task %d", currentTask));
+                }
             }
         };
 
         // set test to countdown
-        int duration = currentExercise.getTime();
+        int duration = currentExercise.getDuration();
         String next = getResources().getString(R.string.next_activity, exerciseName, duration);
         activityText.setText(next);
 
         //Set Icon
         iconStill.setBackgroundResource(currentExercise.getIcon());
-        final AnimationDrawable iconAnimated = (AnimationDrawable) iconStill.getBackground();
+        Animatable iconAnimated = (Animatable) iconStill.getBackground();
         iconAnimated.start();
 
         startTimer.start();
     }
 
-    public void hapticFeedback() {
+    private void hapticFeedback() {
         Vibrator vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
-        long[] vibrationPattern = {0, 500, 50, 800};
-        //-1 - don't repeat
+
         if (vibrator != null) {
-            vibrator.vibrate(VibrationEffect.createWaveform(vibrationPattern, -1));
+            // -1 means don't repeat
+            vibrator.vibrate(VibrationEffect.createWaveform(VIBRATION_PATTERN, -1));
         }
     }
 }

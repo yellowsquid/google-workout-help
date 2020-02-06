@@ -7,10 +7,7 @@ public class Exercise {
     private final int duration; // duration in seconds
 
     public Exercise(ExerciseType exerciseType, int duration) {
-        if (exerciseType == null) {
-            throw new NullPointerException();
-        }
-
+        Objects.requireNonNull(exerciseType);
         this.exerciseType = exerciseType;
         this.duration = duration;
     }
@@ -21,16 +18,16 @@ public class Exercise {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) {
+    public boolean equals(Object obj) {
+        if (this == obj) {
             return true;
         }
 
-        if (o == null || getClass() != o.getClass()) {
+        if (obj == null || getClass() != obj.getClass()) {
             return false;
         }
 
-        Exercise exercise = (Exercise) o;
+        Exercise exercise = (Exercise) obj;
 
         return duration == exercise.duration && exerciseType == exercise.exerciseType;
     }
@@ -47,7 +44,7 @@ public class Exercise {
         return exerciseType.getIcon();
     }
 
-    public int getTime() {
+    public int getDuration() {
         return duration;
     }
 }

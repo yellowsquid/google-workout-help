@@ -10,10 +10,10 @@ import java.util.Objects;
  */
 public class Circuit implements Serializable {
     private static final long serialVersionUID = 1L;
-    private final List<Exercise> exercises;
+    private final List<? extends Exercise> exercises;
     private final int laps;
 
-    public Circuit(List<Exercise> exercises, int laps) {
+    public Circuit(List<? extends Exercise> exercises, int laps) {
         if (exercises.isEmpty()) {
             throw new IllegalArgumentException("Circuit must contain at least one exercise.");
         }
@@ -22,7 +22,7 @@ public class Circuit implements Serializable {
             throw new IllegalArgumentException("Number of laps must be at least one.");
         }
 
-        this.exercises = exercises;
+        this.exercises = Collections.unmodifiableList(exercises);
         this.laps = laps;
     }
 
@@ -32,16 +32,16 @@ public class Circuit implements Serializable {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) {
+    public boolean equals(Object obj) {
+        if (this == obj) {
             return true;
         }
 
-        if (o == null || getClass() != o.getClass()) {
+        if (obj == null || getClass() != obj.getClass()) {
             return false;
         }
 
-        Circuit circuit = (Circuit) o;
+        Circuit circuit = (Circuit) obj;
 
         return laps == circuit.laps && exercises.equals(circuit.exercises);
     }

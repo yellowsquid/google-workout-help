@@ -7,7 +7,6 @@
     tools:context=".DuringActivity">
 
     <Button
-        android:id="@+id/stopButton"
         android:layout_width="205dp"
         android:layout_height="80dp"
         android:layout_marginBottom="16dp"
