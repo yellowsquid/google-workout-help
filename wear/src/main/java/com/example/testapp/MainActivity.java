@@ -69,23 +69,25 @@ public class MainActivity extends WearableActivity
 
     @Override
     public void onMessageReceived(@NonNull MessageEvent messageEvent) {
-        //if (messageEvent.getPath().equals(TEST_MESSAGE_PATH)) {
-        byte[] data = messageEvent.getData();
-        try {
-            Object message = Deserializer.deserialize(data);
+        if (messageEvent.getPath().equals("/circuit_path_name")) {
+            byte[] data = messageEvent.getData();
+            try {
+                Object message = Deserializer.deserialize(data);
 
-            if (message instanceof Circuit) {
-                this.circuit = data;
-                // TODO: Change status message to "Circuit received"
-            } else if (message instanceof Signal) {
-                if (this.circuit != null) {
-                    openSportActivity(circuit);
+                if (message instanceof Circuit) {
+                    this.circuit = data;
+                    // TODO: Change status message to "Circuit received"
+                } else if (message instanceof Signal && ((Signal) message).getMessage().equals("START")) {
+                    if (this.circuit != null) {
+                        openSportActivity(circuit);
+                    } else {
+                        System.err.println("Start signal received before circuit received");
+                    }
                 }
+            } catch (ClassNotFoundException | IOException e) {
+                System.err.println("Failed to receive message");
             }
-        } catch (ClassNotFoundException | IOException e) {
-            System.err.println("Failed to receive message");
         }
-        // }
     }
 }
 
