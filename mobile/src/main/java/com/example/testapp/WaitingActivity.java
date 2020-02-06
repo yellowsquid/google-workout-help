@@ -1,6 +1,8 @@
 package com.example.testapp;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.LiveData;
@@ -43,6 +45,12 @@ public class WaitingActivity extends AppCompatActivity {
 
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adaptor);
+    }
+
+    public void startClicked(View v) {
+        Intent intent = new Intent(this, DuringActivity.class);
+
+        startActivity(intent);
     }
 
 }

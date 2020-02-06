@@ -43,12 +43,19 @@ public class MainActivity extends AppCompatActivity {
         circuit = new Circuit(exercises, 5);
     }
 
-    public void onClick(View v) {
+    public void waitClicked(View v) {
         Intent intent = new Intent(this, WaitingActivity.class);
         Signal startSignal = new Signal("START");
         byte[] bytesD = Serializer.serialize(startSignal);
         byte[] circuitBytes = Serializer.serialize(circuit);
         //requestTranscription(bytesD);
+
+        startActivity(intent);
+    }
+
+    public void editClicked(View v) {
+        Intent intent = new Intent(this, EditActivity.class);
+
         startActivity(intent);
     }
 

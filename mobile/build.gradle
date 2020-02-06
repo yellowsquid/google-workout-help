@@ -34,4 +34,5 @@ dependencies {
     implementation 'com.google.android.gms:play-services-wearable:+'
     implementation project(path: ':shared')
     implementation "androidx.recyclerview:recyclerview:1.1.0"
+    implementation 'com.google.android.material:material:1.1.0'
 }
