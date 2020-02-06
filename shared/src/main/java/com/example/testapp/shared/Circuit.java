@@ -3,6 +3,7 @@ package com.example.testapp.shared;
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * A list of exercises and a number of laps.
@@ -23,6 +24,27 @@ public class Circuit implements Serializable {
 
         this.exercises = exercises;
         this.laps = laps;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        Circuit circuit = (Circuit) o;
+
+        return laps == circuit.laps &&
+                exercises.equals(circuit.exercises);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(exercises, laps);
     }
 
     public List<Exercise> getExercises() {
