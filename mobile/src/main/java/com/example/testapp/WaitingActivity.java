@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
+import androidx.annotation.WorkerThread;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.LiveData;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -71,16 +72,53 @@ public class WaitingActivity extends AppCompatActivity {
         circuit = new Circuit(exercises, 5);
     }
 
+    @WorkerThread
     private Collection<String> getNodes() throws ExecutionException, InterruptedException {
         HashSet<String> results = new HashSet<>();
-        List<Node> nodes =
-                Tasks.await(Wearable.getNodeClient(getApplicationContext()).getConnectedNodes());
+        //List<Node> nodes = Tasks.await(Wearable.getNodeClient(getApplicationContext()).getConnectedNodes());
+        Task<List<Node>> nodeListTask = Wearable.getNodeClient(getApplicationContext()).getConnectedNodes();
+        try {
+            // Block on a task and get the result synchronously (because this is on a background
+            // thread).
+            List<Node> nodes = Tasks.await(nodeListTask);
+
+            for (Node node : nodes) {
+                results.add(node.getId());
+            }
+
+        } catch (ExecutionException exception) {
+            //Log.e(TAG, "Task failed: " + exception);
+
+        } catch (InterruptedException exception) {
+            //Log.e(TAG, "Interrupt occurred: " + exception);
+        }
+
+        return results;
+    }
+    /*
+    HashSet<String> results = new HashSet<>();
+
+    Task<List<Node>> nodeListTask =
+            Wearable.getNodeClient(getApplicationContext()).getConnectedNodes();
+
+        try {
+        // Block on a task and get the result synchronously (because this is on a background
+        // thread).
+        List<Node> nodes = Tasks.await(nodeListTask);
+
         for (Node node : nodes) {
             results.add(node.getId());
         }
-        return results;
+
+    } catch (ExecutionException exception) {
+        Log.e(TAG, "Task failed: " + exception);
+
+    } catch (InterruptedException exception) {
+        Log.e(TAG, "Interrupt occurred: " + exception);
     }
 
+        return results;
+*/
     private void sendDataToWatches(byte[] bytesData) throws ExecutionException, InterruptedException {
         //LOGD(TAG, "Sendign start signal + circuit info");
         HashSet<String> nodesToSend = (HashSet<String>) getNodes();
