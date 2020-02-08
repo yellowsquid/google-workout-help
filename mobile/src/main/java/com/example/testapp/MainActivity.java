@@ -3,11 +3,13 @@ package com.example.testapp;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.testapp.shared.Circuit;
+import com.example.testapp.shared.Deserializer;
 import com.example.testapp.shared.Exercise;
 import com.example.testapp.shared.ExerciseType;
 import com.example.testapp.shared.Signal;
@@ -16,6 +18,7 @@ import com.google.android.gms.tasks.Tasks;
 import com.google.android.gms.wearable.Node;
 import com.google.android.gms.wearable.Wearable;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -23,11 +26,21 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
 
+import static android.util.Config.LOGD;
+
 public class MainActivity extends AppCompatActivity {
     private Circuit circuit;
     public static final String CIRCUIT_MESSAGE_PATH = "/circuit_path_name";
     private static final String VOICE_TRANSCRIPTION_CAPABILITY_NAME = "voice_transcription";
-    public static final Context a = null;
+    //public static final Context a = null;
+    private static final String TAG = "MainActivity";
+
+    /* As simple wrapper around Log.d */
+    private static void LOGD(final String tag, String message) {
+        if (Log.isLoggable(tag, Log.DEBUG)) {
+            Log.d(tag, message);
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,12 +56,12 @@ public class MainActivity extends AppCompatActivity {
         circuit = new Circuit(exercises, 5);
     }
 
-    public void onClick(View v) {
+    public void onClick(View v) throws ExecutionException, InterruptedException, IOException {
         Intent intent = new Intent(this, WaitingActivity.class);
         Signal startSignal = new Signal("START");
-        byte[] bytesD = Serializer.serialize(startSignal);
-        byte[] circuitBytes = Serializer.serialize(circuit);
-        requestTranscription(bytesD);
+        byte[] bytesD = Deserializer.serialize(startSignal);
+        byte[] circuitBytes = Deserializer.serialize(circuit);
+        sendStartActivity(bytesD);
        // startActivity(intent);
     }
 
@@ -61,13 +74,9 @@ public class MainActivity extends AppCompatActivity {
         }
         return results;
     }
-    /*
-    * serialialize
-    *
-    * */
 
-    private void requestTranscription(byte[] bytesData) throws ExecutionException, InterruptedException {
-        //Signal startSignal = new Signal("START");
+    private void sendStartActivity(byte[] bytesData) throws ExecutionException, InterruptedException {
+        //LOGD(TAG, "Sendign start signal + circuit info");
         HashSet<String> nodesToSend = (HashSet<String>) getNodes();
         for (String nodeID : nodesToSend){
             if (nodeID != null) {
