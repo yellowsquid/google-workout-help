@@ -12,8 +12,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.testapp.adapter.NodeAdapter;
 import com.example.testapp.shared.Circuit;
-import com.example.testapp.shared.Exercise;
-import com.example.testapp.shared.ExerciseType;
 import com.example.testapp.shared.Serializer;
 import com.example.testapp.shared.Signal;
 import com.google.android.gms.tasks.Task;
@@ -30,7 +28,7 @@ import java.util.Set;
 import java.util.concurrent.ExecutionException;
 
 public class WaitingActivity extends AppCompatActivity {
-    private static final String CIRCUIT_ID = "com.example.testapp.CIRCUIT_ID";
+    public static final String CIRCUIT_ID = "com.example.testapp.CIRCUIT_ID";
     private Circuit circuit;
 
     @Override
@@ -39,7 +37,7 @@ public class WaitingActivity extends AppCompatActivity {
         setContentView(R.layout.activity_waiting);
 
         // Retrieve circuit and token.
-        //        Circuit circuit = (Circuit) getIntent().getSerializableExtra(CIRCUIT_ID);
+        circuit = (Circuit) getIntent().getSerializableExtra(CIRCUIT_ID);
 
         // FIXME: get token and list of nodes (maybe via server)
         LiveData<List<String>> connectedNodes;
@@ -61,21 +59,12 @@ public class WaitingActivity extends AppCompatActivity {
 
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adaptor);
-
-        // start activity
-        List<Exercise> exercises = new ArrayList<>(5);
-        exercises.add(new Exercise(ExerciseType.BURPEES, 30));
-        exercises.add(new Exercise(ExerciseType.PUSHUPS, 30));
-        exercises.add(new Exercise(ExerciseType.RUSSIAN_TWISTS, 30));
-        exercises.add(new Exercise(ExerciseType.SQUATS, 30));
-        exercises.add(new Exercise(ExerciseType.STAR_JUMPS, 30));
-        circuit = new Circuit(exercises, 5);
     }
 
     public void startClicked(View v) {
-        Signal startSignal = new Signal("START");
+        Signal startSignal = Signal.START;
         try {
-            byte[] startSignalBytes = com.example.testapp.shared.Serializer.serialize(startSignal);
+            byte[] startSignalBytes = Serializer.serialize(startSignal);
             byte[] circuitBytes = Serializer.serialize(circuit);
             sendDataToWatches(startSignalBytes);
             sendDataToWatches(circuitBytes);
@@ -129,7 +118,7 @@ public class WaitingActivity extends AppCompatActivity {
     }
 
     @WorkerThread
-    private Collection<String> getNodes() throws ExecutionException, InterruptedException {
+    private Collection<String> getNodes() {
         Set<String> results = new HashSet<>();
         //List<Node> nodes = Tasks.await(Wearable.getNodeClient(getApplicationContext())
         // .getConnectedNodes());
