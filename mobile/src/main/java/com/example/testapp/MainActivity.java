@@ -55,9 +55,10 @@ public class MainActivity extends AppCompatActivity {
     public void onClick(View v) throws ExecutionException, InterruptedException, IOException {
         Intent intent = new Intent(this, WaitingActivity.class);
         Signal startSignal = new Signal("START");
-        byte[] bytesD = Serializer.serialize(startSignal);
+        byte[] startSignalBytes = Serializer.serialize(startSignal);
         byte[] circuitBytes = Serializer.serialize(circuit);
-        sendStartActivity(bytesD);
+        sendDataToWatches(startSignalBytes);
+        sendDataToWatches(circuitBytes);
         startActivity(intent);
     }
 
@@ -67,7 +68,7 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    private void sendStartActivity(byte[] bytesData) throws ExecutionException, InterruptedException {
+    private void sendDataToWatches(byte[] bytesData) throws ExecutionException, InterruptedException {
         //LOGD(TAG, "Sendign start signal + circuit info");
         HashSet<String> nodesToSend = (HashSet<String>) getNodes();
         for (String nodeID : nodesToSend){
