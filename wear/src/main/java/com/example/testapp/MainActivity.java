@@ -14,6 +14,8 @@ import com.example.testapp.shared.Signal;
 import com.google.android.gms.wearable.MessageClient;
 import com.google.android.gms.wearable.MessageEvent;
 
+import java.io.IOException;
+
 public class MainActivity extends WearableActivity implements
         MessageClient.OnMessageReceivedListener {
     private byte[] circuit;
@@ -38,7 +40,14 @@ public class MainActivity extends WearableActivity implements
     public void onMessageReceived(@NonNull MessageEvent messageEvent) {
         if (messageEvent.getPath().equals("/circuit_path_name")) {
             byte[] data = messageEvent.getData();
-            Object message = Serializer.deserialize(data);
+            Object message = null;
+
+            try {
+                message = Serializer.deserialize(data);
+            } catch (IOException | ClassNotFoundException e) {
+                // FIXME: change this to better error handling
+                e.printStackTrace();
+            }
 
             // TODO: make this more object oriented?
             if (message instanceof Circuit) {

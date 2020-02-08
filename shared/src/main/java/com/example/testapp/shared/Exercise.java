@@ -1,8 +1,10 @@
 package com.example.testapp.shared;
 
+import java.io.Serializable;
 import java.util.Objects;
 
-public class Exercise {
+public class Exercise implements Serializable {
+    private static final long serialVersionUID = -3063491187321789411L;
     private final ExerciseType exerciseType;
     private final int duration; // duration in seconds
 
