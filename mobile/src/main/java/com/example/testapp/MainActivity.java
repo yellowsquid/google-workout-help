@@ -25,7 +25,7 @@ public class MainActivity extends AppCompatActivity {
         List<Exercise> exercises = new ArrayList<>(5);
         exercises.add(new Exercise(ExerciseType.BURPEES, 30));
         exercises.add(new Exercise(ExerciseType.PUSHUPS, 30));
-        exercises.add(new Exercise(ExerciseType.RUSSIAN_TWISTS, 30));
+        exercises.add(new Exercise(ExerciseType.RUSSIAN_TWISTS, 20));
         exercises.add(new Exercise(ExerciseType.SQUATS, 30));
         exercises.add(new Exercise(ExerciseType.STAR_JUMPS, 30));
         circuit = new Circuit(exercises, 3);
