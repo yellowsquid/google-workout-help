@@ -70,33 +70,31 @@ public class MainActivity extends WearableActivity implements
 
     @Override
     public void onMessageReceived(@NonNull MessageEvent messageEvent) {
+        statText.setText("A");
         if (messageEvent.getPath().equals("/circuit_path_name")) {
             byte[] data = messageEvent.getData();
-            Object message = null;
-
             try {
-                message = Serializer.deserialize(data);
-            } catch (IOException | ClassNotFoundException e) {
-                // FIXME: change this to better error handling
-                e.printStackTrace();
-            }
+                Object message = Serializer.deserialize(data);
 
-            // TODO: make this more object oriented?
-            if (message instanceof Circuit) {
-                circuit = data;
-                // TODO: Change status message to "Circuit received"
-            } else if (message instanceof Signal && ((Signal) message).getMessage()
-                    .equals("START")) {
-                if (circuit != null) {
-                    openSportActivity(circuit);
-                } else {
-                    System.err.println("Start signal received before circuit received");
+                if (message instanceof Circuit) {
+                    this.circuit = data;
+                    statText.setText("Circuit received");
+                    // TODO: Change status message to "Circuit received"
+                } else if (message instanceof Signal && ((Signal) message).getMessage()
+                        .equals("START")) {
+                    if (this.circuit != null) {
+                        //openSportActivity(circuit);
+                        statText.setText("Starting Circuit");
+                    } else {
+                        statText.setText("Starting Signal received");
+                        System.err.println("Start signal received before circuit received");
+                    }
                 }
+            } catch (ClassNotFoundException | IOException e) {
+                System.err.println("Failed to receive message");
             }
         }
     }
-
-
 }
 
 

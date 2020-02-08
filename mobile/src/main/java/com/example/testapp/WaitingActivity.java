@@ -1,7 +1,9 @@
 package com.example.testapp;
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 
 import androidx.annotation.WorkerThread;
@@ -12,6 +14,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.testapp.adapter.NodeAdapter;
 import com.example.testapp.shared.Circuit;
+import com.example.testapp.shared.Exercise;
+import com.example.testapp.shared.ExerciseType;
 import com.example.testapp.shared.Serializer;
 import com.example.testapp.shared.Signal;
 import com.google.android.gms.tasks.Task;
@@ -46,7 +50,7 @@ public class WaitingActivity extends AppCompatActivity {
         // Create list
         RecyclerView recyclerView = findViewById(R.id.devicesConnectedRecyclerView);
         RecyclerView.LayoutManager layoutManager = new GridLayoutManager(this, 2);
-        NodeAdapter adaptor = new NodeAdapter(); // Make and implement adaptor
+        final NodeAdapter adaptor = new NodeAdapter(); // Make and implement adaptor
 
         // FIXME: replace with live data
         List<String> testData = new ArrayList<>(3);
@@ -118,7 +122,7 @@ public class WaitingActivity extends AppCompatActivity {
     }
 
     @WorkerThread
-    private Collection<String> getNodes() {
+    private Collection<String> getNodes() throws ExecutionException, InterruptedException {
         Set<String> results = new HashSet<>();
         //List<Node> nodes = Tasks.await(Wearable.getNodeClient(getApplicationContext())
         // .getConnectedNodes());

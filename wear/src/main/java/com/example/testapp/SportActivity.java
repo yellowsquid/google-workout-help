@@ -13,9 +13,9 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.example.testapp.shared.Circuit;
-import com.example.testapp.shared.Deserializer;
 import com.example.testapp.shared.Exercise;
 import com.example.testapp.shared.ExerciseType;
+import com.example.testapp.shared.Serializer;
 
 import java.io.IOException;
 import java.util.LinkedList;
@@ -58,7 +58,7 @@ public class SportActivity extends WearableActivity {
         byte[] serial = intent.getByteArrayExtra("Circuit");
         if (serial != null){
             try {
-                cirLoaded = (Circuit) Deserializer.deserialize(serial);
+                cirLoaded = (Circuit) Serializer.deserialize(serial);
             } catch (IOException e) {
                 e.printStackTrace();
                 finish();
