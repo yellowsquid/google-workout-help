@@ -10,7 +10,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 
 import com.example.testapp.shared.Circuit;
-import com.example.testapp.shared.Deserializer;
+import com.example.testapp.shared.Serializer;
 import com.example.testapp.shared.Signal;
 import com.google.android.gms.wearable.MessageClient;
 import com.google.android.gms.wearable.MessageEvent;
@@ -44,7 +44,7 @@ public class MainActivity extends WearableActivity implements
         if (messageEvent.getPath().equals("/circuit_path_name")) {
             byte[] data = messageEvent.getData();
             try {
-                Object message = Deserializer.deserialize(data);
+                Object message = Serializer.deserialize(data);
 
                 if (message instanceof Circuit) {
                     this.circuit = data;

@@ -1,6 +1,5 @@
 package com.example.testapp;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -9,7 +8,7 @@ import android.view.View;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.testapp.shared.Circuit;
-import com.example.testapp.shared.Deserializer;
+import com.example.testapp.shared.Serializer;
 import com.example.testapp.shared.Exercise;
 import com.example.testapp.shared.ExerciseType;
 import com.example.testapp.shared.Signal;
@@ -24,8 +23,6 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
-
-import static android.util.Config.LOGD;
 
 public class MainActivity extends AppCompatActivity {
     private Circuit circuit;
@@ -58,8 +55,8 @@ public class MainActivity extends AppCompatActivity {
     public void onClick(View v) throws ExecutionException, InterruptedException, IOException {
         Intent intent = new Intent(this, WaitingActivity.class);
         Signal startSignal = new Signal("START");
-        byte[] bytesD = Deserializer.serialize(startSignal);
-        byte[] circuitBytes = Deserializer.serialize(circuit);
+        byte[] bytesD = Serializer.serialize(startSignal);
+        byte[] circuitBytes = Serializer.serialize(circuit);
         sendStartActivity(bytesD);
         startActivity(intent);
     }

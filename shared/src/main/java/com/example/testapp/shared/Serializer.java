@@ -7,7 +7,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
 
-public class Deserializer {
+public class Serializer {
 
     public static byte[] serialize(Object objectToBytes) throws IOException{
         try(ByteArrayOutputStream bos = new ByteArrayOutputStream();
@@ -18,8 +18,9 @@ public class Deserializer {
     }
 
     static public Object deserialize(byte[] data) throws IOException, ClassNotFoundException {
-        ByteArrayInputStream in = new ByteArrayInputStream(data);
-        ObjectInputStream is = new ObjectInputStream(in);
-        return is.readObject();
+        try (ByteArrayInputStream bis = new ByteArrayInputStream(data);
+            ObjectInputStream ois = new ObjectInputStream(bis)) {
+            return ois.readObject();
+        }
     }
 }
