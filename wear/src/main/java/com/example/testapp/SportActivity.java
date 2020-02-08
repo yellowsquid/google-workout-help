@@ -1,6 +1,7 @@
 package com.example.testapp;
 
-import android.graphics.drawable.Animatable;
+import android.content.Intent;
+import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.VibrationEffect;
@@ -12,17 +13,19 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.example.testapp.shared.Circuit;
+import com.example.testapp.shared.Deserializer;
 import com.example.testapp.shared.Exercise;
 import com.example.testapp.shared.ExerciseType;
 
+import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 
 public class SportActivity extends WearableActivity {
-    private static final long EXERCISE_COUNTDOWN = 3000L;
-    private static final long TICK_RATE = 100L;
-    private static final long MILLIS_IN_SECOND = 1000L;
+    public static final long EXERCISE_COUNTDOWN = 5000L;
+    public static final long TICK_RATE = 100L;
+    public static final int MILLIS_IN_SECOND = 1000;
 
     private static final String MESSAGE = "WatchApp";
     private static final long[] VIBRATION_PATTERN = {0, 500, 50, 800};
@@ -50,28 +53,46 @@ public class SportActivity extends WearableActivity {
 
         iconStill = findViewById(R.id.sportsIcon);
 
+        Intent intent = getIntent();
+        Circuit cirLoaded;
+        byte[] serial = intent.getByteArrayExtra("Circuit");
+        if (serial != null){
+            try {
+                cirLoaded = (Circuit) Deserializer.deserialize(serial);
+            } catch (IOException e) {
+                e.printStackTrace();
+                finish();
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+                finish();
+            }
+        }
+
+
+
         // Enables Always-on
         setAmbientEnabled();
 
-        List<Exercise> exercises = new LinkedList<>();
-        exercises.add(new Exercise(ExerciseType.SITUPS, 6));
-        exercises.add(new Exercise(ExerciseType.SQUATS, 5));
-        exercises.add(new Exercise(ExerciseType.REST, 10));
-        exercises.add(new Exercise(ExerciseType.STAR_JUMPS, 5));
-        exercises.add(new Exercise(ExerciseType.BURPEES, 10));
-        exercises.add(new Exercise(ExerciseType.PUSHUPS, 8));
-        exercises.add(new Exercise(ExerciseType.RUSSIAN_TWISTS, 8));
+        List<Exercise> c = new LinkedList<>();
+
+        c.add(new Exercise(ExerciseType.BURPEES, 10));
+        c.add(new Exercise(ExerciseType.PUSHUPS, 8));
+        c.add(new Exercise(ExerciseType.RUSSIAN_TWISTS, 8));
+        c.add(new Exercise(ExerciseType.SITUPS, 6));
+        c.add(new Exercise(ExerciseType.SQUATS,  5));
+        c.add(new Exercise(ExerciseType.REST, 10));
+        c.add(new Exercise(ExerciseType.STAR_JUMPS, 5));
+        c.add(new Exercise(ExerciseType.BURPEES, 10));
+        c.add(new Exercise(ExerciseType.PUSHUPS, 8));
+        c.add(new Exercise(ExerciseType.RUSSIAN_TWISTS, 8));
 
         Circuit cir = new Circuit(exercises, 2);
 
         workout(cir, 0, 0);
-        //newSport("StarJumps", 10000);
-        //        newSport("Rest", 5000);
-        //        newSport("Press ups", 10000);
-        //        newSport("DONE", 5000);
-        //        finish();
+
     }
 
+    @Override
     protected void onDestroy() {
         super.onDestroy();
         workoutTimer.cancel();
@@ -91,6 +112,10 @@ public class SportActivity extends WearableActivity {
             return;
         }
 
+
+        final Exercise currentExercise = cir.getExercises().get(currentTask);
+        final long workoutLength = (long) currentExercise.getTime() * MILLIS_IN_SECOND;
+        final String exerciseName = currentExercise.getName();
         if (BuildConfig.DEBUG) {
             Log.d(MESSAGE, String.format("Init Task:Lap %d:%d", currentTask, currentLap));
         }
@@ -118,6 +143,8 @@ public class SportActivity extends WearableActivity {
             @Override
             public void onFinish() {
                 pBar.setProgress(100);
+                hapticFeedback(new long[]{0, 500, 50, 800});
+                Log.d(MESSAGE, "Finished Task " + currentTask);
                 hapticFeedback();
 
                 if (BuildConfig.DEBUG) {
@@ -125,12 +152,15 @@ public class SportActivity extends WearableActivity {
                 }
 
                 workout(cir, currentTask + 1, currentLap);
+
             }
         };
 
         String exerciseName = currentExercise.getName();
 
+        // 5 second start timer
         startTimer = new CountDownTimer(EXERCISE_COUNTDOWN, TICK_RATE) {
+
             @Override
             public void onTick(long millisUntilFinished) {
                 // Progress Bar
@@ -158,21 +188,25 @@ public class SportActivity extends WearableActivity {
         };
 
         // set test to countdown
-        int duration = currentExercise.getDuration();
+        int duration = currentExercise.getTime();
         String next = getResources().getString(R.string.next_activity, exerciseName, duration);
         activityText.setText(next);
 
         //Set Icon
         iconStill.setBackgroundResource(currentExercise.getIcon());
-        Animatable iconAnimated = (Animatable) iconStill.getBackground();
+        final AnimationDrawable iconAnimated = (AnimationDrawable) iconStill.getBackground();
         iconAnimated.start();
+
 
         startTimer.start();
     }
 
-    private void hapticFeedback() {
-        Vibrator vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
 
+
+
+    public void hapticFeedback( long[] vibrationPattern ){
+        Vibrator vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
+        //-1 - don't repeat
         if (vibrator != null) {
             // -1 means don't repeat
             vibrator.vibrate(VibrationEffect.createWaveform(VIBRATION_PATTERN, -1));
