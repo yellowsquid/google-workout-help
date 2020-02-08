@@ -16,6 +16,11 @@ public class Exercise {
     }
 
     @Override
+    public int hashCode() {
+        return Objects.hash(exerciseType, duration);
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
@@ -27,17 +32,19 @@ public class Exercise {
 
         Exercise exercise = (Exercise) o;
 
-        return duration == exercise.duration &&
-                exerciseType == exercise.exerciseType;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(exerciseType, duration);
+        return duration == exercise.duration && exerciseType == exercise.exerciseType;
     }
 
     public ExerciseType getExerciseType() {
         return exerciseType;
+    }
+
+    public String getName() {
+        return exerciseType.getName();
+    }
+
+    public int getIcon() {
+        return exerciseType.getIcon();
     }
 
     public int getTime() {

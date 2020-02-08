@@ -4,12 +4,9 @@
     This string is used for square devices and overridden by hello_world in
     values-round/strings.xml for round devices.
     -->
-    <string name="hello_world">Hello Square World!</string>
-    <string name="time_base">00.00</string>
-    <string name="exercise_base">Exercise</string>
     <string name="workout_icon">Workout Icon</string>
-
-    <string name="title_activity_sports">SportsActivity</string>
-    <string name="dummy_button">Dummy Button</string>
-    <string name="dummy_content">DUMMY\nCONTENT</string>
+    <string name="exercise">Exercise</string>
+    <string name="status">Status</string>
+    <string name="start">Start</string>
+    <string name="next_activity">Next: %s [%ds]</string>
 </resources>

@@ -10,19 +10,21 @@ import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
 public class NodeAdapter extends ListAdapter<String, NodeAdapter.ViewHolder> {
-    private static final DiffUtil.ItemCallback<String> DIFF_CALLBACK = new DiffUtil.ItemCallback<String>() {
-        @Override
-        public boolean areItemsTheSame(@NonNull String oldItem, @NonNull String newItem) {
-            return oldItem.equals(newItem);
-        }
+    private static final DiffUtil.ItemCallback<String> DIFF_CALLBACK =
+            new DiffUtil.ItemCallback<String>() {
+                @Override
+                public boolean areItemsTheSame(@NonNull String oldItem, @NonNull String newItem) {
+                    return oldItem.equals(newItem);
+                }
 
-        @Override
-        public boolean areContentsTheSame(@NonNull String oldItem, @NonNull String newItem) {
-            return oldItem.equals(newItem);
-        }
-    };
+                @Override
+                public boolean areContentsTheSame(@NonNull String oldItem,
+                                                  @NonNull String newItem) {
+                    return oldItem.equals(newItem);
+                }
+            };
 
-    public NodeAdapter() {
+    NodeAdapter() {
         super(DIFF_CALLBACK);
     }
 
@@ -30,7 +32,7 @@ public class NodeAdapter extends ListAdapter<String, NodeAdapter.ViewHolder> {
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-        TextView view = (TextView) inflater.inflate(R.layout.textbox, parent);
+        TextView view = (TextView) inflater.inflate(R.layout.textbox, parent, false);
         return new ViewHolder(view);
     }
 

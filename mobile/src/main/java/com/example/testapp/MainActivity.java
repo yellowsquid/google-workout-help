@@ -23,7 +23,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.concurrent.ExecutionException;
 
 import static android.util.Config.LOGD;
@@ -62,17 +61,13 @@ public class MainActivity extends AppCompatActivity {
         byte[] bytesD = Deserializer.serialize(startSignal);
         byte[] circuitBytes = Deserializer.serialize(circuit);
         sendStartActivity(bytesD);
-       // startActivity(intent);
+        startActivity(intent);
     }
 
-    private Collection<String> getNodes() throws ExecutionException, InterruptedException {
-        HashSet<String> results = new HashSet<String>();
-        List<Node> nodes =
-                Tasks.await(Wearable.getNodeClient(getApplicationContext()).getConnectedNodes());
-        for (Node node : nodes) {
-            results.add(node.getId());
-        }
-        return results;
+    public void editClicked(View v) {
+        Intent intent = new Intent(this, EditActivity.class);
+
+        startActivity(intent);
     }
 
     private void sendStartActivity(byte[] bytesData) throws ExecutionException, InterruptedException {
@@ -86,9 +81,18 @@ public class MainActivity extends AppCompatActivity {
                 //sendTask.addOnSuccessListener(...);
                 //sendTask.addOnFailureListener(...);
             } else {
-                // Unable to retrieve node with transcription capability
+                // TODO: Unable to retrieve node with transcription capability
             }
         }
     }
 
+    private Collection<String> getNodes() throws ExecutionException, InterruptedException {
+        HashSet<String> results = new HashSet<>();
+        List<Node> nodes =
+                Tasks.await(Wearable.getNodeClient(getApplicationContext()).getConnectedNodes());
+        for (Node node : nodes) {
+            results.add(node.getId());
+        }
+        return results;
+    }
 }
