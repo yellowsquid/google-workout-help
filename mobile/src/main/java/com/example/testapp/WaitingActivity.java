@@ -65,20 +65,114 @@ public class WaitingActivity extends AppCompatActivity {
         recyclerView.setAdapter(adaptor);
     }
 
-    public void startClicked(View v) {
-        Signal startSignal = Signal.START;
+
+
+    @WorkerThread
+    private Collection<String> getNodes() {
+        HashSet<String> results = new HashSet<>();
+
+        Task<List<Node>> nodeListTask =
+                Wearable.getNodeClient(getApplicationContext()).getConnectedNodes();
+
         try {
-            byte[] startSignalBytes = Serializer.serialize(startSignal);
-            byte[] circuitBytes = Serializer.serialize(circuit);
-            sendDataToWatches(startSignalBytes);
-            sendDataToWatches(circuitBytes);
+            // Block on a task and get the result synchronously (because this is on a background
+            // thread).
+            List<Node> nodes = Tasks.await(nodeListTask);
+
+            for (Node node : nodes) {
+                results.add(node.getId());
+            }
+
+        } catch (ExecutionException exception) {
+          //  Log.e(TAG, "Task failed: " + exception);
+
+        } catch (InterruptedException exception) {
+           // Log.e(TAG, "Interrupt occurred: " + exception);
+        }
+
+        return results;
+    }
+
+
+    private class StartSignalInit extends AsyncTask<Void, Void, Void> {
+
+        @Override
+        protected Void doInBackground(Void... args) {
+            Collection<String> nodes = getNodes();
+            for (String node : nodes) {
+                sendStartMessage(node);
+            }
+            return null;
+        }
+    }
+
+    @WorkerThread
+    private void sendStartMessage(String node) {
+
+
+        try {
+
+            Task<Integer> sendMessageStart =
+                    Wearable.getMessageClient(this).sendMessage(node, "/circuit_path_name",Serializer.serialize(Signal.START));
+
+            // Block on a task and get the result synchronously (because this is on a background
+            // thread).
+            Integer result = Tasks.await(sendMessageStart);
+            //LOGD(TAG, "Message sent: " + result);
+
+        } catch (ExecutionException exception) {
+         //   Log.e(TAG, "Task failed: " + exception);
+
+        } catch (InterruptedException exception) {
+          //  Log.e(TAG, "Interrupt occurred: " + exception);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private class CircuitSignalInit extends AsyncTask<Void, Void, Void> {
+
+        @Override
+        protected Void doInBackground(Void... args) {
+            Collection<String> nodes = getNodes();
+            for (String node : nodes) {
+                sendCircuitMessage(node);
+            }
+            return null;
+        }
+    }
+
+    @WorkerThread
+    private void sendCircuitMessage(String node) {
+
+
+        try {
+
+            Task<Integer> sendMessageCircuit =
+                    Wearable.getMessageClient(this).sendMessage(node, "/circuit_path_name",Serializer.serialize(circuit));
+
+            // Block on a task and get the result synchronously (because this is on a background
+            // thread).
+            Integer result = Tasks.await(sendMessageCircuit);
+            //LOGD(TAG, "Message sent: " + result);
+
+        } catch (ExecutionException exception) {
+            //   Log.e(TAG, "Task failed: " + exception);
+
+        } catch (InterruptedException exception) {
+            //  Log.e(TAG, "Interrupt occurred: " + exception);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    public void startClicked(View v) {
+            new CircuitSignalInit().execute();
+            new StartSignalInit().execute();
             Intent intent = new Intent(this, DuringActivity.class);
             startActivity(intent);
-        } catch (IOException e) {
-            throw new RuntimeException("Serialization failed");
-        } catch (InterruptedException | ExecutionException e) {
-            // ignore
-        }
+
     }
 
     /*
@@ -121,28 +215,5 @@ public class WaitingActivity extends AppCompatActivity {
         }
     }
 
-    @WorkerThread
-    private Collection<String> getNodes() throws ExecutionException, InterruptedException {
-        Set<String> results = new HashSet<>();
-        //List<Node> nodes = Tasks.await(Wearable.getNodeClient(getApplicationContext())
-        // .getConnectedNodes());
-        Task<List<Node>> nodeListTask =
-                Wearable.getNodeClient(getApplicationContext()).getConnectedNodes();
-        try {
-            // Block on a task and get the result synchronously (because this is on a background
-            // thread).
-            List<Node> nodes = Tasks.await(nodeListTask);
 
-            for (Node node : nodes) {
-                results.add(node.getId());
-            }
-        } catch (ExecutionException exception) {
-            //Log.e(TAG, "Task failed: " + exception);
-
-        } catch (InterruptedException exception) {
-            //Log.e(TAG, "Interrupt occurred: " + exception);
-        }
-
-        return results;
-    }
 }

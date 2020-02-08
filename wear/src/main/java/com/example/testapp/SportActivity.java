@@ -53,12 +53,16 @@ public class SportActivity extends WearableActivity {
 
         iconStill = findViewById(R.id.sportsIcon);
 
+        // Enables Always-on
+        setAmbientEnabled();
+
         Intent intent = getIntent();
         Circuit cirLoaded;
         byte[] serial = intent.getByteArrayExtra("Circuit");
         if (serial != null){
             try {
                 cirLoaded = (Circuit) Serializer.deserialize(serial);
+                workout(cirLoaded, 0, 0);
             } catch (IOException e) {
                 e.printStackTrace();
                 finish();
@@ -70,25 +74,8 @@ public class SportActivity extends WearableActivity {
 
 
 
-        // Enables Always-on
-        setAmbientEnabled();
 
-        List<Exercise> c = new LinkedList<>();
 
-        c.add(new Exercise(ExerciseType.BURPEES, 10));
-        c.add(new Exercise(ExerciseType.PUSHUPS, 8));
-        c.add(new Exercise(ExerciseType.RUSSIAN_TWISTS, 8));
-        c.add(new Exercise(ExerciseType.SITUPS, 6));
-        c.add(new Exercise(ExerciseType.SQUATS,  5));
-        c.add(new Exercise(ExerciseType.REST, 10));
-        c.add(new Exercise(ExerciseType.STAR_JUMPS, 5));
-        c.add(new Exercise(ExerciseType.BURPEES, 10));
-        c.add(new Exercise(ExerciseType.PUSHUPS, 8));
-        c.add(new Exercise(ExerciseType.RUSSIAN_TWISTS, 8));
-
-        Circuit cir = new Circuit(exercises, 2);
-
-        workout(cir, 0, 0);
 
     }
 
@@ -100,7 +87,8 @@ public class SportActivity extends WearableActivity {
         Log.d(MESSAGE, "SportActivity Destroyed");
     }
 
-    private void workout(Circuit cir, int currentTask, int currentLap) {
+    public void workout(final Circuit cir, final int currentTask, final int currentLap){
+
         // Exits workout once done
         if (cir.getNumberOfExercises() <= currentTask) {
             if (cir.getLaps() <= currentLap + 1) {
@@ -114,14 +102,11 @@ public class SportActivity extends WearableActivity {
 
 
         final Exercise currentExercise = cir.getExercises().get(currentTask);
-        final long workoutLength = (long) currentExercise.getTime() * MILLIS_IN_SECOND;
+        final long workoutLength = (long) currentExercise.getDuration() * MILLIS_IN_SECOND;
         final String exerciseName = currentExercise.getName();
         if (BuildConfig.DEBUG) {
             Log.d(MESSAGE, String.format("Init Task:Lap %d:%d", currentTask, currentLap));
         }
-
-        Exercise currentExercise = cir.getExercises().get(currentTask);
-        long workoutLength = currentExercise.getDuration() * MILLIS_IN_SECOND;
 
         // Count down timer
         workoutTimer = new CountDownTimer(workoutLength, TICK_RATE) {
@@ -145,7 +130,6 @@ public class SportActivity extends WearableActivity {
                 pBar.setProgress(100);
                 hapticFeedback(new long[]{0, 500, 50, 800});
                 Log.d(MESSAGE, "Finished Task " + currentTask);
-                hapticFeedback();
 
                 if (BuildConfig.DEBUG) {
                     Log.d(MESSAGE, String.format("Finished Task %d", currentTask));
@@ -156,7 +140,7 @@ public class SportActivity extends WearableActivity {
             }
         };
 
-        String exerciseName = currentExercise.getName();
+
 
         // 5 second start timer
         startTimer = new CountDownTimer(EXERCISE_COUNTDOWN, TICK_RATE) {
@@ -188,7 +172,7 @@ public class SportActivity extends WearableActivity {
         };
 
         // set test to countdown
-        int duration = currentExercise.getTime();
+        int duration = currentExercise.getDuration();
         String next = getResources().getString(R.string.next_activity, exerciseName, duration);
         activityText.setText(next);
 
