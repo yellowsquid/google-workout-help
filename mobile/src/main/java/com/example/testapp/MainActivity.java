@@ -52,7 +52,7 @@ public class MainActivity extends AppCompatActivity {
         circuit = new Circuit(exercises, 5);
     }
 
-    public void onClick(View v) throws ExecutionException, InterruptedException, IOException {
+    public void waitClicked(View v) throws ExecutionException, InterruptedException, IOException {
         Intent intent = new Intent(this, WaitingActivity.class);
         Signal startSignal = new Signal("START");
         byte[] bytesD = Serializer.serialize(startSignal);
