@@ -39,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void editClicked(View v) {
         Intent intent = new Intent(this, EditActivity.class);
-
+        intent.putExtra(EditActivity.CIRCUIT_ID, circuit);
         startActivity(intent);
     }
 }
