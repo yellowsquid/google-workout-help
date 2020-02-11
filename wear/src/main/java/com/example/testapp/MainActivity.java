@@ -20,28 +20,36 @@ import java.io.IOException;
 
 public class MainActivity extends WearableActivity implements
         MessageClient.OnMessageReceivedListener {
+    TextView statText;
     private byte[] circuit;
 
-    TextView statText;
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_wait);
+    public void onMessageReceived(@NonNull MessageEvent messageEvent) {
+        statText.setText("Received Message");
+        if (messageEvent.getPath().equals("/circuit_path_name")) {
+            byte[] data = messageEvent.getData();
+            try {
+                Object message = Serializer.deserialize(data);
 
-
-        Wearable.getMessageClient(this).addListener(this);
-        statText = findViewById(R.id.statusText);
-        statText.setText("Awaiting workout");
-        // Enables Always-on
-        setAmbientEnabled();
-
-        final Button button = findViewById(R.id.startButton);
-        button.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-
-                openSportActivity(null);
+                if (message instanceof Circuit) {
+                    circuit = data;
+                    statText.setText("Circuit received");
+                    // TODO: Change status message to "Circuit received"
+                } else if ((message) == Signal.START) {
+                    if (circuit != null) {
+                        openSportActivity(circuit);
+                        statText.setText("Starting Circuit");
+                    } else {
+                        statText.setText("Starting Signal received");
+                        System.err.println("Start signal received before circuit received");
+                    }
+                } else {
+                    statText.setText("Unknown message");
+                }
+            } catch (ClassNotFoundException | IOException e) {
+                System.err.println("Failed to receive message");
             }
-        });
+        }
     }
 
     //    @Override
@@ -60,30 +68,23 @@ public class MainActivity extends WearableActivity implements
     }
 
     @Override
-    public void onMessageReceived(@NonNull MessageEvent messageEvent) {
-        statText.setText("Received Message");
-        if (messageEvent.getPath().equals("/circuit_path_name")) {
-            byte[] data = messageEvent.getData();
-            try {
-                Object message = Serializer.deserialize(data);
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_wait);
 
-                if (message instanceof Circuit) {
-                    this.circuit = data;
-                    statText.setText("Circuit received");
-                    // TODO: Change status message to "Circuit received"
-                } else if ((message) == Signal.START) {
-                    if (this.circuit != null) {
-                        openSportActivity(circuit);
-                        statText.setText("Starting Circuit");
-                    } else {
-                        statText.setText("Starting Signal received");
-                        System.err.println("Start signal received before circuit received");
-                    }
-                }
-            } catch (ClassNotFoundException | IOException e) {
-                System.err.println("Failed to receive message");
+        Wearable.getMessageClient(this).addListener(this);
+        statText = findViewById(R.id.statusText);
+        statText.setText("Awaiting workout");
+        // Enables Always-on
+        setAmbientEnabled();
+
+        Button button = findViewById(R.id.startButton);
+        button.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+
+                openSportActivity(null);
             }
-        }
+        });
     }
 }
 
