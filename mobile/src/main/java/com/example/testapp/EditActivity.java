@@ -1,6 +1,7 @@
 package com.example.testapp;
 
 import android.os.Bundle;
+import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -29,5 +30,9 @@ public class EditActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);
 
+    }
+
+    public void addExerciseClicked(View v){
+        circuit.getExercises();
     }
 }
