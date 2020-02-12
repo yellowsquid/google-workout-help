@@ -6,4 +6,8 @@
     <string name="start_workout">Start Workout</string>
     <string name="fixme">ID?</string>
     <string name="devices_connected">Devices connected: %d</string>
+    <string name="laps">Laps</string>
+    <string name="duration">Duration</string>
+    <string name="name">Name</string>
+    <string name="rest_time">Rest Time</string>
 </resources>

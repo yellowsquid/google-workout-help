@@ -4,10 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:application=".MainActivity">
 
     <LinearLayout
-        android:id="@+id/buttonLayout"
         android:layout_width="414dp"
         android:layout_height="78dp"
         android:orientation="horizontal"
@@ -16,7 +15,6 @@
         app:layout_constraintStart_toStartOf="parent">
 
         <Button
-            android:id="@+id/startSessionButton"
             style="@style/Widget.AppCompat.Button"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -25,7 +23,6 @@
             android:text="@string/start_session" />
 
         <Button
-            android:id="@+id/editCircuitButton"
             style="@style/Widget.AppCompat.Button"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

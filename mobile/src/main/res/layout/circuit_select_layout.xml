@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/circuitSelectGridLayout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
@@ -13,7 +12,7 @@
         android:layout_height="wrap_content"
         android:layout_row="0"
         android:layout_column="0"
-        android:text="Circuit Name"
+        android:text="@string/name"
         android:layout_columnWeight="1"/>
 
     <TextView
@@ -22,7 +21,7 @@
         android:layout_height="wrap_content"
         android:layout_row="0"
         android:layout_column="1"
-        android:text="Circuit Duration"
+        android:text="@string/duration"
         android:layout_columnWeight="1"/>
 
     <TextView
@@ -31,7 +30,7 @@
         android:layout_height="wrap_content"
         android:layout_row="1"
         android:layout_column="0"
-        android:text="Rest Time"
+        android:text="@string/rest_time"
         android:layout_columnWeight="1"/>
 
     <TextView
@@ -40,6 +39,6 @@
         android:layout_height="wrap_content"
         android:layout_row="1"
         android:layout_column="1"
-        android:text="Laps"
+        android:text="@string/laps"
         android:layout_columnWeight="1"/>
 </GridLayout>
