@@ -38,13 +38,14 @@ public class WaitingActivity extends AppCompatActivity {
 
         serverModel = new ViewModelProvider(this).get(ServerModel.class);
         serverModel.setCircuit(getApplication(), circuit);
+        serverModel.setDeviceListener(getApplication(), adaptor::submitList);
 
         // FIXME: replace with live data
-        List<String> testData = new ArrayList<>(3);
-        testData.add("first");
-        testData.add("second");
-        testData.add("third");
-        adaptor.submitList(testData);
+        //List<String> testData = new ArrayList<>(3);
+        //testData.add("first");
+        //testData.add("second");
+        //testData.add("third");
+        //adaptor.submitList(testData);
 
         // connectedNodes.observe(this, adaptor::submitList);
 

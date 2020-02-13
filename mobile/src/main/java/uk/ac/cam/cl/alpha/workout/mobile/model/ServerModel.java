@@ -12,6 +12,8 @@ import com.google.android.gms.wearable.Wearable;
 
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import uk.ac.cam.cl.alpha.workout.shared.Circuit;
 import uk.ac.cam.cl.alpha.workout.shared.Constants;
@@ -66,5 +68,19 @@ public class ServerModel extends ViewModel {
 
             return null;
         }
+    }
+
+    @FunctionalInterface
+    public interface DeviceListener {
+        void updateDevices(List<String>deviceNames);
+    }
+
+    public void setDeviceListener(Application application, DeviceListener deviceListener) {
+        Wearable.getNodeClient(application).getConnectedNodes()
+                .addOnSuccessListener(list -> {
+                    List<String>
+                            deviceNames = list.stream().map(Node::getDisplayName).collect(Collectors.toList());
+                    deviceListener.updateDevices(deviceNames);
+                });
     }
 }
