@@ -2,6 +2,7 @@ package uk.ac.cam.cl.alpha.workout.mobile;
 
 import android.os.Bundle;
 import android.view.View;
+import android.widget.EditText;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -22,6 +23,9 @@ public class EditActivity extends AppCompatActivity {
 
         // Retrieve circuit and token.
         circuit = (Circuit) getIntent().getSerializableExtra(CIRCUIT_ID);
+
+        EditText numLapsEditText = findViewById(R.id.numLapsEditText);
+        numLapsEditText.setText(String.format("%d", circuit.getLaps()));
 
         RecyclerView recyclerView = findViewById(R.id.circuitEditRecyclerView);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
