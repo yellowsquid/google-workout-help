@@ -16,21 +16,20 @@ import com.google.android.gms.wearable.Wearable;
 import java.io.IOException;
 
 import uk.ac.cam.cl.alpha.workout.shared.Circuit;
+import uk.ac.cam.cl.alpha.workout.shared.Constants;
 import uk.ac.cam.cl.alpha.workout.shared.Serializer;
 import uk.ac.cam.cl.alpha.workout.shared.Signal;
 
 public class MainActivity extends WearableActivity implements
         MessageClient.OnMessageReceivedListener {
     private static final String TAG = "MainActivity";
-    private static final String CIRCUIT_PATH = "/circuit_path_name";
-    private static final String SIGNAL_PATH = "/signal_path_name";
     private TextView statText;
     private byte[] circuit;
 
     @Override
     public void onMessageReceived(@NonNull MessageEvent messageEvent) {
         String messagePath = messageEvent.getPath();
-        if (!(messagePath.equals(CIRCUIT_PATH) || messagePath.equals(SIGNAL_PATH)))  {
+        if (!(messagePath.equals(Constants.CIRCUIT_PATH) || messagePath.equals(Constants.SIGNAL_PATH)))  {
             return;
         }
 
@@ -44,10 +43,10 @@ public class MainActivity extends WearableActivity implements
             return;
         }
 
-        if (messagePath.equals(CIRCUIT_PATH)) {
+        if (messagePath.equals(Constants.CIRCUIT_PATH)) {
             statText.setText(((Circuit) message).getName());
             circuit = data;
-        } else if (messagePath.equals(SIGNAL_PATH)) {
+        } else if (messagePath.equals(Constants.SIGNAL_PATH)) {
             switch ((Signal) message) {
                 case START:
                     openSportActivity();

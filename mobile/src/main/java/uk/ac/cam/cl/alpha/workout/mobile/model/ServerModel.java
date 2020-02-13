@@ -14,19 +14,17 @@ import java.io.IOException;
 import java.io.Serializable;
 
 import uk.ac.cam.cl.alpha.workout.shared.Circuit;
+import uk.ac.cam.cl.alpha.workout.shared.Constants;
 import uk.ac.cam.cl.alpha.workout.shared.Serializer;
 import uk.ac.cam.cl.alpha.workout.shared.Signal;
 
 public class ServerModel extends ViewModel {
-    private static final String CIRCUIT_PATH = "/circuit_path_name";
-    private static final String SIGNAL_PATH = "/signal_path_name";
-
     public void setCircuit(Application application, Circuit circuit) {
-        new SendTask(application, circuit, CIRCUIT_PATH).execute();
+        new SendTask(application, circuit, Constants.CIRCUIT_PATH).execute();
     }
 
     public void sendStartSignal(Application application) {
-        new SendTask(application, Signal.START, SIGNAL_PATH).execute();
+        new SendTask(application, Signal.START, Constants.SIGNAL_PATH).execute();
     }
 
     private static class SendTask extends AsyncTask<Void, Void, Void> {
