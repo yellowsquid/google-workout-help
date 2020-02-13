@@ -6,7 +6,10 @@
             android:shape="oval"
             android:useLevel="false">
 
-            <solid android:color="#E0F7FA"/>
+            <gradient
+            android:startColor="#FFB74D"
+            android:endColor="#E65100"
+            android:angle="-270" />
         </shape>
 
     </item>

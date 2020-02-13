@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#212121"
     android:padding="@dimen/box_inset_layout_padding"
     tools:application=".MainActivity"
     tools:deviceIds="wear">
@@ -23,13 +24,8 @@
             android:text="@string/status"
             android:textAlignment="center"
             android:textColor="#E0F7FA"
-            android:textSize="20sp" />
+            android:textSize="25sp" />
 
-        <Button
-            android:id="@+id/startButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/start" />
 
 
     </LinearLayout>

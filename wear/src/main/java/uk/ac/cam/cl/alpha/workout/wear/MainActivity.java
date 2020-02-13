@@ -81,8 +81,8 @@ public class MainActivity extends WearableActivity implements
         setAmbientEnabled();
 
         // TODO: evaluate if button is needed
-        Button button = findViewById(R.id.startButton);
-        button.setOnClickListener(v -> openSportActivity());
+//        Button button = findViewById(R.id.startButton);
+//        button.setOnClickListener(v -> openSportActivity());
     }
 }
 

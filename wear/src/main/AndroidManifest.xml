@@ -14,7 +14,9 @@
         android:allowBackup="true"
         android:fullBackupContent="@xml/backup_descriptor"
         android:theme="@android:style/Theme.DeviceDefault">
-        <activity android:name=".SportActivity" />
+        <activity android:name=".SportActivity"
+            android:launchMode="singleTask"
+            />
 
 
         <uses-library

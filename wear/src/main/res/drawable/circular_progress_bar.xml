@@ -8,7 +8,7 @@
                 android:innerRadiusRatio="2.4"
                 android:useLevel="false">
 
-                <solid android:color="#006064"/>
+                <solid android:color="#424242"/>
             </shape>
 
         </item>
@@ -25,7 +25,12 @@
                 android:innerRadiusRatio="2.4"
                 android:useLevel="true">
 
-                <solid android:color="#18FFFF" />
+                <gradient
+                    android:type="sweep"
+                    android:startColor="#FFB74D"
+                    android:endColor="#E65100"
+
+                    android:angle="180" />
             </shape>
 
         </rotate>
