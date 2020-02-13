@@ -18,21 +18,25 @@ import uk.ac.cam.cl.alpha.workout.shared.Serializer;
 import uk.ac.cam.cl.alpha.workout.shared.Signal;
 
 public class ServerModel extends ViewModel {
+    private static final String CIRCUIT_PATH = "/circuit_path_name";
+    private static final String SIGNAL_PATH = "/signal_path_name";
+
     public void setCircuit(Application application, Circuit circuit) {
-        new SendTask(application, circuit).execute();
+        new SendTask(application, circuit, CIRCUIT_PATH).execute();
     }
 
     public void sendStartSignal(Application application) {
-        new SendTask(application, Signal.START).execute();
+        new SendTask(application, Signal.START, SIGNAL_PATH).execute();
     }
 
     private static class SendTask extends AsyncTask<Void, Void, Void> {
         private static final String LOG_TAG = "SendTask";
-        private static final String PATH = "/circuit_path_name";
+        private final String path;
         private final Application application;
         private final Serializable data;
 
-        SendTask(Application application, Serializable data) {
+        SendTask(Application application, Serializable data, String message_path) {
+            this.path = message_path;
             this.application = application;
             this.data = data;
         }
@@ -45,7 +49,7 @@ public class ServerModel extends ViewModel {
                 Wearable.getNodeClient(application).getConnectedNodes()
                         .addOnSuccessListener(list -> {
                     for (Node node : list) {
-                        messageClient.sendMessage(node.getId(), PATH, bytes)
+                        messageClient.sendMessage(node.getId(), path, bytes)
                                 .addOnCompleteListener(task -> {
                                     String name = node.getDisplayName();
 
