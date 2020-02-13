@@ -44,6 +44,24 @@ public class Circuit implements Serializable {
         return exercises.size();
     }
 
+    public int getTotalDurationSecs() {
+        int total = 0;
+        for (Exercise exercise : exercises) {
+            total += exercise.getDuration();
+        }
+        return total;
+    };
+
+    public int getTotalRestSecs() {
+        int total = 0;
+        for (Exercise exercise : exercises) {
+            if(exercise.getExerciseType() == ExerciseType.REST) {
+                total += exercise.getDuration();
+            }
+        }
+        return total;
+    };
+
     @Override
     public int hashCode() {
         return Objects.hash(exercises, laps);

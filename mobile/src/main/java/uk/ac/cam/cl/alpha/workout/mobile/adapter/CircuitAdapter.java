@@ -36,10 +36,9 @@ public class CircuitAdapter extends RecyclerView.Adapter {
         Circuit circuit = circuits.get(position);
         CircuitViewHolder circuitViewHolder = (CircuitViewHolder) holder;
 
-        // FIXME: get these from the circuit
         circuitViewHolder.nameTextView.setText(circuit.getName());
-        circuitViewHolder.durationTextView.setText(String.format("Time: %d mins", 10));
-        circuitViewHolder.restTextView.setText(String.format("Rest: %d min", 1));
+        circuitViewHolder.durationTextView.setText(String.format("Time: %d secs", circuit.getTotalDurationSecs()));
+        circuitViewHolder.restTextView.setText(String.format("Rest: %d secs", 1, circuit.getTotalRestSecs()));
         circuitViewHolder.lapsTextView.setText(String.format("Laps: %d", circuit.getLaps()));
     }
 

@@ -31,6 +31,10 @@ public class Exercise implements Serializable {
         return duration;
     }
 
+    public ExerciseType getExerciseType() {
+        return exerciseType;
+    }
+
     @Override
     public int hashCode() {
         return Objects.hash(exerciseType, duration);
