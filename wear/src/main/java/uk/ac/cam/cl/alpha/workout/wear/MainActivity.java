@@ -75,7 +75,6 @@ public class MainActivity extends WearableActivity implements
 
         Wearable.getMessageClient(this).addListener(this);
         statText = findViewById(R.id.statusText);
-        statText.setText(R.string.workout_waiting);
 
         // Enables Always-on
         setAmbientEnabled();
