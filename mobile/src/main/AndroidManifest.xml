@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="uk.ac.cam.cl.alpha.workout.mobile">
+    package="uk.ac.cam.cl.alpha.workout">
 
     <uses-permission android:name="android.permission.WAKE_LOCK" />
 
@@ -12,7 +12,7 @@
         android:allowBackup="true"
         android:fullBackupContent="@xml/backup_descriptor"
         android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity">
+        <activity android:name=".mobile.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -20,15 +20,17 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".WaitingActivity"
+            android:name=".mobile.WaitingActivity"
             android:label="Waiting for watches"
-            android:parentActivityName=".MainActivity" />
-        <activity android:name=".EditActivity"
+            android:parentActivityName=".mobile.MainActivity" />
+        <activity
+            android:name=".mobile.EditActivity"
             android:label="Edit workout"
-            android:parentActivityName=".MainActivity"/>
-        <activity android:name=".DuringActivity"
+            android:parentActivityName=".mobile.MainActivity" />
+        <activity
+            android:name=".mobile.DuringActivity"
             android:label="INSERT WORKOUT NAME HERE"
-            android:parentActivityName=".EditActivity"/>
+            android:parentActivityName=".mobile.EditActivity" />
     </application>
 
 </manifest>

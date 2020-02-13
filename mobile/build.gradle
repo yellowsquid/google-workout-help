@@ -4,7 +4,7 @@ android {
     compileSdkVersion 29
     buildToolsVersion "29.0.3"
     defaultConfig {
-        applicationId 'uk.ac.cam.cl.alpha.workout.mobile'
+        applicationId 'uk.ac.cam.cl.alpha.workout'
         minSdkVersion 28
         targetSdkVersion 29
         versionCode 1

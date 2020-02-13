@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 import java.util.List;
 
+import uk.ac.cam.cl.alpha.workout.R;
 import uk.ac.cam.cl.alpha.workout.mobile.adapter.NodeAdapter;
 import uk.ac.cam.cl.alpha.workout.mobile.model.ServerModel;
 import uk.ac.cam.cl.alpha.workout.shared.Circuit;

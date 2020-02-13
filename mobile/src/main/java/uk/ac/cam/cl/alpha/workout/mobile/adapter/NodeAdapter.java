@@ -8,7 +8,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.ListAdapter;
 
-import uk.ac.cam.cl.alpha.workout.mobile.R;
+import uk.ac.cam.cl.alpha.workout.R;
 
 public class NodeAdapter extends ListAdapter<String, TextViewHolder> {
     private static final DiffUtil.ItemCallback<String> DIFF_CALLBACK = new StringItemCallback();

@@ -4,6 +4,8 @@ import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import uk.ac.cam.cl.alpha.workout.R;
+
 public class DuringActivity extends AppCompatActivity {
 
     @Override
