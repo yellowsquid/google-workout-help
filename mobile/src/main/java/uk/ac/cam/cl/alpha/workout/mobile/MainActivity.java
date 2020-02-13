@@ -30,8 +30,8 @@ public class MainActivity extends AppCompatActivity {
         exercises.add(new Exercise(ExerciseType.RUSSIAN_TWISTS, 20));
         exercises.add(new Exercise(ExerciseType.SQUATS, 30));
         exercises.add(new Exercise(ExerciseType.STAR_JUMPS, 30));
-        circuit = new Circuit(exercises, 3);
-        Circuit circuit2 = new Circuit(exercises, 5);
+        circuit = new Circuit("Circuit 1", exercises, 3);
+        Circuit circuit2 = new Circuit("Circuit 2", exercises, 5);
 
         List<Circuit> testCircuits = new ArrayList<>();
         testCircuits.add(circuit);
