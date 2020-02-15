@@ -31,6 +31,8 @@ public class AddExerciseAdapter extends RecyclerView.Adapter {
         ExerciseType exerciseType = exerciseTypes[position];
         ExerciseNameViewHolder exerciseNameViewHolder = (ExerciseNameViewHolder) holder;
         exerciseNameViewHolder.exerciseNameTextView.setText(exerciseType.getName());
+        // Use a tag to carry exercise type object back to circuit
+        exerciseNameViewHolder.exerciseNameTextView.setTag(exerciseType);
     }
 
     @Override
