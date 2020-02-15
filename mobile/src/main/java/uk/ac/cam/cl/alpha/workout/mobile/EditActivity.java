@@ -1,5 +1,6 @@
 package uk.ac.cam.cl.alpha.workout.mobile;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
@@ -37,6 +38,7 @@ public class EditActivity extends AppCompatActivity {
     }
 
     public void addExerciseClicked(View v) {
-        circuit.getExercises();
+        Intent intent = new Intent(this, AddExerciseActivity.class);
+        startActivity(intent);
     }
 }
