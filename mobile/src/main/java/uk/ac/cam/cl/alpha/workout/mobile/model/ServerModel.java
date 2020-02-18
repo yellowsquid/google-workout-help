@@ -16,6 +16,8 @@ import com.google.android.gms.wearable.Wearable;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.stream.Collectors;
 
 import uk.ac.cam.cl.alpha.workout.shared.Circuit;
@@ -58,12 +60,29 @@ public class ServerModel extends AndroidViewModel {
     }
 
     public void setDeviceListener(DeviceListener deviceListener) {
-        // TODO: make updates periodic
+        Log.d("ServerModel", "Getting connected devices");
         Wearable.getNodeClient(application).getConnectedNodes().addOnSuccessListener(list -> {
             List<String> deviceNames =
                     list.stream().map(Node::getDisplayName).collect(Collectors.toList());
             deviceListener.updateDevices(deviceNames);
         });
+    }
+
+    private class ScheduledDeviceListener extends TimerTask {
+        private final DeviceListener deviceListener;
+        ScheduledDeviceListener(DeviceListener deviceListener) {
+            this.deviceListener = deviceListener;
+        };
+
+        public void run() {
+            setDeviceListener(deviceListener);
+        }
+    }
+
+    public void setPeriodicDeviceListener(DeviceListener deviceListener) {
+        Timer time = new Timer();
+        ScheduledDeviceListener scheduledDeviceListener = new ScheduledDeviceListener(deviceListener);
+        time.schedule(scheduledDeviceListener, 0, 1000); // every 1 second
     }
 
     @FunctionalInterface
