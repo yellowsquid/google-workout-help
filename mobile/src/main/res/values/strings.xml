@@ -4,14 +4,14 @@
     <string name="start_session">Start Session</string>
     <string name="edit">Edit</string>
     <string name="start_workout">Start Workout</string>
-    <string name="fixme">ID?</string>
-    <string name="devices_connected">Devices connected: %d</string>
+    <string name="circuit_name">Circuit</string>
+    <string name="devices_connected">Devices connected:</string>
     <string name="laps">Laps</string>
     <string name="duration">Duration</string>
     <string name="name">Name</string>
     <string name="rest_time">Rest Time</string>
     <string name="duration_is">Duration: %d</string>
-    <string name="rest_is">Rest: %d</string>
-    <string name="laps_is">Laps: %d</string>
-    <string name="pure_duration">%d</string>
+    <string name="rest_is">Rest:</string>
+    <string name="laps_is">Laps:</string>
+    <string name="pure_duration">Duration:</string>
 </resources>

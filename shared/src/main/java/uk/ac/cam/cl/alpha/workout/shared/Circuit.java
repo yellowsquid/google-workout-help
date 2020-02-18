@@ -45,12 +45,12 @@ public class Circuit implements PureCircuit {
     }
 
     public int sumExerciseDuration() {
-        return exercises.stream().mapToInt(Exercise::getDuration).sum();
+        return exercises.stream().mapToInt(Exercise::getDuration).sum() * getLaps();
     }
 
     public int sumRestDuration() {
         return exercises.stream().filter(e -> e.getExerciseType() == ExerciseType.REST)
-                .mapToInt(Exercise::getDuration).sum();
+                .mapToInt(Exercise::getDuration).sum() * getLaps();
     }
 
     public Exercise getExercise(int index) {
