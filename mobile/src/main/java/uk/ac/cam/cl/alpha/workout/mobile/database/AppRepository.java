@@ -23,7 +23,8 @@ public final class AppRepository {
     private final AppDatabase database;
 
     private AppRepository(Application application) {
-        database = Room.databaseBuilder(application, AppDatabase.class, "app_database").build();
+        database = Room.databaseBuilder(application, AppDatabase.class, "app_database")
+                .createFromAsset("database/app.db").build();
         executor = Executors.newCachedThreadPool();
     }
 
