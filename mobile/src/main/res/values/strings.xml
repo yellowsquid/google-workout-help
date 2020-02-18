@@ -13,4 +13,5 @@
     <string name="duration_is">Duration: %d</string>
     <string name="rest_is">Rest: %d</string>
     <string name="laps_is">Laps: %d</string>
+    <string name="pure_duration">%d</string>
 </resources>

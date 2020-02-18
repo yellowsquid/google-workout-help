@@ -53,11 +53,10 @@ public class SportActivity extends WearableActivity {
         setAmbientEnabled();
 
         Intent intent = getIntent();
-        Circuit circuit;
         byte[] serial = intent.getByteArrayExtra(CIRCUIT_ID);
         if (serial != null) {
             try {
-                circuit = (Circuit) Serializer.deserialize(serial);
+                Circuit circuit = (Circuit) Serializer.deserialize(serial);
                 workout(circuit, 0, 0);
             } catch (IOException | ClassNotFoundException e) {
                 Log.e(TAG, "Failed to deserialize the circuit");
@@ -78,7 +77,7 @@ public class SportActivity extends WearableActivity {
 
         // TODO: make a circuit iterable instead?
         // Exits workout once done
-        if (task >= circuit.getExerciseCount()) {
+        if (task >= circuit.countExercises()) {
             if (lap >= circuit.getLaps()) {
                 finish();
             } else {

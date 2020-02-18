@@ -7,20 +7,19 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.DiffUtil;
+import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import uk.ac.cam.cl.alpha.workout.R;
 import uk.ac.cam.cl.alpha.workout.shared.Circuit;
+import uk.ac.cam.cl.alpha.workout.shared.PureCircuit;
 
-public class CircuitAdapter extends RecyclerView.Adapter<CircuitAdapter.CircuitViewHolder> {
-    private List<Circuit> circuits;
+public class CircuitAdapter extends ListAdapter<Circuit, CircuitAdapter.CircuitViewHolder> {
+    private static final DiffUtil.ItemCallback<Circuit> DIFF_CALLBACK = new CircuitItemCallback<>();
 
-    public CircuitAdapter(List<? extends Circuit> circuits) {
-        this.circuits = new ArrayList<>();
-        this.circuits.addAll(circuits);
+    public CircuitAdapter() {
+        super(DIFF_CALLBACK);
     }
 
     @NonNull
@@ -33,21 +32,14 @@ public class CircuitAdapter extends RecyclerView.Adapter<CircuitAdapter.CircuitV
 
     @Override
     public void onBindViewHolder(@NonNull CircuitViewHolder holder, int position) {
-        Circuit circuit = circuits.get(position);
-        holder.setCircuit(circuit);
-    }
-
-    @Override
-    public int getItemCount() {
-        return circuits.size();
+        holder.setCircuit(getItem(position));
     }
 
     static class CircuitViewHolder extends RecyclerView.ViewHolder {
-        // FIXME: encapsulation non-existent
-        private TextView nameTextView;
-        private TextView durationTextView;
-        private TextView restTextView;
-        private TextView lapsTextView;
+        private final TextView nameTextView;
+        private final TextView durationTextView;
+        private final TextView restTextView;
+        private final TextView lapsTextView;
 
         CircuitViewHolder(View view) {
             super(view);
@@ -60,13 +52,25 @@ public class CircuitAdapter extends RecyclerView.Adapter<CircuitAdapter.CircuitV
 
         void setCircuit(Circuit circuit) {
             Resources resources = nameTextView.getResources();
-            int duration = circuit.getTotalDurationSecs();
-            int rest = circuit.getTotalRestSecs();
+            int duration = circuit.sumExerciseDuration();
+            int rest = circuit.sumRestDuration();
             int laps = circuit.getLaps();
             nameTextView.setText(circuit.getName());
             durationTextView.setText(resources.getString(R.string.duration_is, duration));
             restTextView.setText(resources.getString(R.string.rest_is, rest));
             lapsTextView.setText(resources.getString(R.string.laps_is, laps));
+        }
+    }
+
+    static class CircuitItemCallback<T extends PureCircuit> extends DiffUtil.ItemCallback<T> {
+        @Override
+        public boolean areItemsTheSame(@NonNull T oldItem, @NonNull T newItem) {
+            return oldItem.getId() == newItem.getId();
+        }
+
+        @Override
+        public boolean areContentsTheSame(@NonNull T oldItem, @NonNull T newItem) {
+            return oldItem.equals(newItem);
         }
     }
 }

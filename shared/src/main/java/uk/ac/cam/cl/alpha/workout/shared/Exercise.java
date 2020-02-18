@@ -1,57 +1,63 @@
 package uk.ac.cam.cl.alpha.workout.shared;
 
 import androidx.annotation.DrawableRes;
+import androidx.annotation.NonNull;
 import androidx.annotation.StringRes;
+import androidx.room.ColumnInfo;
+import androidx.room.Entity;
+import androidx.room.ForeignKey;
+
+import com.google.auto.value.AutoValue;
 
 import java.io.Serializable;
-import java.util.Objects;
 
-public class Exercise implements Serializable {
+@AutoValue
+@Entity(primaryKeys = {"circuit_id", "position"}, tableName = "exercises")
+public abstract class Exercise implements Serializable, Comparable<Exercise> {
     private static final long serialVersionUID = -3063491187321789411L;
-    private final ExerciseType exerciseType;
-    private final int duration; // duration in seconds
 
-    public Exercise(ExerciseType exerciseType, int duration) {
-        Objects.requireNonNull(exerciseType);
-        this.exerciseType = exerciseType;
-        this.duration = duration;
+    public static Exercise create(long circuitId, int duration, int position,
+                                  ExerciseType exerciseType) {
+        if (duration <= 0) {
+            throw new IllegalArgumentException("Duration must be positive");
+        }
+
+        if (position < 0) {
+            throw new IllegalArgumentException("Position must not be negative");
+        }
+
+        return new AutoValue_Exercise(circuitId, duration, position, exerciseType);
     }
+
+    @AutoValue.CopyAnnotations
+    @ColumnInfo(name = "circuit_id")
+    @ForeignKey(entity = BareCircuit.class, parentColumns = "id", childColumns = "circuit_id",
+                onDelete = ForeignKey.CASCADE)
+    public abstract long getCircuitId();
+
+    public abstract int getDuration();
 
     @StringRes
     public int getName() {
-        return exerciseType.getName();
+        return getExerciseType().getName();
     }
+
+    @AutoValue.CopyAnnotations
+    @ColumnInfo(name = "type")
+    @NonNull
+    public abstract ExerciseType getExerciseType();
 
     @DrawableRes
     public int getIcon() {
-        return exerciseType.getIcon();
-    }
-
-    public int getDuration() {
-        return duration;
-    }
-
-    public ExerciseType getExerciseType() {
-        return exerciseType;
+        return getExerciseType().getIcon();
     }
 
     @Override
-    public int hashCode() {
-        return Objects.hash(exerciseType, duration);
+    public int compareTo(Exercise o) {
+        return Integer.compare(getPosition(), o.getPosition());
     }
 
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-
-        if (obj == null || getClass() != obj.getClass()) {
-            return false;
-        }
-
-        Exercise exercise = (Exercise) obj;
-
-        return duration == exercise.duration && exerciseType == exercise.exerciseType;
-    }
+    @AutoValue.CopyAnnotations
+    @ColumnInfo(name = "position")
+    public abstract int getPosition();
 }

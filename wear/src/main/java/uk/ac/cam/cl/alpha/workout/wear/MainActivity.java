@@ -15,8 +15,8 @@ import com.google.android.gms.wearable.Wearable;
 import java.io.IOException;
 
 import uk.ac.cam.cl.alpha.workout.R;
-import uk.ac.cam.cl.alpha.workout.shared.Circuit;
 import uk.ac.cam.cl.alpha.workout.shared.Constants;
+import uk.ac.cam.cl.alpha.workout.shared.PureCircuit;
 import uk.ac.cam.cl.alpha.workout.shared.Serializer;
 import uk.ac.cam.cl.alpha.workout.shared.Signal;
 
@@ -44,7 +44,7 @@ public class MainActivity extends WearableActivity implements
         }
 
         if (messagePath.equals(Constants.CIRCUIT_PATH)) {
-            statText.setText(((Circuit) message).getName());
+            statText.setText(((PureCircuit) message).getName());
             circuit = data;
         } else if (messagePath.equals(Constants.SIGNAL_PATH)) {
             switch ((Signal) message) {

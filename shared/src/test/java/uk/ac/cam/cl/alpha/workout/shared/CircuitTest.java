@@ -12,7 +12,7 @@ import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 public class CircuitTest {
     private Circuit circuit;
@@ -20,12 +20,13 @@ public class CircuitTest {
     @Before
     public void setUp() {
         List<Exercise> exercises = new ArrayList<>(5);
-        exercises.add(new Exercise(ExerciseType.BURPEES, 30));
-        exercises.add(new Exercise(ExerciseType.STAR_JUMPS, 30));
-        exercises.add(new Exercise(ExerciseType.RUSSIAN_TWISTS, 30));
-        exercises.add(new Exercise(ExerciseType.SITUPS, 30));
-        exercises.add(new Exercise(ExerciseType.REST, 15));
-        circuit = new Circuit(exercises, 5);
+        exercises.add(Exercise.create(0, 30, 0, ExerciseType.BURPEES));
+        exercises.add(Exercise.create(0, 30, 1, ExerciseType.STAR_JUMPS));
+        exercises.add(Exercise.create(0, 30, 2, ExerciseType.RUSSIAN_TWISTS));
+        exercises.add(Exercise.create(0, 30, 3, ExerciseType.SITUPS));
+        exercises.add(Exercise.create(0, 15, 4, ExerciseType.REST));
+        PureCircuit pureCircuit = BareCircuit.create(0, "fred", 3);
+        circuit = new Circuit(pureCircuit, exercises);
     }
 
     @Test
