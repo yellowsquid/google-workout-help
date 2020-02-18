@@ -26,7 +26,7 @@ public abstract class Exercise implements Serializable, Comparable<Exercise> {
             throw new IllegalArgumentException("Position must not be negative");
         }
 
-        return new AutoValue_Exercise(circuitId, duration, position, exerciseType);
+        return new AutoValue_Exercise(circuitId, duration, exerciseType, position);
     }
 
     @AutoValue.CopyAnnotations
