@@ -52,6 +52,7 @@ public class EditActivity extends AppCompatActivity {
 
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);
+
     }
 
     public void addExerciseClicked(View v) {

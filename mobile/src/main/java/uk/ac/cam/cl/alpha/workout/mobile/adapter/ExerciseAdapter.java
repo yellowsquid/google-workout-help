@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -39,12 +40,15 @@ public class ExerciseAdapter extends ListAdapter<Exercise, ExerciseAdapter.Exerc
     static class ExerciseViewHolder extends RecyclerView.ViewHolder {
         private final TextView nameTextView;
         private final EditText durationNumberPicker;
+        private final ImageView exerciseImageView;
+
 
         ExerciseViewHolder(View view) {
             super(view);
 
             nameTextView = view.findViewById(R.id.exercise_name);
             durationNumberPicker = view.findViewById(R.id.exercise_duration);
+            exerciseImageView = view.findViewById(R.id.exerciseImageView);
         }
 
         void setExercise(Exercise exercise) {
@@ -53,6 +57,7 @@ public class ExerciseAdapter extends ListAdapter<Exercise, ExerciseAdapter.Exerc
             nameTextView.setText(exercise.getName());
             durationNumberPicker.setText(resources.getString(R.string.pure_duration, duration),
                                          TextView.BufferType.EDITABLE);
+            exerciseImageView.setBackgroundResource(exercise.getIcon());
         }
     }
 
