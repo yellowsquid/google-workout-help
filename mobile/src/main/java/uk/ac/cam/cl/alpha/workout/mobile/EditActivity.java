@@ -39,7 +39,7 @@ public class EditActivity extends AppCompatActivity {
         model = new ViewModelProvider(this).get(CircuitModel.class);
 
         EditText numLapsEditText = findViewById(R.id.numLapsEditText);
-        numLapsEditText.setText(String.format("%d", circuit.getLaps()));
+        numLapsEditText.setText(getResources().getString(R.string.pure_laps, circuit.getLaps()));
 
         RecyclerView recyclerView = findViewById(R.id.circuitEditRecyclerView);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
@@ -52,7 +52,6 @@ public class EditActivity extends AppCompatActivity {
 
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);
-
     }
 
     public void addExerciseClicked(View v) {
