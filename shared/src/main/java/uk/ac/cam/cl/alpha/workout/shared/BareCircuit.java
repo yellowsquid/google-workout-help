@@ -1,5 +1,6 @@
 package uk.ac.cam.cl.alpha.workout.shared;
 
+import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
@@ -18,10 +19,19 @@ public abstract class BareCircuit implements PureCircuit {
             throw new IllegalArgumentException("Number of laps must be positive.");
         }
 
-        return new AutoValue_BareCircuit(name, laps, id);
+        return new AutoValue_BareCircuit(id, name, laps);
     }
 
     @AutoValue.CopyAnnotations
     @PrimaryKey(autoGenerate = true)
+    @ColumnInfo(name = "id")
     public abstract long getId();
+
+    @AutoValue.CopyAnnotations
+    @ColumnInfo(name = "name")
+    public abstract String getName();
+
+    @AutoValue.CopyAnnotations
+    @ColumnInfo(name = "laps")
+    public abstract int getLaps();
 }
