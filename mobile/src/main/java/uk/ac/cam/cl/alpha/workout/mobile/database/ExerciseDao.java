@@ -22,7 +22,7 @@ interface ExerciseDao {
     @Delete
     void deleteExercise(Exercise exercise);
 
-    @Query("SELECT * FROM exercises WHERE circuit_id = :circuitId")
+    @Query("SELECT * FROM exercises WHERE circuit_id = :circuitId ORDER BY position")
     LiveData<List<Exercise>> getExercises(long circuitId);
 
     @Query("SELECT * FROM exercises WHERE circuit_id = :circuitId AND position = :position")

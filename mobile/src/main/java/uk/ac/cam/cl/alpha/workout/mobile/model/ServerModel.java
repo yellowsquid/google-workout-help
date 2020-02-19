@@ -27,10 +27,13 @@ import uk.ac.cam.cl.alpha.workout.shared.Serializer;
 import uk.ac.cam.cl.alpha.workout.shared.Signal;
 
 public class ServerModel extends AndroidViewModel {
+    private static final int DEVICE_REFRESH_PERIOD = 10000; // 10 seconds
     private final AppRepository repository;
     private final Application application;
     private final Observer<Circuit> circuitObserver;
+    private final Timer timer;
     private LiveData<? extends Circuit> data;
+    private GetDevicesTask devicesTask;
 
     public ServerModel(@NonNull Application application) {
         super(application);
@@ -38,6 +41,7 @@ public class ServerModel extends AndroidViewModel {
         repository = AppRepository.getInstance(application);
         circuitObserver =
                 circuit -> new SendTask(application, circuit, Constants.CIRCUIT_PATH).execute();
+        timer = new Timer();
     }
 
     @Override
@@ -46,6 +50,10 @@ public class ServerModel extends AndroidViewModel {
 
         if (data != null) {
             data.removeObserver(circuitObserver);
+        }
+
+        if (devicesTask != null) {
+            devicesTask.cancel();
         }
     }
 
@@ -62,12 +70,16 @@ public class ServerModel extends AndroidViewModel {
         data.observeForever(circuitObserver);
     }
 
-    public void setDeviceObserver(Observer<? super List<? super String>> observer) {
-        // TODO: timer never stops
+    public void setDeviceObserver(Observer<? super List<String>> observer) {
         // TODO: could make task update a LiveData that it return instead of taking observer
-        Timer timer = new Timer();
-        GetDevicesTask getDevicesTask = new GetDevicesTask(application, observer);
-        timer.schedule(getDevicesTask, 0, 1000); // every 1 second
+        // TODO: could make the timer lifecycle aware: (see androidx lifecycle)
+        //  (currently runs in background constantly)
+        if (devicesTask != null) {
+            devicesTask.cancel();
+        }
+
+        devicesTask = new GetDevicesTask(application, observer);
+        timer.schedule(devicesTask, 0, DEVICE_REFRESH_PERIOD);
     }
 
     private static class SendTask extends AsyncTask<Void, Void, Void> {
@@ -114,10 +126,10 @@ public class ServerModel extends AndroidViewModel {
     }
 
     private static class GetDevicesTask extends TimerTask {
-        private final Observer<? super List<? super String>> listener;
+        private final Observer<? super List<String>> listener;
         private final Application application;
 
-        GetDevicesTask(Application application, Observer<? super List<? super String>> listener) {
+        GetDevicesTask(Application application, Observer<? super List<String>> listener) {
             this.listener = listener;
             this.application = application;
         }
@@ -125,8 +137,8 @@ public class ServerModel extends AndroidViewModel {
         public void run() {
             Log.i("ServerModel", "Getting connected devices");
             Wearable.getNodeClient(application).getConnectedNodes().addOnSuccessListener(list -> {
-                List<String> deviceNames =
-                        list.stream().map(Node::getDisplayName).collect(Collectors.toList());
+                List<String> deviceNames = list.stream().map(Node::getDisplayName).sorted()
+                        .collect(Collectors.toList());
                 listener.onChanged(deviceNames);
             });
         }

@@ -3,7 +3,6 @@ package uk.ac.cam.cl.alpha.workout.shared;
 import androidx.room.Embedded;
 import androidx.room.Relation;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -16,9 +15,7 @@ public class Circuit implements PureCircuit {
 
     public Circuit(BareCircuit circuit, List<Exercise> exercises) {
         this.circuit = circuit;
-        List<Exercise> list = new ArrayList<>(exercises);
-        list.sort(null);
-        this.exercises = Collections.unmodifiableList(list);
+        this.exercises = Collections.unmodifiableList(exercises);
     }
 
     public List<Exercise> getExercises() {

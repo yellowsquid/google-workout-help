@@ -3,7 +3,6 @@ package uk.ac.cam.cl.alpha.workout.mobile;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 
@@ -13,19 +12,14 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import uk.ac.cam.cl.alpha.workout.R;
 import uk.ac.cam.cl.alpha.workout.mobile.adapter.ExerciseAdapter;
 import uk.ac.cam.cl.alpha.workout.mobile.model.CircuitEditModel;
-import uk.ac.cam.cl.alpha.workout.shared.Exercise;
 import uk.ac.cam.cl.alpha.workout.shared.ExerciseType;
 
 public class EditActivity extends AppCompatActivity {
     public static final String CIRCUIT_ID = "uk.ac.cam.cl.alpha.workout.mobile.CIRCUIT_ID";
     static final int ADD_EXERCISE_REQUEST = 1;
-    private static final String TAG = "EditActivity";
 
     private CircuitEditModel model;
 
@@ -48,12 +42,7 @@ public class EditActivity extends AppCompatActivity {
         RecyclerView recyclerView = findViewById(R.id.circuitEditRecyclerView);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
         ExerciseAdapter adapter = new ExerciseAdapter();
-        model.getExercises().observe(this, list -> {
-            Log.d(TAG, "Exercise list changed");
-            List<Exercise> myList = new ArrayList<>(list);
-            myList.sort(null);
-            adapter.submitList(myList);
-        });
+        model.getExercises().observe(this, adapter::submitList);
 
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);

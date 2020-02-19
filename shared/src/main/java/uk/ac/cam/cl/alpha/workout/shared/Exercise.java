@@ -14,7 +14,7 @@ import java.io.Serializable;
 
 @AutoValue
 @Entity(primaryKeys = {"circuit_id", "position"}, tableName = "exercises")
-public abstract class Exercise implements Serializable, Comparable<Exercise> {
+public abstract class Exercise implements Serializable {
     private static final long serialVersionUID = -3063491187321789411L;
     private static final int DEFAULT_DURATION = 30;
 
@@ -57,11 +57,6 @@ public abstract class Exercise implements Serializable, Comparable<Exercise> {
     @DrawableRes
     public int getIcon() {
         return getExerciseType().getIcon();
-    }
-
-    @Override
-    public int compareTo(Exercise o) {
-        return Integer.compare(getPosition(), o.getPosition());
     }
 
     @AutoValue.CopyAnnotations

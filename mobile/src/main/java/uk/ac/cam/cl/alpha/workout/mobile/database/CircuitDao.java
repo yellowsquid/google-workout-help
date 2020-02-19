@@ -25,7 +25,7 @@ public interface CircuitDao {
     void deleteCircuit(BareCircuit circuit);
 
     @Transaction
-    @Query("SELECT * FROM circuits")
+    @Query("SELECT * FROM circuits ORDER BY name")
     LiveData<List<Circuit>> getCircuits();
 
     @Transaction
