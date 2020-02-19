@@ -16,6 +16,20 @@ import uk.ac.cam.cl.alpha.workout.R;
 import uk.ac.cam.cl.alpha.workout.mobile.adapter.ExerciseTypeAdapter;
 
 public class AddExerciseActivity extends AppCompatActivity {
+    public static final String EXERCISE_ID = "uk.ac.cam.cl.alpha.workout.mobile.EXERCISE_ID";
+
+    // Override method in order to properly finish() this activity when the software back button is
+    // pressed. This prevents a crash caused by onCreate() getting called again and trying to
+    // populate things with a null circuit.
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            onBackPressed();
+            return true;
+        }
+        return false;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -32,23 +46,11 @@ public class AddExerciseActivity extends AppCompatActivity {
                                                                  DividerItemDecoration.VERTICAL));
     }
 
-    public void exerciseClicked(View view){
+    public void exerciseClicked(View view) {
         // Get exercise type out of the clicked view and pass it  back to the edit activity
         Intent result = new Intent();
-        result.putExtra(EditActivity.EXERCISE_ID, (Serializable) view.getTag());
+        result.putExtra(EXERCISE_ID, (Serializable) view.getTag());
         setResult(RESULT_OK, result);
         finish();
-    }
-
-    // Override method in order to properly finish() this activity when the software back button is
-    // pressed. This prevents a crash caused by onCreate() getting called again and trying to
-    // populate things with a null circuit.
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == android.R.id.home) {
-            onBackPressed();
-            return true;
-        }
-        return false;
     }
 }

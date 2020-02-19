@@ -53,15 +53,6 @@ public class ServerModel extends AndroidViewModel {
         new SendTask(application, Signal.START, Constants.SIGNAL_PATH).execute();
     }
 
-    public void setDeviceListener(DeviceListener deviceListener) {
-        Log.i("ServerModel", "Getting connected devices");
-        Wearable.getNodeClient(application).getConnectedNodes().addOnSuccessListener(list -> {
-            List<String> deviceNames =
-                    list.stream().map(Node::getDisplayName).collect(Collectors.toList());
-            deviceListener.updateDevices(deviceNames);
-        });
-    }
-
     public void setCircuitId(long circuitId) {
         if (data != null) {
             data.removeObserver(circuitObserver);
@@ -71,26 +62,12 @@ public class ServerModel extends AndroidViewModel {
         data.observeForever(circuitObserver);
     }
 
-    private class ScheduledDeviceListener extends TimerTask {
-        private final DeviceListener deviceListener;
-        ScheduledDeviceListener(DeviceListener deviceListener) {
-            this.deviceListener = deviceListener;
-        }
-
-        public void run() {
-            setDeviceListener(deviceListener);
-        }
-    }
-
-    public void setPeriodicDeviceListener(DeviceListener deviceListener) {
-        Timer time = new Timer();
-        ScheduledDeviceListener scheduledDeviceListener = new ScheduledDeviceListener(deviceListener);
-        time.schedule(scheduledDeviceListener, 0, 1000); // every 1 second
-    }
-
-    @FunctionalInterface
-    public interface DeviceListener {
-        void updateDevices(List<String> deviceNames);
+    public void setDeviceObserver(Observer<? super List<? super String>> observer) {
+        // TODO: timer never stops
+        // TODO: could make task update a LiveData that it return instead of taking observer
+        Timer timer = new Timer();
+        GetDevicesTask getDevicesTask = new GetDevicesTask(application, observer);
+        timer.schedule(getDevicesTask, 0, 1000); // every 1 second
     }
 
     private static class SendTask extends AsyncTask<Void, Void, Void> {
@@ -133,6 +110,25 @@ public class ServerModel extends AndroidViewModel {
             }
 
             return null;
+        }
+    }
+
+    private static class GetDevicesTask extends TimerTask {
+        private final Observer<? super List<? super String>> listener;
+        private final Application application;
+
+        GetDevicesTask(Application application, Observer<? super List<? super String>> listener) {
+            this.listener = listener;
+            this.application = application;
+        }
+
+        public void run() {
+            Log.i("ServerModel", "Getting connected devices");
+            Wearable.getNodeClient(application).getConnectedNodes().addOnSuccessListener(list -> {
+                List<String> deviceNames =
+                        list.stream().map(Node::getDisplayName).collect(Collectors.toList());
+                listener.onChanged(deviceNames);
+            });
         }
     }
 }

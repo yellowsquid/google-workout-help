@@ -24,7 +24,6 @@ import uk.ac.cam.cl.alpha.workout.shared.ExerciseType;
 
 public class EditActivity extends AppCompatActivity {
     public static final String CIRCUIT_ID = "uk.ac.cam.cl.alpha.workout.mobile.CIRCUIT_ID";
-    public static final String EXERCISE_ID = "uk.ac.cam.cl.alpha.workout.mobile.EXERCISE_ID";
     static final int ADD_EXERCISE_REQUEST = 1;
     private static final String TAG = "EditActivity";
 
@@ -66,7 +65,8 @@ public class EditActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == ADD_EXERCISE_REQUEST && resultCode == RESULT_OK) {
-            ExerciseType type = (ExerciseType) data.getSerializableExtra(EXERCISE_ID);
+            ExerciseType type =
+                    (ExerciseType) data.getSerializableExtra(AddExerciseActivity.EXERCISE_ID);
             model.dispatch(model.appendExercise(type));
         }
     }
