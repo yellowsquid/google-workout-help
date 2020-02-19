@@ -1,42 +1,41 @@
 package uk.ac.cam.cl.alpha.workout.mobile;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.recyclerview.widget.DividerItemDecoration;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.TextView;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import java.io.Serializable;
 
 import uk.ac.cam.cl.alpha.workout.R;
-import uk.ac.cam.cl.alpha.workout.mobile.adapter.AddExerciseAdapter;
-import uk.ac.cam.cl.alpha.workout.shared.ExerciseType;
+import uk.ac.cam.cl.alpha.workout.mobile.adapter.ExerciseTypeAdapter;
 
 public class AddExerciseActivity extends AppCompatActivity {
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_exercise);
 
-        RecyclerView addExerciseRecyclerView = findViewById(R.id.addExerciseRecyclerView);
+        RecyclerView recyclerView = findViewById(R.id.addExerciseRecyclerView);
         RecyclerView.LayoutManager layout = new LinearLayoutManager(this);
-        AddExerciseAdapter adapter = new AddExerciseAdapter();
+        ExerciseTypeAdapter adapter = new ExerciseTypeAdapter();
 
-        addExerciseRecyclerView.setLayoutManager(layout);
-        addExerciseRecyclerView.setAdapter(adapter);
+        recyclerView.setLayoutManager(layout);
+        recyclerView.setAdapter(adapter);
 
-        addExerciseRecyclerView.addItemDecoration(new DividerItemDecoration(addExerciseRecyclerView.getContext(), DividerItemDecoration.VERTICAL));
+        recyclerView.addItemDecoration(new DividerItemDecoration(recyclerView.getContext(),
+                                                                 DividerItemDecoration.VERTICAL));
     }
 
     public void exerciseClicked(View view){
         // Get exercise type out of the clicked view and pass it  back to the edit activity
         Intent result = new Intent();
-        result.putExtra(EditActivity.EXERCISE_ID, (ExerciseType) view.getTag());
+        result.putExtra(EditActivity.EXERCISE_ID, (Serializable) view.getTag());
         setResult(RESULT_OK, result);
         finish();
     }
