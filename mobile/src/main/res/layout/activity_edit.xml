@@ -7,7 +7,6 @@
     tools:application=".EditActivity">
 
     <TextView
-        android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:labelFor="@id/numLapsEditText"
@@ -43,13 +42,12 @@
         app:layout_constraintTop_toBottomOf="@+id/numLapsEditText" />
 
     <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
-        android:id="@+id/addExeriseButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="16dp"
         android:onClick="addExerciseClicked"
-        android:text="Add Exercise"
+        android:text="@string/add_exercise"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 

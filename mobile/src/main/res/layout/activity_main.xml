@@ -33,8 +33,6 @@
         app:layout_constraintTop_toBottomOf="@+id/circuitSelectRecyclerView" />
 
     <Button
-        android:id="@+id/button2"
-        style="@style/Widget.AppCompat.Button"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"

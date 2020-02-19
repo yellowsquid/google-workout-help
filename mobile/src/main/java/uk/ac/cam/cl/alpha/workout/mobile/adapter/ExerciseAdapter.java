@@ -1,5 +1,6 @@
 package uk.ac.cam.cl.alpha.workout.mobile.adapter;
 
+import android.annotation.SuppressLint;
 import android.content.res.Resources;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -54,20 +55,23 @@ public class ExerciseAdapter extends ListAdapter<Exercise, ExerciseAdapter.Exerc
         void setExercise(Exercise exercise) {
             Resources resources = nameTextView.getResources();
             int duration = exercise.getDuration();
-            nameTextView.setText(exercise.getName());
+            int name = exercise.getName();
+            nameTextView.setText(name);
             durationNumberPicker.setText(resources.getString(R.string.pure_duration, duration),
                                          TextView.BufferType.EDITABLE);
             exerciseImageView.setBackgroundResource(exercise.getIcon());
+            exerciseImageView.setContentDescription(resources.getString(name));
         }
     }
 
-    private static class ExerciseDiffCallback extends DiffUtil.ItemCallback<Exercise> {
+    static class ExerciseDiffCallback extends DiffUtil.ItemCallback<Exercise> {
         @Override
         public boolean areItemsTheSame(@NonNull Exercise oldItem, @NonNull Exercise newItem) {
             return oldItem.getCircuitId() == newItem.getCircuitId()
                     && oldItem.getPosition() == newItem.getPosition();
         }
 
+        @SuppressLint("DiffUtilEquals")
         @Override
         public boolean areContentsTheSame(@NonNull Exercise oldItem, @NonNull Exercise newItem) {
             return oldItem.equals(newItem);

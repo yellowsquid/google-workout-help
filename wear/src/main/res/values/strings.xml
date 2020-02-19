@@ -7,7 +7,5 @@
     <string name="workout_icon">Workout Icon</string>
     <string name="exercise">Exercise</string>
     <string name="status">Status</string>
-    <string name="start">Start</string>
     <string name="next_activity">Next: %s [%ds]</string>
-    <string name="workout_waiting">Awaiting workout</string>
 </resources>

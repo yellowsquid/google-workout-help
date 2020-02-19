@@ -1,5 +1,6 @@
 package uk.ac.cam.cl.alpha.workout.mobile.adapter;
 
+import android.annotation.SuppressLint;
 import android.content.res.Resources;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -68,6 +69,7 @@ public class CircuitAdapter extends ListAdapter<Circuit, CircuitAdapter.CircuitV
             return oldItem.getId() == newItem.getId();
         }
 
+        @SuppressLint("DiffUtilEquals")
         @Override
         public boolean areContentsTheSame(@NonNull T oldItem, @NonNull T newItem) {
             return oldItem.equals(newItem);
