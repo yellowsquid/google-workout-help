@@ -47,11 +47,11 @@ public final class AppRepository {
         return new Task<>(() -> database.getCircuitDao().insertCircuit(circuit));
     }
 
-    public Task<Integer> appendExercise(long circuitId, ExerciseType type, int duration) {
+    public Task<Integer> appendExercise(long circuitId, ExerciseType type) {
         return new Task<>(() -> {
             ExerciseDao dao = database.getExerciseDao();
             int position = dao.countExercises(circuitId);
-            Exercise exercise = Exercise.create(circuitId, duration, position, type);
+            Exercise exercise = Exercise.create(circuitId, position, type);
             dao.insertExercise(exercise);
             return position;
         });

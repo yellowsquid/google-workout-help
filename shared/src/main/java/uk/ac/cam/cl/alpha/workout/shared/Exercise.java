@@ -15,6 +15,11 @@ import java.io.Serializable;
 @Entity(primaryKeys = {"circuit_id", "position"}, tableName = "exercises")
 public abstract class Exercise implements Serializable, Comparable<Exercise> {
     private static final long serialVersionUID = -3063491187321789411L;
+    private static final int DEFAULT_DURATION = 30;
+
+    public static Exercise create(long circuitId, int position, ExerciseType exerciseType) {
+        return create(circuitId, DEFAULT_DURATION, position, exerciseType);
+    }
 
     public static Exercise create(long circuitId, int duration, int position,
                                   ExerciseType exerciseType) {

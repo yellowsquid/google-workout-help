@@ -14,9 +14,6 @@ import uk.ac.cam.cl.alpha.workout.mobile.database.AppRepository;
 import uk.ac.cam.cl.alpha.workout.mobile.database.Task;
 import uk.ac.cam.cl.alpha.workout.shared.BareCircuit;
 import uk.ac.cam.cl.alpha.workout.shared.Circuit;
-import uk.ac.cam.cl.alpha.workout.shared.Exercise;
-import uk.ac.cam.cl.alpha.workout.shared.ExerciseType;
-import uk.ac.cam.cl.alpha.workout.shared.PureCircuit;
 
 public class CircuitModel extends AndroidViewModel {
     private final AppRepository repository;
@@ -36,14 +33,6 @@ public class CircuitModel extends AndroidViewModel {
 
     public Task<Long> createCircuit(BareCircuit circuit) {
         return repository.createCircuit(circuit);
-    }
-
-    public Task<Integer> appendExercise(PureCircuit circuit, ExerciseType type, int duration) {
-        return repository.appendExercise(circuit.getId(), type, duration);
-    }
-
-    public LiveData<List<Exercise>> getExercises(PureCircuit circuit) {
-        return repository.getExercises(circuit.getId());
     }
 
     public LiveData<Circuit> getCircuit(long id) {
