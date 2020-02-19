@@ -68,4 +68,8 @@ public final class AppRepository {
     public LiveData<Circuit> getCircuit(long id) {
         return database.getCircuitDao().getCircuit(id);
     }
+
+    public LiveData<Integer> getLaps(long circuitId) {
+        return database.getCircuitDao().getLaps(circuitId);
+    }
 }

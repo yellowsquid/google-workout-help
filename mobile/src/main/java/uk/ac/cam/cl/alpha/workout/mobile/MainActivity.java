@@ -12,10 +12,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import uk.ac.cam.cl.alpha.workout.R;
 import uk.ac.cam.cl.alpha.workout.mobile.adapter.CircuitAdapter;
 import uk.ac.cam.cl.alpha.workout.mobile.model.CircuitModel;
-import uk.ac.cam.cl.alpha.workout.shared.BareCircuit;
 
 public class MainActivity extends AppCompatActivity {
-    private BareCircuit circuit;
+    private CircuitModel model;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,11 +24,10 @@ public class MainActivity extends AppCompatActivity {
         RecyclerView recyclerView = findViewById(R.id.circuitSelectRecyclerView);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
         CircuitAdapter circuitSelectAdapter = new CircuitAdapter();
-        CircuitModel model = new ViewModelProvider(this).get(CircuitModel.class);
+        model = new ViewModelProvider(this).get(CircuitModel.class);
 
         // FIXME: get circuit from user
-        circuit = BareCircuit.create(1, "", 1);
-
+        model.setCircuitId(1);
         model.getCircuits().observe(this, circuitSelectAdapter::submitList);
 
         recyclerView.setLayoutManager(layoutManager);
@@ -39,14 +37,14 @@ public class MainActivity extends AppCompatActivity {
     public void waitClicked(View v) {
         // TODO: send only circuit id, not full circuit
         Intent intent = new Intent(this, WaitingActivity.class);
-        intent.putExtra(WaitingActivity.CIRCUIT_ID, circuit);
+        intent.putExtra(WaitingActivity.CIRCUIT_ID, model.getCircuitId());
         startActivity(intent);
     }
 
     public void editClicked(View v) {
         Intent intent = new Intent(this, EditActivity.class);
         // TODO: send only circuit id, not full circuit
-        intent.putExtra(EditActivity.CIRCUIT_ID, circuit);
+        intent.putExtra(EditActivity.CIRCUIT_ID, model.getCircuitId());
         startActivity(intent);
     }
 }

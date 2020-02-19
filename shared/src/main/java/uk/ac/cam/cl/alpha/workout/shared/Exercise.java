@@ -6,6 +6,7 @@ import androidx.annotation.StringRes;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.ForeignKey;
+import androidx.room.Ignore;
 
 import com.google.auto.value.AutoValue;
 
@@ -17,6 +18,7 @@ public abstract class Exercise implements Serializable, Comparable<Exercise> {
     private static final long serialVersionUID = -3063491187321789411L;
     private static final int DEFAULT_DURATION = 30;
 
+    @Ignore
     public static Exercise create(long circuitId, int position, ExerciseType exerciseType) {
         return create(circuitId, DEFAULT_DURATION, position, exerciseType);
     }

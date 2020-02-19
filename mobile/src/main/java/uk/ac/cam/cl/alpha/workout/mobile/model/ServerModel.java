@@ -20,12 +20,14 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.stream.Collectors;
 
+import uk.ac.cam.cl.alpha.workout.mobile.database.AppRepository;
 import uk.ac.cam.cl.alpha.workout.shared.Circuit;
 import uk.ac.cam.cl.alpha.workout.shared.Constants;
 import uk.ac.cam.cl.alpha.workout.shared.Serializer;
 import uk.ac.cam.cl.alpha.workout.shared.Signal;
 
 public class ServerModel extends AndroidViewModel {
+    private final AppRepository repository;
     private final Application application;
     private final Observer<Circuit> circuitObserver;
     private LiveData<? extends Circuit> data;
@@ -33,6 +35,7 @@ public class ServerModel extends AndroidViewModel {
     public ServerModel(@NonNull Application application) {
         super(application);
         this.application = application;
+        repository = AppRepository.getInstance(application);
         circuitObserver =
                 circuit -> new SendTask(application, circuit, Constants.CIRCUIT_PATH).execute();
     }
@@ -46,21 +49,12 @@ public class ServerModel extends AndroidViewModel {
         }
     }
 
-    public void setCircuitData(LiveData<? extends Circuit> data) {
-        if (this.data != null) {
-            this.data.removeObserver(circuitObserver);
-        }
-
-        data.observeForever(circuitObserver);
-        this.data = data;
-    }
-
     public void sendStartSignal() {
         new SendTask(application, Signal.START, Constants.SIGNAL_PATH).execute();
     }
 
     public void setDeviceListener(DeviceListener deviceListener) {
-        Log.d("ServerModel", "Getting connected devices");
+        Log.i("ServerModel", "Getting connected devices");
         Wearable.getNodeClient(application).getConnectedNodes().addOnSuccessListener(list -> {
             List<String> deviceNames =
                     list.stream().map(Node::getDisplayName).collect(Collectors.toList());
@@ -68,11 +62,20 @@ public class ServerModel extends AndroidViewModel {
         });
     }
 
+    public void setCircuitId(long circuitId) {
+        if (data != null) {
+            data.removeObserver(circuitObserver);
+        }
+
+        data = repository.getCircuit(circuitId);
+        data.observeForever(circuitObserver);
+    }
+
     private class ScheduledDeviceListener extends TimerTask {
         private final DeviceListener deviceListener;
         ScheduledDeviceListener(DeviceListener deviceListener) {
             this.deviceListener = deviceListener;
-        };
+        }
 
         public void run() {
             setDeviceListener(deviceListener);

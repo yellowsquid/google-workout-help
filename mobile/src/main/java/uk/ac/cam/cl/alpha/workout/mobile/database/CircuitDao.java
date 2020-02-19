@@ -37,4 +37,7 @@ public interface CircuitDao {
     @Transaction
     @Query("SELECT * FROM circuits WHERE rowid = :id")
     LiveData<Circuit> getCircuit(long id);
+
+    @Query("SELECT laps FROM circuits WHERE rowid = :id")
+    LiveData<Integer> getLaps(long id);
 }

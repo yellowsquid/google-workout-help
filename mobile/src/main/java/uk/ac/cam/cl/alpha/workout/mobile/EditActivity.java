@@ -1,6 +1,7 @@
 package uk.ac.cam.cl.alpha.workout.mobile;
 
 import android.content.Intent;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -20,7 +21,6 @@ import uk.ac.cam.cl.alpha.workout.mobile.adapter.ExerciseAdapter;
 import uk.ac.cam.cl.alpha.workout.mobile.model.CircuitEditModel;
 import uk.ac.cam.cl.alpha.workout.shared.Exercise;
 import uk.ac.cam.cl.alpha.workout.shared.ExerciseType;
-import uk.ac.cam.cl.alpha.workout.shared.PureCircuit;
 
 public class EditActivity extends AppCompatActivity {
     public static final String CIRCUIT_ID = "uk.ac.cam.cl.alpha.workout.mobile.CIRCUIT_ID";
@@ -36,12 +36,15 @@ public class EditActivity extends AppCompatActivity {
         setContentView(R.layout.activity_edit);
 
         // Retrieve circuit and token.
-        PureCircuit circuit = (PureCircuit) getIntent().getSerializableExtra(CIRCUIT_ID);
+        // TODO: something sensible when get id 0
+        long circuit = getIntent().getLongExtra(CIRCUIT_ID, 0);
         model = new ViewModelProvider(this).get(CircuitEditModel.class);
-        model.setCircuit(circuit);
+        model.setCircuitId(circuit);
 
         EditText numLapsEditText = findViewById(R.id.numLapsEditText);
-        numLapsEditText.setText(getResources().getString(R.string.pure_laps, circuit.getLaps()));
+        Resources resources = getResources();
+        model.getLaps().observe(this, laps -> numLapsEditText
+                .setText(resources.getString(R.string.pure_laps, laps)));
 
         RecyclerView recyclerView = findViewById(R.id.circuitEditRecyclerView);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
@@ -57,11 +60,6 @@ public class EditActivity extends AppCompatActivity {
         recyclerView.setAdapter(adapter);
     }
 
-    public void addExerciseClicked(View v) {
-        Intent intent = new Intent(this, AddExerciseActivity.class);
-        startActivityForResult(intent, ADD_EXERCISE_REQUEST);
-    }
-
     @Override
     // Get the selected exercise type and create a new circuit containing an instance of that
     // exercise
@@ -71,5 +69,10 @@ public class EditActivity extends AppCompatActivity {
             ExerciseType type = (ExerciseType) data.getSerializableExtra(EXERCISE_ID);
             model.dispatch(model.appendExercise(type));
         }
+    }
+
+    public void addExerciseClicked(View v) {
+        Intent intent = new Intent(this, AddExerciseActivity.class);
+        startActivityForResult(intent, ADD_EXERCISE_REQUEST);
     }
 }

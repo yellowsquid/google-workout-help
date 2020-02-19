@@ -7,8 +7,6 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 
 import java.util.List;
-import java.util.concurrent.Callable;
-import java.util.concurrent.Future;
 
 import uk.ac.cam.cl.alpha.workout.mobile.database.AppRepository;
 import uk.ac.cam.cl.alpha.workout.mobile.database.Task;
@@ -17,6 +15,7 @@ import uk.ac.cam.cl.alpha.workout.shared.Circuit;
 
 public class CircuitModel extends AndroidViewModel {
     private final AppRepository repository;
+    private long circuitId;
 
     public CircuitModel(@NonNull Application application) {
         super(application);
@@ -27,8 +26,12 @@ public class CircuitModel extends AndroidViewModel {
         return repository.getCircuits();
     }
 
-    public <V> Future<V> dispatch(Callable<V> task) {
-        return repository.dispatch(task);
+    public long getCircuitId() {
+        return circuitId;
+    }
+
+    public void setCircuitId(long circuitId) {
+        this.circuitId = circuitId;
     }
 
     public Task<Long> createCircuit(BareCircuit circuit) {
