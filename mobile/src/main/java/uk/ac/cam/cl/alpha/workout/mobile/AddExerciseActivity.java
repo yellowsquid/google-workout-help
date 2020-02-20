@@ -10,10 +10,9 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.io.Serializable;
-
 import uk.ac.cam.cl.alpha.workout.R;
 import uk.ac.cam.cl.alpha.workout.mobile.adapter.ExerciseTypeAdapter;
+import uk.ac.cam.cl.alpha.workout.shared.ExerciseType;
 
 public class AddExerciseActivity extends AppCompatActivity {
     public static final String EXERCISE_ID = "uk.ac.cam.cl.alpha.workout.mobile.EXERCISE_ID";
@@ -37,7 +36,7 @@ public class AddExerciseActivity extends AppCompatActivity {
 
         RecyclerView recyclerView = findViewById(R.id.addExerciseRecyclerView);
         RecyclerView.LayoutManager layout = new LinearLayoutManager(this);
-        ExerciseTypeAdapter adapter = new ExerciseTypeAdapter();
+        ExerciseTypeAdapter adapter = new ExerciseTypeAdapter(this::exerciseClicked);
 
         recyclerView.setLayoutManager(layout);
         recyclerView.setAdapter(adapter);
@@ -46,10 +45,10 @@ public class AddExerciseActivity extends AppCompatActivity {
                                                                  DividerItemDecoration.VERTICAL));
     }
 
-    public void exerciseClicked(View view) {
+    public void exerciseClicked(long id, View view) {
         // Get exercise type out of the clicked view and pass it  back to the edit activity
         Intent result = new Intent();
-        result.putExtra(EXERCISE_ID, (Serializable) view.getTag());
+        result.putExtra(EXERCISE_ID, ExerciseType.values()[Math.toIntExact(id)]);
         setResult(RESULT_OK, result);
         finish();
     }

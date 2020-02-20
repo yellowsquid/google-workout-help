@@ -35,7 +35,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void waitClicked(View v) {
-        // TODO: send only circuit id, not full circuit
         Intent intent = new Intent(this, WaitingActivity.class);
         intent.putExtra(WaitingActivity.CIRCUIT_ID, model.getCircuitId());
         startActivity(intent);
@@ -43,7 +42,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void editClicked(View v) {
         Intent intent = new Intent(this, EditActivity.class);
-        // TODO: send only circuit id, not full circuit
+
         intent.putExtra(EditActivity.CIRCUIT_ID, model.getCircuitId());
         startActivity(intent);
     }

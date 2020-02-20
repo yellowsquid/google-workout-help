@@ -11,9 +11,13 @@ import uk.ac.cam.cl.alpha.workout.shared.ExerciseType;
 class ExerciseTypeViewHolder extends RecyclerView.ViewHolder {
     private final TextView textView;
 
-    ExerciseTypeViewHolder(View view) {
+    ExerciseTypeViewHolder(View view, OnItemClickListener onClickListener) {
         super(view);
         textView = view.findViewById(R.id.exerciseNameTextView);
+        textView.setOnClickListener((v) -> {
+            long id = getItemId();
+            onClickListener.onItemClick(id, v);
+        });
     }
 
     void setExerciseType(ExerciseType type) {
