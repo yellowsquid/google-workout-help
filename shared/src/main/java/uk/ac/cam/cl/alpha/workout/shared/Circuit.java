@@ -1,12 +1,14 @@
 package uk.ac.cam.cl.alpha.workout.shared;
 
+import androidx.annotation.NonNull;
 import androidx.room.Embedded;
 import androidx.room.Relation;
 
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
-public class Circuit implements PureCircuit {
+public class Circuit implements PureCircuit, Iterable<Exercise> {
     private static final long serialVersionUID = 9190329129285998129L;
     @Embedded
     private final BareCircuit circuit;
@@ -52,5 +54,12 @@ public class Circuit implements PureCircuit {
 
     public Exercise getExercise(int index) {
         return exercises.get(index);
+    }
+
+    @NonNull
+    @Override
+    public Iterator<Exercise> iterator() {
+        // FIXME: Only does one lap
+        return exercises.iterator();
     }
 }

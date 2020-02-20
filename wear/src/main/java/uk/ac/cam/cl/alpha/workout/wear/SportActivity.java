@@ -75,7 +75,7 @@ public class SportActivity extends WearableActivity {
 
     private void workout(Circuit circuit, int task, int lap) {
 
-        // TODO: make a circuit iterable instead?
+        // TODO: use iterator
         // Exits workout once done
         if (task >= circuit.countExercises()) {
             if (lap >= circuit.getLaps()) {

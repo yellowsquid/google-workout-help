@@ -29,11 +29,15 @@ public class MainActivity extends WearableActivity implements
     @Override
     public void onMessageReceived(@NonNull MessageEvent messageEvent) {
         String messagePath = messageEvent.getPath();
-        if (!(messagePath.equals(Constants.CIRCUIT_PATH) || messagePath.equals(Constants.SIGNAL_PATH)))  {
+
+        // FIXME: crashes if circuit is null.
+        if(messageEvent.getData() == null) {
             return;
         }
 
-        // FIXME: crashes if circuit is null.
+        if (!(messagePath.equals(Constants.CIRCUIT_PATH) || messagePath.equals(Constants.SIGNAL_PATH)))  {
+            return;
+        }
 
         byte[] data = messageEvent.getData();
         Object message;

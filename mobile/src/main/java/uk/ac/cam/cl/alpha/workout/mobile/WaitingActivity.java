@@ -35,7 +35,7 @@ public class WaitingActivity extends AppCompatActivity {
 
         serverModel = viewModelProvider.get(ServerModel.class);
         serverModel.setCircuitId(circuitId);
-        serverModel.setDeviceObserver(adaptor::submitList);
+        serverModel.getDevicesList().observe(this, adaptor::submitList);
 
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adaptor);
