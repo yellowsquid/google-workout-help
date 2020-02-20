@@ -23,11 +23,8 @@ public class MainActivity extends AppCompatActivity {
 
         RecyclerView recyclerView = findViewById(R.id.circuitSelectRecyclerView);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
-        CircuitAdapter circuitSelectAdapter = new CircuitAdapter();
+        CircuitAdapter circuitSelectAdapter = new CircuitAdapter(this::itemClicked);
         model = new ViewModelProvider(this).get(CircuitModel.class);
-
-        // FIXME: get circuit from user
-        model.setCircuitId(1);
         model.getCircuits().observe(this, circuitSelectAdapter::submitList);
 
         recyclerView.setLayoutManager(layoutManager);
@@ -45,5 +42,9 @@ public class MainActivity extends AppCompatActivity {
 
         intent.putExtra(EditActivity.CIRCUIT_ID, model.getCircuitId());
         startActivity(intent);
+    }
+
+    public void itemClicked(long id, View v) {
+        model.setCircuitId(id);
     }
 }

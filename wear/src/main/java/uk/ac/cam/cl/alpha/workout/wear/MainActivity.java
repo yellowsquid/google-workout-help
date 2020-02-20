@@ -33,6 +33,8 @@ public class MainActivity extends WearableActivity implements
             return;
         }
 
+        // FIXME: crashes if circuit is null.
+
         byte[] data = messageEvent.getData();
         Object message;
 

@@ -14,10 +14,7 @@ class ExerciseTypeViewHolder extends RecyclerView.ViewHolder {
     ExerciseTypeViewHolder(View view, OnItemClickListener onClickListener) {
         super(view);
         textView = view.findViewById(R.id.exerciseNameTextView);
-        textView.setOnClickListener((v) -> {
-            long id = getItemId();
-            onClickListener.onItemClick(id, v);
-        });
+        textView.setOnClickListener(v -> onClickListener.onItemClick(getItemId(), v));
     }
 
     void setExerciseType(ExerciseType type) {
