@@ -42,11 +42,12 @@
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="16dp"
-        android:text="@string/circuit_name"
+        android:textIsSelectable="true"
         app:layout_constraintBottom_toTopOf="@id/connectedText"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="@string/circuit_name" />
 
     <TextView
         android:id="@+id/connectedText"

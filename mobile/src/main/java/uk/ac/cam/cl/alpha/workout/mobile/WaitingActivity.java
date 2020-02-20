@@ -3,6 +3,7 @@ package uk.ac.cam.cl.alpha.workout.mobile;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
@@ -38,6 +39,10 @@ public class WaitingActivity extends AppCompatActivity {
 
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adaptor);
+
+        // Display circuit name.
+        TextView text = findViewById(R.id.circuitName);
+        serverModel.getCircuitName().observe(this, text::setText);
     }
 
     public void startClicked(View v) {

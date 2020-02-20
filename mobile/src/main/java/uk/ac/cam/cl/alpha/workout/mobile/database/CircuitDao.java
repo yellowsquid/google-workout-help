@@ -34,4 +34,7 @@ public interface CircuitDao {
 
     @Query("SELECT laps FROM circuits WHERE id = :id")
     LiveData<Integer> getLaps(long id);
+
+    @Query("SELECT name FROM circuits WHERE id = :id")
+    LiveData<String> getName(long id);
 }

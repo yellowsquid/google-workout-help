@@ -32,6 +32,7 @@ public class ServerModel extends AndroidViewModel {
     private final Application application;
     private final Observer<Circuit> circuitObserver;
     private final Timer timer;
+    private long circuitId;
     private LiveData<? extends Circuit> data;
     private GetDevicesTask devicesTask;
 
@@ -61,13 +62,8 @@ public class ServerModel extends AndroidViewModel {
         new SendTask(application, Signal.START, Constants.SIGNAL_PATH).execute();
     }
 
-    public void setCircuitId(long circuitId) {
-        if (data != null) {
-            data.removeObserver(circuitObserver);
-        }
-
-        data = repository.getCircuit(circuitId);
-        data.observeForever(circuitObserver);
+    public LiveData<String> getCircuitName() {
+        return repository.getCircuitName(circuitId);
     }
 
     public void setDeviceObserver(Observer<? super List<String>> observer) {
@@ -80,6 +76,16 @@ public class ServerModel extends AndroidViewModel {
 
         devicesTask = new GetDevicesTask(application, observer);
         timer.schedule(devicesTask, 0, DEVICE_REFRESH_PERIOD);
+    }
+
+    public void setCircuitId(long circuitId) {
+        if (data != null) {
+            data.removeObserver(circuitObserver);
+        }
+
+        this.circuitId = circuitId;
+        data = repository.getCircuit(circuitId);
+        data.observeForever(circuitObserver);
     }
 
     private static class SendTask extends AsyncTask<Void, Void, Void> {

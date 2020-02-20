@@ -72,4 +72,8 @@ public final class AppRepository {
     public LiveData<Integer> getLaps(long circuitId) {
         return database.getCircuitDao().getLaps(circuitId);
     }
+
+    public LiveData<String> getCircuitName(long circuitId) {
+        return database.getCircuitDao().getName(circuitId);
+    }
 }
