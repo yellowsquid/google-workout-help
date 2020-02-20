@@ -15,6 +15,8 @@ import uk.ac.cam.cl.alpha.workout.mobile.model.CircuitModel;
 
 public class MainActivity extends AppCompatActivity {
     private CircuitModel model;
+    private View startButton;
+    private View editButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,24 +29,34 @@ public class MainActivity extends AppCompatActivity {
         model = new ViewModelProvider(this).get(CircuitModel.class);
         model.getCircuits().observe(this, circuitSelectAdapter::submitList);
 
+        startButton = findViewById(R.id.startButton);
+        editButton = findViewById(R.id.editButton);
+
+        if (!model.isCircuitSelected()) {
+            startButton.setEnabled(false);
+            editButton.setEnabled(false);
+        }
+
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(circuitSelectAdapter);
     }
 
-    public void waitClicked(View v) {
-        Intent intent = new Intent(this, WaitingActivity.class);
-        intent.putExtra(WaitingActivity.CIRCUIT_ID, model.getCircuitId());
-        startActivity(intent);
+    public void itemClicked(long id, View v) {
+        model.setCircuitId(id);
+        v.setSelected(true);
+        startButton.setEnabled(true);
+        editButton.setEnabled(true);
     }
 
     public void editClicked(View v) {
         Intent intent = new Intent(this, EditActivity.class);
-
         intent.putExtra(EditActivity.CIRCUIT_ID, model.getCircuitId());
         startActivity(intent);
     }
 
-    public void itemClicked(long id, View v) {
-        model.setCircuitId(id);
+    public void startClicked(View v) {
+        Intent intent = new Intent(this, WaitingActivity.class);
+        intent.putExtra(WaitingActivity.CIRCUIT_ID, model.getCircuitId());
+        startActivity(intent);
     }
 }

@@ -41,4 +41,8 @@ public class CircuitModel extends AndroidViewModel {
     public LiveData<Circuit> getCircuit(long id) {
         return repository.getCircuit(id);
     }
+
+    public boolean isCircuitSelected() {
+        return circuitId != 0;
+    }
 }

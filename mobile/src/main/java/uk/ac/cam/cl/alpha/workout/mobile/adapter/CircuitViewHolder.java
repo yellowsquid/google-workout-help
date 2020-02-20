@@ -10,29 +10,37 @@ import uk.ac.cam.cl.alpha.workout.R;
 import uk.ac.cam.cl.alpha.workout.shared.Circuit;
 
 class CircuitViewHolder extends RecyclerView.ViewHolder {
-    private final TextView nameTextView;
-    private final TextView durationTextView;
-    private final TextView restTextView;
-    private final TextView lapsTextView;
+    private final View view;
+    private final TextView nameView;
+    private final TextView durationView;
+    private final TextView restView;
+    private final TextView lapsView;
 
     CircuitViewHolder(View view, OnItemClickListener itemClickListener) {
         super(view);
 
-        view.setOnClickListener(v -> itemClickListener.onItemClick(getItemId(), v));
-        nameTextView = view.findViewById(R.id.circuitName);
-        durationTextView = view.findViewById(R.id.circuitDuration);
-        restTextView = view.findViewById(R.id.circuitRestTime);
-        lapsTextView = view.findViewById(R.id.circuitLaps);
+        this.view = view;
+        nameView = view.findViewById(R.id.circuitName);
+        durationView = view.findViewById(R.id.circuitDuration);
+        restView = view.findViewById(R.id.circuitRestTime);
+        lapsView = view.findViewById(R.id.circuitLaps);
+
+        View.OnClickListener listener = v -> itemClickListener.onItemClick(getItemId(), v);
+        view.setOnClickListener(listener);
+        view.getTouchables().forEach(v -> v.setOnClickListener(listener));
     }
 
     void setCircuit(Circuit circuit) {
-        Resources resources = nameTextView.getResources();
+        Resources resources = nameView.getResources();
         int duration = circuit.sumExerciseDuration();
         int rest = circuit.sumRestDuration();
         int laps = circuit.getLaps();
-        nameTextView.setText(circuit.getName());
-        durationTextView.setText(resources.getString(R.string.duration_is, duration));
-        restTextView.setText(resources.getString(R.string.rest_is, rest));
-        lapsTextView.setText(resources.getString(R.string.laps_is, laps));
+
+        nameView.setText(circuit.getName());
+        durationView.setText(resources.getString(R.string.duration_is, duration));
+        restView.setText(resources.getString(R.string.rest_is, rest));
+        lapsView.setText(resources.getString(R.string.laps_is, laps));
+
+        view.setBackgroundColor(resources.getColor(R.color.design_default_color_background));
     }
 }
