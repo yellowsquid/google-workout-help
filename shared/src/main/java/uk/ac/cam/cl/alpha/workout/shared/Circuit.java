@@ -1,5 +1,7 @@
 package uk.ac.cam.cl.alpha.workout.shared;
 
+import android.icu.text.Edits;
+
 import androidx.annotation.NonNull;
 import androidx.room.Embedded;
 import androidx.room.Relation;
@@ -7,6 +9,7 @@ import androidx.room.Relation;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 public class Circuit implements PureCircuit, Iterable<Exercise> {
     private static final long serialVersionUID = 9190329129285998129L;
@@ -56,10 +59,44 @@ public class Circuit implements PureCircuit, Iterable<Exercise> {
         return exercises.get(index);
     }
 
+    private class ExerciseIterator implements Iterator<Exercise> {
+        private int exerciseIndex;
+        private int lapIndex;
+
+        ExerciseIterator() {
+            exerciseIndex = 0;
+            lapIndex = 0;
+        }
+
+        @Override
+        public boolean hasNext() {
+            // if not last lap or not last exercise
+            return (lapIndex < getLaps() - 1 || exerciseIndex < countExercises() - 1);
+        }
+
+        @Override
+        public Exercise next() {
+            if(exerciseIndex < countExercises() - 1) {
+                exerciseIndex++;
+                return getExercise(exerciseIndex);
+            } else if (exerciseIndex == countExercises() - 1 && lapIndex < getLaps() - 1) {
+                exerciseIndex = 0;
+                lapIndex++;
+                return getExercise(exerciseIndex);
+            } else {
+                throw new NoSuchElementException("End of circuit.");
+            }
+        }
+
+        @Override
+        public void remove() {
+            throw new UnsupportedOperationException("Remove operation not supported by iterator.");
+        }
+    }
+
     @NonNull
     @Override
     public Iterator<Exercise> iterator() {
-        // FIXME: Only does one lap
-        return exercises.iterator();
+        return new ExerciseIterator();
     }
 }
