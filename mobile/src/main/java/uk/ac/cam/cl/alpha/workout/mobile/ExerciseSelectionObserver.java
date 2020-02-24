@@ -15,7 +15,6 @@ public class ExerciseSelectionObserver extends SelectionTracker.SelectionObserve
     @Override
     public void onItemStateChanged(@NonNull Long key, boolean selected) {
         super.onItemStateChanged(key, selected);
-
         parentActivity.startExerciseActionMode();
     }
 

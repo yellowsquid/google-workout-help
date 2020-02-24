@@ -12,7 +12,7 @@ public class ExerciseSelectedActionMode implements ActionMode.Callback {
 
     private EditActivity parentActivity;
 
-    void setParentActivity(EditActivity theParentActivity){
+    ExerciseSelectedActionMode(EditActivity theParentActivity) {
         parentActivity = theParentActivity;
     }
 

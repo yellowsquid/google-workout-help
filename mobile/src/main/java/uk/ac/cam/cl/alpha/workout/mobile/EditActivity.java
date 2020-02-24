@@ -28,6 +28,7 @@ public class EditActivity extends AppCompatActivity {
 
     private CircuitEditModel model;
     private ActionMode actionMode;
+    private SelectionTracker tracker;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,7 +59,7 @@ public class EditActivity extends AppCompatActivity {
         ExerciseSelectionObserver observer = new ExerciseSelectionObserver(this);
         ExerciseDragInitiatedListener exerciseDragListener = new ExerciseDragInitiatedListener();
 
-        SelectionTracker tracker = new SelectionTracker.Builder<>(
+        tracker = new SelectionTracker.Builder<>(
                 "selection tracker",
                 recyclerView,
                 itemKeyProvider,
@@ -91,18 +92,17 @@ public class EditActivity extends AppCompatActivity {
 
     // Used to start the contextual action mode when an exercise is selected
     void startExerciseActionMode(){
-        if (actionMode == null){
-            ExerciseSelectedActionMode newActionMode = new ExerciseSelectedActionMode();
-            newActionMode.setParentActivity(this);
-            actionMode = startActionMode(newActionMode);
+        if (actionMode == null) {
+            actionMode = startActionMode(new ExerciseSelectedActionMode(this));
         }
     }
 
     // Called when the contextual action mode is ended
     void finishExerciseActionMode(){
-        if (actionMode != null){
-            actionMode = null;
+        if (tracker != null) {
+            tracker.clearSelection();
         }
+        actionMode = null;
     }
 
 }
