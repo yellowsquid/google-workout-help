@@ -1,6 +1,11 @@
 package uk.ac.cam.cl.alpha.workout.wear;
 
+import android.content.Context;
 import android.content.Intent;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.support.wearable.activity.WearableActivity;
 import android.util.Log;
@@ -61,51 +66,63 @@ public class MainActivity extends WearableActivity implements
         } else if (messagePath.equals(Constants.SIGNAL_PATH)) {
             switch ((Signal) message) {
                 case START:
-                    openSportActivity();
+                    if (circuit == null){
+                        statText.setText(R.string.no_circuit_loaded);
+                    } else {
+                        openSportActivity();
+                    }
+
                     break;
                 case STOP:
                 case PAUSE:
                 case RESUME:
-                    Log.w(TAG, "Signal not yet implemented");
+
             }
         } else {
-            Log.w(TAG, "Unknown message");
+            Log.w(TAG, "Unknown msg");
         }
     }
 
     private void openSportActivity() {
         Intent intent = new Intent(this, SportActivity.class);
-        intent.putExtra("Circuit", circuit);
+        intent.putExtra(SportActivity.CIRCUIT_ID, circuit);
         startActivity(intent);
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
+        // Enables Always-on
+        setAmbientEnabled();
+
         setContentView(R.layout.activity_wait);
 
         Wearable.getMessageClient(this).addListener(this);
         statText = findViewById(R.id.statusText);
 
-        // Enables Always-on
-        setAmbientEnabled();
-
-        List<Exercise> exercises = new ArrayList<>(5);
-        exercises.add(Exercise.create(0, 5, 0, ExerciseType.BURPEES));
-        exercises.add(Exercise.create(0, 5, 1, ExerciseType.STAR_JUMPS));
-        exercises.add(Exercise.create(0, 5, 2, ExerciseType.RUSSIAN_TWISTS));
-//        exercises.add(Exercise.create(0, 5, 3, ExerciseType.SITUPS));
-//        exercises.add(Exercise.create(0, 5, 4, ExerciseType.REST));
-        BareCircuit pureCircuit = BareCircuit.create(0, "fred", 100);
-        try {
-            circuit = Serializer.serialize(new Circuit(pureCircuit, exercises));
-            openSportActivity();
-        } catch (IOException e) {
-            e.printStackTrace();
-            System.exit(e.hashCode());
-        }
     }
-}
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        Wearable.getMessageClient(this).addListener(this);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        Wearable.getMessageClient(this).removeListener(this);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+
+    }
+  }
+
 
 

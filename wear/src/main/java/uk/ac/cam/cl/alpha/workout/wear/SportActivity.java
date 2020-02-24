@@ -1,7 +1,12 @@
 package uk.ac.cam.cl.alpha.workout.wear;
 
+import android.content.Context;
 import android.content.Intent;
-import android.graphics.drawable.AnimationDrawable;
+import android.graphics.drawable.Animatable;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
@@ -24,21 +29,21 @@ import java.util.Locale;
 import uk.ac.cam.cl.alpha.workout.BuildConfig;
 import uk.ac.cam.cl.alpha.workout.R;
 import uk.ac.cam.cl.alpha.workout.shared.Circuit;
+import uk.ac.cam.cl.alpha.workout.shared.Constants;
 import uk.ac.cam.cl.alpha.workout.shared.Exercise;
+import uk.ac.cam.cl.alpha.workout.shared.PureCircuit;
 import uk.ac.cam.cl.alpha.workout.shared.PausableTimer;
 import uk.ac.cam.cl.alpha.workout.shared.Serializer;
 import uk.ac.cam.cl.alpha.workout.shared.Signal;
 
-// TODO Get rid of this annotation (and possibly deal with what it's complaining about)
-@SuppressWarnings("AssignmentToStaticFieldFromInstanceMethod")
 public class SportActivity extends WearableActivity
-        implements MessageClient.OnMessageReceivedListener {
-    public static final long EXERCISE_COUNTDOWN = 5000L;
-    public static final long TICK_RATE = 100L;
-    public static final int MILLIS_IN_SECOND = 1000;
-
-    private static final String MESSAGE = "WatchApp";
-    private static final long[] VIBRATION_PATTERN = {0, 500, 50, 800};
+        implements SensorEventListener,
+            MessageClient.OnMessageReceivedListener{
+    static final String CIRCUIT_ID = "uk.ac.cam.cl.alpha.workout.wear.CIRCUIT_ID";
+    private static final long EXERCISE_COUNTDOWN = 5L;
+    private static final String TAG = "SportActivity";
+    private static final  long[] VIBRATION_PATTERN_LONG = {0, 500, 50, 800};
+    private static final  long[] VIBRATION_PATTERN_SHORT = {0, 500};
     private TextView activityText;
     private TextView timeText;
     private ProgressBar pBar;
@@ -53,11 +58,23 @@ public class SportActivity extends WearableActivity
     private Button resumeButton;
     private Button pauseButton;
 
+
+    // For detecting the activities
+    private SensorManager sensorManager;
+    private Sensor mAccelerometer;
+
+    private Exercise exercise;
+    private Boolean exerciseStarted = false;
+
     // Run on activity creation
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Log.d(MESSAGE, "SportActivity Created");
+
         super.onCreate(savedInstanceState);
+
+        // Enables Always-on
+        setAmbientEnabled();
+
         Wearable.getMessageClient(this).addListener(this);
         // Which view to use
         setContentView(R.layout.activity_sports);
@@ -66,23 +83,18 @@ public class SportActivity extends WearableActivity
         activityText = findViewById(R.id.exerciseName);
         timeText = findViewById(R.id.timeValue);
         pBar = findViewById(R.id.progressBar);
-        resumeButton = findViewById(R.id.playButton);
-        pauseButton = findViewById(R.id.pauseButton);
-        resumeButton.setOnClickListener(v -> currentTimer.resume());
-        pauseButton.setOnClickListener(v -> currentTimer.pause());
 
         iconStill = findViewById(R.id.sportsIcon);
 
-        // Enables Always-on
-        setAmbientEnabled();
+
+        Wearable.getMessageClient(this).addListener(this);
 
         Intent intent = getIntent();
-        Circuit cirLoaded;
-        byte[] serial = intent.getByteArrayExtra("Circuit");
+        byte[] serial = intent.getByteArrayExtra(CIRCUIT_ID);
         if (serial != null) {
             try {
-                cirLoaded = (Circuit) Serializer.deserialize(serial);
-                cir=cirLoaded;
+                cir = (Circuit) Serializer.deserialize(serial);
+
                 nextExercise();
             // TODO Duplication in catch clauses
             } catch (IOException e) {
@@ -95,13 +107,39 @@ public class SportActivity extends WearableActivity
                 finish();
             }
         }
+
+        //======================NEW=======================================
+        sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+        if (sensorManager != null && sensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION) != null){
+            mAccelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION);
+        }
     }
+
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        sensorManager.registerListener(this, mAccelerometer, SensorManager.SENSOR_DELAY_NORMAL);
+        Wearable.getMessageClient(this).addListener(this);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        sensorManager.unregisterListener(this);
+        Wearable.getMessageClient(this).removeListener(this);
+    }
+
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        currentTimer.cancel();
-        Log.d(MESSAGE, "SportActivity Destroyed");
+        if (currentTimer != null){
+            currentTimer.cancel();
+        }
+
+
+        Log.d(TAG, "SportActivity Destroyed");
     }
 
     /**
@@ -212,7 +250,7 @@ public class SportActivity extends WearableActivity
         //-1 - don't repeat
         if (vibrator != null) {
             // -1 means don't repeat
-            vibrator.vibrate(VibrationEffect.createWaveform(VIBRATION_PATTERN, -1));
+            vibrator.vibrate(VibrationEffect.createWaveform(vibrationPattern, -1));
         }
     }
 
