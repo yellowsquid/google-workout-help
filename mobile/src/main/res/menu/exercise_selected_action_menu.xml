@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <item android:id="@+id/confirm_edited_circuit"
+        android:icon="@drawable/ic_check_black_24dp"
+        android:title="Confirm Circuit"
+
+        />
+
+    <item
+        android:id="@+id/delete_selected_exercises"
+        android:icon="@drawable/ic_delete_black_24dp"
+        android:title="Delete Exercises"
+        />
+
+</menu>

@@ -3,12 +3,17 @@ package uk.ac.cam.cl.alpha.workout.mobile;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.view.ActionMode;
 import android.view.View;
 import android.widget.EditText;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.selection.ItemKeyProvider;
+import androidx.recyclerview.selection.SelectionTracker;
+import androidx.recyclerview.selection.StableIdKeyProvider;
+import androidx.recyclerview.selection.StorageStrategy;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -22,6 +27,7 @@ public class EditActivity extends AppCompatActivity {
     static final int ADD_EXERCISE_REQUEST = 1;
 
     private CircuitEditModel model;
+    private ActionMode actionMode;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +52,24 @@ public class EditActivity extends AppCompatActivity {
 
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);
+
+        // TODO: SELECTION STUFF HERE, MAYBE EXTRACT TO PRIVATE METHOD?
+        ItemKeyProvider<Long> itemKeyProvider = new StableIdKeyProvider(recyclerView);
+        ExerciseSelectionObserver observer = new ExerciseSelectionObserver(this);
+        ExerciseDragInitiatedListener exerciseDragListener = new ExerciseDragInitiatedListener();
+
+        SelectionTracker tracker = new SelectionTracker.Builder<>(
+                "selection tracker",
+                recyclerView,
+                itemKeyProvider,
+                new ExerciseDetailsLookup(recyclerView),
+                StorageStrategy.createLongStorage())
+                .withOnDragInitiatedListener(exerciseDragListener)
+                .build();
+
+        adapter.setTracker(tracker);
+        exerciseDragListener.setFields(tracker, recyclerView);
+        tracker.addObserver(observer);
     }
 
     @Override
@@ -64,4 +88,21 @@ public class EditActivity extends AppCompatActivity {
         Intent intent = new Intent(this, AddExerciseActivity.class);
         startActivityForResult(intent, ADD_EXERCISE_REQUEST);
     }
+
+    // Used to start the contextual action mode when an exercise is selected
+    void startExerciseActionMode(){
+        if (actionMode == null){
+            ExerciseSelectedActionMode newActionMode = new ExerciseSelectedActionMode();
+            newActionMode.setParentActivity(this);
+            actionMode = startActionMode(newActionMode);
+        }
+    }
+
+    // Called when the contextual action mode is ended
+    void finishExerciseActionMode(){
+        if (actionMode != null){
+            actionMode = null;
+        }
+    }
+
 }

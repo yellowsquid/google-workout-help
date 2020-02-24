@@ -2,6 +2,7 @@ package uk.ac.cam.cl.alpha.workout.mobile.adapter;
 
 import android.annotation.SuppressLint;
 import android.content.res.Resources;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.recyclerview.selection.SelectionTracker;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
@@ -17,11 +19,17 @@ import androidx.recyclerview.widget.RecyclerView;
 import uk.ac.cam.cl.alpha.workout.R;
 import uk.ac.cam.cl.alpha.workout.shared.Exercise;
 
-public class ExerciseAdapter extends ListAdapter<Exercise, ExerciseAdapter.ExerciseViewHolder> {
+public class ExerciseAdapter extends ListAdapter<Exercise, ExerciseViewHolder> {
     private static final DiffUtil.ItemCallback<Exercise> DIFF_CALLBACK = new ExerciseDiffCallback();
+    private SelectionTracker tracker;
 
     public ExerciseAdapter() {
         super(DIFF_CALLBACK);
+        this.setHasStableIds(true);
+    }
+
+    public void setTracker(SelectionTracker tracker) {
+        this.tracker = tracker;
     }
 
     @NonNull
@@ -35,33 +43,15 @@ public class ExerciseAdapter extends ListAdapter<Exercise, ExerciseAdapter.Exerc
     @Override
     public void onBindViewHolder(@NonNull ExerciseViewHolder holder, int position) {
         holder.setExercise(getItem(position));
+
+        if (tracker != null) {
+            holder.itemView.setActivated(tracker.isSelected(getItemId(position)));
+        }
     }
 
-    // Reference to the view of each data item.
-    static class ExerciseViewHolder extends RecyclerView.ViewHolder {
-        private final TextView nameTextView;
-        private final EditText durationNumberPicker;
-        private final ImageView exerciseImageView;
-
-
-        ExerciseViewHolder(View view) {
-            super(view);
-
-            nameTextView = view.findViewById(R.id.exercise_name);
-            durationNumberPicker = view.findViewById(R.id.exercise_duration);
-            exerciseImageView = view.findViewById(R.id.exerciseImageView);
-        }
-
-        void setExercise(Exercise exercise) {
-            Resources resources = nameTextView.getResources();
-            int duration = exercise.getDuration();
-            int name = exercise.getName();
-            nameTextView.setText(name);
-            durationNumberPicker.setText(resources.getString(R.string.pure_duration, duration),
-                                         TextView.BufferType.EDITABLE);
-            exerciseImageView.setBackgroundResource(exercise.getIcon());
-            exerciseImageView.setContentDescription(resources.getString(name));
-        }
+    @Override
+    public long getItemId(int position) {
+        return (long) position;
     }
 
     static class ExerciseDiffCallback extends DiffUtil.ItemCallback<Exercise> {
