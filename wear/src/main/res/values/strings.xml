@@ -7,5 +7,7 @@
     <string name="workout_icon">Workout Icon</string>
     <string name="exercise">Exercise</string>
     <string name="status">Status</string>
-    <string name="next_activity">Next: %s [%ds]</string>
+    <string name="next_activity">%s for [%ds]</string>
+    <string name="no_circuit_loaded">No circuit loaded</string>
+
 </resources>

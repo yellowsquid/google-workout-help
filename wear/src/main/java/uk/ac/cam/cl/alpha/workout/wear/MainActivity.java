@@ -1,6 +1,11 @@
 package uk.ac.cam.cl.alpha.workout.wear;
 
+import android.content.Context;
 import android.content.Intent;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.support.wearable.activity.WearableActivity;
 import android.util.Log;
@@ -13,9 +18,15 @@ import com.google.android.gms.wearable.MessageEvent;
 import com.google.android.gms.wearable.Wearable;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import uk.ac.cam.cl.alpha.workout.R;
+import uk.ac.cam.cl.alpha.workout.shared.BareCircuit;
+import uk.ac.cam.cl.alpha.workout.shared.Circuit;
 import uk.ac.cam.cl.alpha.workout.shared.Constants;
+import uk.ac.cam.cl.alpha.workout.shared.Exercise;
+import uk.ac.cam.cl.alpha.workout.shared.ExerciseType;
 import uk.ac.cam.cl.alpha.workout.shared.PureCircuit;
 import uk.ac.cam.cl.alpha.workout.shared.Serializer;
 import uk.ac.cam.cl.alpha.workout.shared.Signal;
@@ -55,15 +66,20 @@ public class MainActivity extends WearableActivity implements
         } else if (messagePath.equals(Constants.SIGNAL_PATH)) {
             switch ((Signal) message) {
                 case START:
-                    openSportActivity();
+                    if (circuit == null){
+                        statText.setText(R.string.no_circuit_loaded);
+                    } else {
+                        openSportActivity();
+                    }
+
                     break;
                 case STOP:
                 case PAUSE:
                 case RESUME:
-                    Log.w(TAG, "Signal not yet implemented");
+
             }
         } else {
-            Log.w(TAG, "Unknown message");
+            Log.w(TAG, "Unknown msg");
         }
     }
 
@@ -76,14 +92,37 @@ public class MainActivity extends WearableActivity implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        // Enables Always-on
+        setAmbientEnabled();
+
         setContentView(R.layout.activity_wait);
 
         Wearable.getMessageClient(this).addListener(this);
         statText = findViewById(R.id.statusText);
 
-        // Enables Always-on
-        setAmbientEnabled();
     }
-}
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        Wearable.getMessageClient(this).addListener(this);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        Wearable.getMessageClient(this).removeListener(this);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+
+    }
+  }
+
 
 

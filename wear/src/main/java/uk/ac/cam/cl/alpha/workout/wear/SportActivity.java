@@ -1,16 +1,28 @@
 package uk.ac.cam.cl.alpha.workout.wear;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Animatable;
+import android.graphics.drawable.AnimationDrawable;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.os.Bundle;
-import android.os.CountDownTimer;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
 import android.support.wearable.activity.WearableActivity;
 import android.util.Log;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+
+import com.google.android.gms.wearable.MessageClient;
+import com.google.android.gms.wearable.MessageEvent;
+import com.google.android.gms.wearable.Wearable;
 
 import java.io.IOException;
 import java.util.Locale;
@@ -18,179 +30,295 @@ import java.util.Locale;
 import uk.ac.cam.cl.alpha.workout.BuildConfig;
 import uk.ac.cam.cl.alpha.workout.R;
 import uk.ac.cam.cl.alpha.workout.shared.Circuit;
+import uk.ac.cam.cl.alpha.workout.shared.Constants;
 import uk.ac.cam.cl.alpha.workout.shared.Exercise;
+import uk.ac.cam.cl.alpha.workout.shared.PureCircuit;
+import uk.ac.cam.cl.alpha.workout.shared.PausableTimer;
 import uk.ac.cam.cl.alpha.workout.shared.Serializer;
+import uk.ac.cam.cl.alpha.workout.shared.Signal;
 
-public class SportActivity extends WearableActivity {
+public class SportActivity extends WearableActivity
+        implements SensorEventListener,
+            MessageClient.OnMessageReceivedListener{
     static final String CIRCUIT_ID = "uk.ac.cam.cl.alpha.workout.wear.CIRCUIT_ID";
-    private static final long EXERCISE_COUNTDOWN = 5L;
-    private static final String TAG = "SportActivity";
-    private static final long[] VIBRATION_PATTERN = {0, 500, 50, 800};
+    private static final long EXERCISE_COUNTDOWN = 5000L;
+    private static final long TICK_RATE = 100L;
+    private static final int MILLIS_IN_SECOND = 1000;
+    private static final String MESSAGE = "SportActivity";
+    private static final  long[] VIBRATION_PATTERN_LONG = {0, 500, 50, 800};
+    private static final  long[] VIBRATION_PATTERN_SHORT = {0, 500};
+
+
     private TextView activityText;
     private TextView timeText;
-    private ProgressBar progress;
-    private CountDownTimer startTimer;
-    private CountDownTimer workoutTimer;
+    private ProgressBar pBar;
+    private PausableTimer currentTimer;
     private ImageView iconStill;
+    private static Circuit cir;
+    private static int currentLap  = 0;     // Index of current lap
+    /**
+     * Index of current exercise, -1 as pre-increment in nextExercise()
+     */
+    private static int currentExerciseNo = -1;
+
+
+    // For detecting the activities
+    private SensorManager sensorManager;
+    private Sensor mAccelerometer;
+
+    private Exercise exercise;
+    private Boolean exerciseStarted = false;
+    private int count = 0;
+
 
     // Run on activity creation
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Log.d(TAG, "SportActivity Created");
+
         super.onCreate(savedInstanceState);
 
+        // Enables Always-on
+        setAmbientEnabled();
+
+        Wearable.getMessageClient(this).addListener(this);
         // Which view to use
         setContentView(R.layout.activity_sports);
 
         // Find elements in the view
         activityText = findViewById(R.id.exerciseName);
         timeText = findViewById(R.id.timeValue);
-        progress = findViewById(R.id.progressBar);
+        pBar = findViewById(R.id.progressBar);
 
         iconStill = findViewById(R.id.sportsIcon);
 
-        // Enables Always-on
-        setAmbientEnabled();
+
+        Wearable.getMessageClient(this).addListener(this);
 
         Intent intent = getIntent();
         byte[] serial = intent.getByteArrayExtra(CIRCUIT_ID);
         if (serial != null) {
             try {
-                Circuit circuit = (Circuit) Serializer.deserialize(serial);
-                workout(circuit, 0, 0);
-            } catch (IOException | ClassNotFoundException e) {
-                Log.e(TAG, "Failed to deserialize the circuit");
+                cir = (Circuit) Serializer.deserialize(serial);
+
+                nextExercise();
+            // TODO Duplication in catch clauses
+            } catch (IOException e) {
+                // TODO Logging
+                e.printStackTrace();
                 finish();
+            } catch (ClassNotFoundException e) {
+                // TODO Logging
+                e.printStackTrace();
+                finish();
+            }
+        }
+
+        sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+        if (sensorManager != null && sensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION) != null){
+            mAccelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION);
+        }
+    }
+
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        sensorManager.registerListener(this, mAccelerometer, SensorManager.SENSOR_DELAY_NORMAL);
+        Wearable.getMessageClient(this).addListener(this);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        sensorManager.unregisterListener(this);
+        Wearable.getMessageClient(this).removeListener(this);
+    }
+
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (currentTimer != null){
+            currentTimer.cancel();
+        }
+
+
+        Log.d(MESSAGE, "SportActivity Destroyed");
+    }
+
+    @Override
+    public void onSensorChanged(SensorEvent event) {
+        if (exerciseStarted){
+            if (detectActivities.detectActivity(event.values, event.timestamp, exercise)){
+                count ++;
             }
         }
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        workoutTimer.cancel();
-        startTimer.cancel();
-        Log.d(TAG, "SportActivity Destroyed");
+    public void onAccuracyChanged(Sensor sensor, int accuracy) {
+
     }
 
-    private void workout(Circuit circuit, int task, int lap) {
+    /**
+     * Displays progress in the current activity (exercise or rest)
+     * on the progress bar and textview.
+     * @param msRemaining
+     * @param msTotal
+     */
+    private void displayProgress(long msRemaining, long msTotal) {
+        // Progress Bar
+        // TODO Progress bar has max of 100, so limited resolution, maybe increase max & progress
+        int progress = Math.toIntExact(100 * (msTotal - msRemaining) / msTotal);
+        pBar.setProgress(progress);
 
-        // TODO: use iterator
+        // Timer display
+        double timeLeft = msRemaining / (double) MILLIS_IN_SECOND;
+
+        if (count == 0){
+            timeText.setText(String.format(Locale.getDefault(), "Time: %.0f s", timeLeft));
+        } else {
+            timeText.setText(String.format(Locale.getDefault(), "Time: %.0f s\nDone: %d", timeLeft, count));
+        }
+
+    }
+
+    /**
+     * Creates timers (5s start & exercise) for the next exercise
+     * in the circuit and starts them. If the end of the circuit has
+     * been reached the activity is closed.
+     */
+    private void nextExercise() {
+        ++currentExerciseNo;
         // Exits workout once done
-        if (task >= circuit.countExercises()) {
-            if (lap >= circuit.getLaps()) {
+        if (currentExerciseNo >= cir.countExercises()) {
+            // Finished last exercise in lap
+            if (currentLap >= cir.getLaps()) {
+                // Finished last lap
                 finish();
             } else {
-                workout(circuit, 0, lap + 1);
+                // More laps to go
+                currentExerciseNo = 0;
+                currentLap++;
+            }
+        }
+        // Update current variables
+        Exercise currentExercise = cir.getExercises().get(currentExerciseNo);
+        exercise = currentExercise;
+        long currentExerciseDuration_ms = currentExercise.getDuration() * (long) MILLIS_IN_SECOND;
+        String currentExerciseName = getResources().getString(currentExercise.getName());
+
+        if (BuildConfig.DEBUG) {
+            Log.d(MESSAGE, String.format("Init Task:Lap %d:%d", currentExerciseNo, currentLap));
+        }
+
+        // set test to countdown
+        int duration = currentExercise.getDuration();
+        String next = getResources().getString(R.string.next_activity, currentExerciseName, duration);
+        activityText.setText(next);
+
+        // Set Icon
+        iconStill.setBackgroundResource(currentExercise.getIcon());
+        final AnimationDrawable iconAnimated = (AnimationDrawable) iconStill.getBackground();
+        iconAnimated.start();
+
+        // Count down timer
+        PausableTimer exerciseTimer = new PausableTimer(currentExerciseDuration_ms, TICK_RATE) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+                displayProgress(millisUntilFinished,currentExerciseDuration_ms);
             }
 
+            // Ends activity
+            @Override
+            public void onFinish() {
+                if (BuildConfig.DEBUG) {
+                    Log.d(MESSAGE, String.format("Finished Task %d", currentExerciseNo));
+                }
+                pBar.setProgress(100);  // Should be unnecessary
+                hapticFeedback(new long[] {0, 500, 50, 800});
+
+                nextExercise();
+            }
+        };
+
+        // 5 second start timer
+        PausableTimer startTimer = new PausableTimer(EXERCISE_COUNTDOWN, TICK_RATE) {
+
+            @Override
+            public void onTick(long millisUntilFinished) {
+                displayProgress(millisUntilFinished,EXERCISE_COUNTDOWN);
+            }
+
+            @Override
+            public void onFinish() {
+                if (BuildConfig.DEBUG) {
+                    Log.d(MESSAGE, String.format("Started Task %d", currentExerciseNo));
+                }
+                pBar.setProgress(100);  // Should be unnecessary
+                hapticFeedback(new long[] {0, 500});
+                // Set text to exercise name
+                activityText.setText(currentExerciseName);
+
+                exerciseStarted = true;
+                count = 0;
+
+
+                currentTimer = exerciseTimer;
+                currentTimer.start();
+            }
+        };
+
+        currentTimer = startTimer;
+        currentTimer.start();
+    }
+
+
+    public void hapticFeedback(long[] vibrationPattern) {
+        Vibrator vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
+        //-1 - don't repeat
+        if (vibrator != null) {
+            // -1 means don't repeat
+            vibrator.vibrate(VibrationEffect.createWaveform(vibrationPattern, -1));
+        }
+    }
+
+    @Override
+    public void onMessageReceived(@NonNull MessageEvent messageEvent) {
+        String messagePath = messageEvent.getPath();
+
+        if(messageEvent.getData() == null) {
+            Log.d(MESSAGE, "Null Message Received");
             return;
         }
 
-        Exercise exercise = circuit.getExercise(task);
-        int duration = exercise.getDuration();
-        String exerciseName = getResources().getString(exercise.getName());
-
-        if (BuildConfig.DEBUG) {
-            Log.d(TAG, String.format("Init Task:Lap %d:%d", task, lap));
+        if (!(messagePath.equals(Constants.CIRCUIT_PATH) || messagePath.equals(Constants.SIGNAL_PATH)))  {
+            return;
         }
 
-        workoutTimer = new Timer(duration, progress::setProgress, this::setTimeLeft, () -> {
-            progress.setProgress(100);
-            hapticFeedback();
+        byte[] data = messageEvent.getData();
+        Object message;
 
-            if (BuildConfig.DEBUG) {
-                Log.d(TAG, String.format("Finished task %d", task));
+        try {
+            message = Serializer.deserialize(data);
+        } catch (ClassNotFoundException | IOException e) {
+            Log.e(MESSAGE, "Failed to receive message", e);
+            return;
+        }
+
+        if (messagePath.equals(Constants.SIGNAL_PATH)) {
+            switch ((Signal) message) {
+
+                case PAUSE:
+                    currentTimer.pause();
+                    break;
+                case RESUME:
+                    currentTimer.resume();
+                    break;
+
             }
-
-            workout(circuit, task + 1, lap);
-        });
-
-        // 5 second start timer
-        startTimer = new Timer(EXERCISE_COUNTDOWN, progress::setProgress, this::setTimeLeft, () -> {
-            // set text to workout name
-            activityText.setText(exerciseName);
-            workoutTimer.start();
-
-            if (BuildConfig.DEBUG) {
-                Log.d(TAG, String.format("Started task %d", task));
-            }
-        });
-
-        // set test to countdown
-        String next = getResources().getString(R.string.next_activity, exerciseName, duration);
-        activityText.setText(next);
-
-        //Set Icon
-        iconStill.setBackgroundResource(exercise.getIcon());
-        Animatable iconAnimated = (Animatable) iconStill.getBackground();
-        iconAnimated.start();
-
-        startTimer.start();
-    }
-
-    private void hapticFeedback() {
-        Vibrator vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
-
-        if (vibrator != null) {
-            // -1 means don't repeat
-            vibrator.vibrate(VibrationEffect.createWaveform(VIBRATION_PATTERN, -1));
-        }
-    }
-
-    private void setTimeLeft(double timeLeft) {
-        timeText.setText(String.format(Locale.getDefault(), "%02.0f", timeLeft));
-    }
-
-    @FunctionalInterface
-    private interface SetProgressCallback {
-        void setProgress(int progress);
-    }
-
-    @FunctionalInterface
-    private interface SetSecondsLeftCallback {
-        void setSecondsLeft(double timeLeft);
-    }
-
-    @FunctionalInterface
-    private interface OnFinished {
-        void onFinish();
-    }
-
-    private static class Timer extends CountDownTimer {
-        private static final long TICK_RATE = 100L;
-        private static final int MILLIS_IN_SECOND = 1000;
-        // Time in seconds.
-        private final long duration;
-        private final SetProgressCallback progressCallback;
-        private final SetSecondsLeftCallback secondsLeftCallback;
-        private final OnFinished onFinished;
-
-        Timer(long duration, SetProgressCallback progressCallback,
-              SetSecondsLeftCallback secondsLeftCallback, OnFinished onFinished) {
-            super(duration * MILLIS_IN_SECOND, TICK_RATE);
-            this.duration = duration * MILLIS_IN_SECOND;
-            this.progressCallback = progressCallback;
-            this.secondsLeftCallback = secondsLeftCallback;
-            this.onFinished = onFinished;
-        }
-
-        @Override
-        public void onTick(long millisUntilFinished) {
-            // Progress Bar
-            long remaining = duration - millisUntilFinished;
-            //noinspection NumericCastThatLosesPrecision
-            int progress = (int) ((100 * remaining) / duration);
-            progressCallback.setProgress(progress);
-
-            // Timer
-            double timeLeft = ((double) millisUntilFinished) / MILLIS_IN_SECOND;
-            secondsLeftCallback.setSecondsLeft(timeLeft);
-        }
-
-        @Override
-        public void onFinish() {
-            onFinished.onFinish();
+        } else {
+            Log.w(MESSAGE, "Unknown msg");
         }
     }
 }
