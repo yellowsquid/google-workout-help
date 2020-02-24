@@ -3,9 +3,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#212121"
+    android:background="@color/dark_grey"
     android:padding="@dimen/box_inset_layout_padding"
-    tools:application=".MainActivity"
+    tools:context="uk.ac.cam.cl.alpha.workout.wear.MainActivity"
     tools:deviceIds="wear">
 
     <ProgressBar
@@ -17,50 +17,81 @@
         android:progress="100"
         android:progressDrawable="@drawable/circular_progress_bar" />
 
-    <LinearLayout
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:duplicateParentState="false"
-        android:gravity="center"
-        android:orientation="vertical">
+        android:padding="@dimen/screen_percentage_15">
 
-
-        <TextView
-            android:id="@+id/exerciseName"
-            android:layout_width="92dp"
-            android:layout_height="wrap_content"
-            android:fontFamily="sans-serif-medium"
-            android:paddingBottom="10dp"
-            android:text="@string/exercise"
-            android:textAlignment="center"
-            android:textColor="#E0F7FA"
-            android:textSize="15sp" />
-
-        <FrameLayout
-            android:layout_width="55dp"
-            android:layout_height="55dp"
-            android:layout_gravity="center_horizontal|center_vertical"
-            android:background="@drawable/iconbackground">
-
-            <ImageView
-                android:id="@+id/sportsIcon"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:contentDescription="@string/workout_icon"
-                android:paddingHorizontal="@dimen/screen_percentage_15" />
-        </FrameLayout>
-
-        <TextView
-            android:id="@+id/timeValue"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:fontFamily="sans-serif-medium"
-            android:paddingTop="10dp"
-            android:textAlignment="center"
-            android:textColor="#E0F7FA"
-            android:textIsSelectable="true"
-            android:textSize="15sp" />
+            android:layout_height="match_parent"
+            android:duplicateParentState="false"
+            android:gravity="center"
+            android:orientation="vertical">
 
-    </LinearLayout>
+
+            <TextView
+                android:id="@+id/exerciseName"
+                android:layout_width="92dp"
+                android:layout_height="wrap_content"
+                android:fontFamily="sans-serif-medium"
+                android:paddingBottom="10dp"
+                android:text="Exercise"
+                android:textAlignment="center"
+                android:textColor="#E0F7FA"
+                android:textSize="15dp" />
+
+            <FrameLayout
+                android:layout_width="55dp"
+                android:layout_height="55dp"
+                android:layout_gravity="center_horizontal|center_vertical"
+                android:background="@drawable/iconbackground">
+
+                <ImageView
+                    android:id="@+id/sportsIcon"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:contentDescription="@string/workout_icon"
+                    android:paddingHorizontal="@dimen/screen_percentage_15" />
+            </FrameLayout>
+
+            <TextView
+                android:id="@+id/timeValue"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="sans-serif-medium"
+                android:paddingTop="10dp"
+                android:text="00.0"
+                android:textAlignment="center"
+                android:textColor="#E0F7FA"
+                android:textSize="15dp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/pauseButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Pause"
+                    android:visibility="visible" />
+
+                <Button
+                    android:id="@+id/playButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Play"
+                    android:visibility="visible" />
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </FrameLayout>
 
 </androidx.wear.widget.BoxInsetLayout>
+
+

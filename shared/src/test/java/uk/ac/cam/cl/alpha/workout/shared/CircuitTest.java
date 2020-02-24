@@ -25,7 +25,7 @@ public class CircuitTest {
         exercises.add(Exercise.create(0, 30, 2, ExerciseType.RUSSIAN_TWISTS));
         exercises.add(Exercise.create(0, 30, 3, ExerciseType.SITUPS));
         exercises.add(Exercise.create(0, 15, 4, ExerciseType.REST));
-        PureCircuit pureCircuit = BareCircuit.create(0, "fred", 3);
+        BareCircuit pureCircuit = BareCircuit.create(0, "fred", 3);
         circuit = new Circuit(pureCircuit, exercises);
     }
 

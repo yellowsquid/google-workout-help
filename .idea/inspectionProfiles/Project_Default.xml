@@ -866,6 +866,7 @@
           <option value="NonFinalStaticVariableUsedInClassInitialization" />
           <option value="NumericCastThatLosesPrecision" />
           <option value="StaticVariableUsedBeforeInitialization" />
+          <option value="AbstractMethodOverridesAbstractMethod" />
         </list>
       </option>
     </inspection_tool>
