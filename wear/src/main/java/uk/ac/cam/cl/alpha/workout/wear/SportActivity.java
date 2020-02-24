@@ -3,6 +3,7 @@ package uk.ac.cam.cl.alpha.workout.wear;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Animatable;
+import android.graphics.drawable.AnimationDrawable;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -40,10 +41,14 @@ public class SportActivity extends WearableActivity
         implements SensorEventListener,
             MessageClient.OnMessageReceivedListener{
     static final String CIRCUIT_ID = "uk.ac.cam.cl.alpha.workout.wear.CIRCUIT_ID";
-    private static final long EXERCISE_COUNTDOWN = 5L;
-    private static final String TAG = "SportActivity";
+    private static final long EXERCISE_COUNTDOWN = 5000L;
+    private static final long TICK_RATE = 100L;
+    private static final int MILLIS_IN_SECOND = 1000;
+    private static final String MESSAGE = "SportActivity";
     private static final  long[] VIBRATION_PATTERN_LONG = {0, 500, 50, 800};
     private static final  long[] VIBRATION_PATTERN_SHORT = {0, 500};
+
+
     private TextView activityText;
     private TextView timeText;
     private ProgressBar pBar;
@@ -55,8 +60,6 @@ public class SportActivity extends WearableActivity
      * Index of current exercise, -1 as pre-increment in nextExercise()
      */
     private static int currentExerciseNo = -1;
-    private Button resumeButton;
-    private Button pauseButton;
 
 
     // For detecting the activities
@@ -65,6 +68,8 @@ public class SportActivity extends WearableActivity
 
     private Exercise exercise;
     private Boolean exerciseStarted = false;
+    private int count = 0;
+
 
     // Run on activity creation
     @Override
@@ -108,7 +113,6 @@ public class SportActivity extends WearableActivity
             }
         }
 
-        //======================NEW=======================================
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         if (sensorManager != null && sensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION) != null){
             mAccelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION);
@@ -139,7 +143,21 @@ public class SportActivity extends WearableActivity
         }
 
 
-        Log.d(TAG, "SportActivity Destroyed");
+        Log.d(MESSAGE, "SportActivity Destroyed");
+    }
+
+    @Override
+    public void onSensorChanged(SensorEvent event) {
+        if (exerciseStarted){
+            if (detectActivities.detectActivity(event.values, event.timestamp, exercise)){
+                count ++;
+            }
+        }
+    }
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int accuracy) {
+
     }
 
     /**
@@ -156,7 +174,13 @@ public class SportActivity extends WearableActivity
 
         // Timer display
         double timeLeft = msRemaining / (double) MILLIS_IN_SECOND;
-        timeText.setText(String.format(Locale.getDefault(), "%.1f", timeLeft));
+
+        if (count == 0){
+            timeText.setText(String.format(Locale.getDefault(), "Time: %.0f s", timeLeft));
+        } else {
+            timeText.setText(String.format(Locale.getDefault(), "Time: %.0f s\nDone: %d", timeLeft, count));
+        }
+
     }
 
     /**
@@ -180,6 +204,7 @@ public class SportActivity extends WearableActivity
         }
         // Update current variables
         Exercise currentExercise = cir.getExercises().get(currentExerciseNo);
+        exercise = currentExercise;
         long currentExerciseDuration_ms = currentExercise.getDuration() * (long) MILLIS_IN_SECOND;
         String currentExerciseName = getResources().getString(currentExercise.getName());
 
@@ -231,9 +256,13 @@ public class SportActivity extends WearableActivity
                     Log.d(MESSAGE, String.format("Started Task %d", currentExerciseNo));
                 }
                 pBar.setProgress(100);  // Should be unnecessary
-                // TODO Haptic feedback?
+                hapticFeedback(new long[] {0, 500});
                 // Set text to exercise name
                 activityText.setText(currentExerciseName);
+
+                exerciseStarted = true;
+                count = 0;
+
 
                 currentTimer = exerciseTimer;
                 currentTimer.start();
@@ -256,23 +285,40 @@ public class SportActivity extends WearableActivity
 
     @Override
     public void onMessageReceived(@NonNull MessageEvent messageEvent) {
+        String messagePath = messageEvent.getPath();
 
-        if (messageEvent.getPath().equals("/circuit_path_name")) {
-            byte[] data = messageEvent.getData();
-            try {
-                Object message = Serializer.deserialize(data);
+        if(messageEvent.getData() == null) {
+            Log.d(MESSAGE, "Null Message Received");
+            return;
+        }
 
-                if (message == Signal.PAUSE) {
-                    //call the pauseButton function
+        if (!(messagePath.equals(Constants.CIRCUIT_PATH) || messagePath.equals(Constants.SIGNAL_PATH)))  {
+            return;
+        }
+
+        byte[] data = messageEvent.getData();
+        Object message;
+
+        try {
+            message = Serializer.deserialize(data);
+        } catch (ClassNotFoundException | IOException e) {
+            Log.e(MESSAGE, "Failed to receive message", e);
+            return;
+        }
+
+        if (messagePath.equals(Constants.SIGNAL_PATH)) {
+            switch ((Signal) message) {
+
+                case PAUSE:
                     currentTimer.pause();
-                } else if (message == Signal.RESUME) {
-                    //call the resume function
+                    break;
+                case RESUME:
                     currentTimer.resume();
-                }
+                    break;
 
-            } catch (ClassNotFoundException | IOException e) {
-                System.err.println("Failed to receive message");
             }
+        } else {
+            Log.w(MESSAGE, "Unknown msg");
         }
     }
 }
