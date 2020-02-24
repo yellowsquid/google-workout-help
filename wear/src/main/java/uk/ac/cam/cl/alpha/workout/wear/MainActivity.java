@@ -30,8 +30,8 @@ public class MainActivity extends WearableActivity implements
     public void onMessageReceived(@NonNull MessageEvent messageEvent) {
         String messagePath = messageEvent.getPath();
 
-        // FIXME: crashes if circuit is null.
         if(messageEvent.getData() == null) {
+            Log.d(TAG, "Null Message Received");
             return;
         }
 
