@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import uk.ac.cam.cl.alpha.workout.R;
 import uk.ac.cam.cl.alpha.workout.mobile.adapter.ExerciseAdapter;
+import uk.ac.cam.cl.alpha.workout.mobile.adapter.NumberWatcher;
 import uk.ac.cam.cl.alpha.workout.mobile.drag.ExerciseDetailsLookup;
 import uk.ac.cam.cl.alpha.workout.mobile.drag.ExerciseDragEventListener;
 import uk.ac.cam.cl.alpha.workout.mobile.drag.ExerciseDragInitiatedListener;
@@ -46,10 +47,11 @@ public class EditActivity extends AppCompatActivity {
         model = new ViewModelProvider(this).get(CircuitEditModel.class);
         model.setCircuitId(circuit);
 
-        EditText numLapsEditText = findViewById(R.id.numLapsEditText);
+        EditText lapsText = findViewById(R.id.numLapsEditText);
         Resources resources = getResources();
-        model.getLaps().observe(this, laps -> numLapsEditText
+        model.getLaps().observe(this, laps -> lapsText
                 .setText(resources.getString(R.string.pure_laps, laps)));
+        lapsText.addTextChangedListener((NumberWatcher) number -> model.updateLaps(number));
 
         RecyclerView recyclerView = findViewById(R.id.circuitEditRecyclerView);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
@@ -119,5 +121,9 @@ public class EditActivity extends AppCompatActivity {
 
     public CircuitEditModel getModel() {
         return model;
+    }
+
+    public void deleteSelected() {
+        model.deleteExercises(tracker.getSelection());
     }
 }

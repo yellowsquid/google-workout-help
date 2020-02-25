@@ -13,6 +13,13 @@ public class Task<T> implements Callable<T> {
         this.callable = callable;
     }
 
+    public Task(Runnable runnable) {
+        callable = () -> {
+            runnable.run();
+            return null;
+        };
+    }
+
     public static <T> Task<T[]> group(T[] array, Task<T>... tasks) {
         return group(Arrays.stream(tasks))
                 .chain(stream -> stream.collect(Collectors.toList()).toArray(array));

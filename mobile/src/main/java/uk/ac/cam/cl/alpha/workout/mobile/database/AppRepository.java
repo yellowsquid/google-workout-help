@@ -79,10 +79,29 @@ public final class AppRepository {
 
     public Task<?> updateExerciseDuration(long circuitId, int position, int duration) {
         return new Task<>(() -> {
-            ExerciseType type = database.getExerciseDao().getType(circuitId, position);
+            ExerciseDao exerciseDao = database.getExerciseDao();
+            ExerciseType type = exerciseDao.getType(circuitId, position);
             Exercise exercise = Exercise.create(circuitId, position, duration, type);
-            database.getExerciseDao().updateExercise(exercise);
-            return null;
+            exerciseDao.updateExercise(exercise);
+        });
+    }
+
+    public Task<?> deleteExercises(List<Exercise> exercises) {
+        return new Task<>(() -> database.getExerciseDao().deleteExercises(exercises));
+    }
+
+    public Task<?> updateLaps(long circuitId, int laps) {
+        return new Task<>(() -> {
+            CircuitDao circuitDao = database.getCircuitDao();
+            int oldLaps = circuitDao.getLapsNow(circuitId);
+
+            if (laps == oldLaps) {
+                return;
+            }
+
+            String name = circuitDao.getNameNow(circuitId);
+            BareCircuit circuit = BareCircuit.create(circuitId, name, laps);
+            circuitDao.updateCircuit(circuit);
         });
     }
 }
