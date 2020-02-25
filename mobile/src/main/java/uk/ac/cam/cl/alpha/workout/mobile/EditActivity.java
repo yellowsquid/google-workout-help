@@ -134,5 +134,6 @@ public class EditActivity extends AppCompatActivity {
 
     public void deleteSelected() {
         model.deleteExercises(tracker.getSelection());
+        tracker.clearSelection();
     }
 }
