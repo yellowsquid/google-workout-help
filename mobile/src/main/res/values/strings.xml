@@ -11,8 +11,8 @@
     <string name="duration">Duration</string>
     <string name="name">Name</string>
     <string name="rest_time">Rest Time</string>
-    <string name="duration_is">Duration: %d</string>
-    <string name="rest_is">Rest: %d</string>
+    <string name="duration_is">Duration: %s</string>
+    <string name="rest_is">Rest: %s</string>
     <string name="laps_is">Laps: %d</string>
     <string name="pure_duration">%d</string>
     <string name="pure_laps">%d</string>
