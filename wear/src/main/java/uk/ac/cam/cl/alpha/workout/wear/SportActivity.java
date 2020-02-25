@@ -52,12 +52,12 @@ public class SportActivity extends WearableActivity
     private ProgressBar pBar;
     private PausableTimer currentTimer;
     private ImageView iconStill;
-    private static Circuit cir;
-    private static int currentLap  = 0;     // Index of current lap
+    private Circuit cir;
+    private int currentLap;     // Index of current lap
     /**
      * Index of current exercise, -1 as pre-increment in nextExercise()
      */
-    private static int currentExerciseNo = -1;
+    private int currentExerciseNo = -1;
 
 
     // For detecting the activities
@@ -66,7 +66,7 @@ public class SportActivity extends WearableActivity
 
     private Exercise exercise;
     private Boolean exerciseStarted = false;
-    private int count = 0;
+    private int count;
 
 
     // Run on activity creation
@@ -100,8 +100,7 @@ public class SportActivity extends WearableActivity
 
                 nextExercise();
             } catch (IOException | ClassNotFoundException e) {
-                // TODO: More robust logging
-                e.printStackTrace();
+                Log.d(MESSAGE, "Issue de-serializing circuit");
                 finish();
             }
         }
@@ -212,7 +211,7 @@ public class SportActivity extends WearableActivity
 
         // Set Icon
         iconStill.setBackgroundResource(currentExercise.getIcon());
-        final AnimationDrawable iconAnimated = (AnimationDrawable) iconStill.getBackground();
+        AnimationDrawable iconAnimated = (AnimationDrawable) iconStill.getBackground();
         iconAnimated.start();
 
         // Count down timer
