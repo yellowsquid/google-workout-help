@@ -42,7 +42,7 @@ public class MainActivity extends WearableActivity implements
         String messagePath = messageEvent.getPath();
 
         if(messageEvent.getData() == null) {
-            Log.d(TAG, "Null Message Received");
+            Log.d(TAG, SportActivity.NULL_MESSAGE_RECEIVED);
             return;
         }
 
@@ -56,7 +56,7 @@ public class MainActivity extends WearableActivity implements
         try {
             message = Serializer.deserialize(data);
         } catch (ClassNotFoundException | IOException e) {
-            Log.e(TAG, "Failed to receive message", e);
+            Log.e(TAG, SportActivity.FAILED_TO_RECEIVE_MESSAGE, e);
             return;
         }
 
@@ -105,14 +105,12 @@ public class MainActivity extends WearableActivity implements
     @Override
     protected void onResume() {
         super.onResume();
-
         Wearable.getMessageClient(this).addListener(this);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-
         Wearable.getMessageClient(this).removeListener(this);
     }
 

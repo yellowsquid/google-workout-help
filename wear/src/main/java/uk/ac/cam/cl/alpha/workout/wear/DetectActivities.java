@@ -4,57 +4,55 @@ import android.util.Log;
 
 import uk.ac.cam.cl.alpha.workout.shared.Exercise;
 
-public class detectActivities {
-    private static long lastActivity = 0L;
-    private static float lastZ = 0;
+public enum DetectActivities {
+    ;
+    private static long lastActivity;
+    private static float lastZ;
 
     // custom helper values
-    private static long lastDown = 0L;
-
+    private static long lastDown ;
 
     static boolean detectActivity(float[] values, long timestamp, Exercise exercise){
-        float X = values[0];
-        float Y = values[1];
-        float Z = values[2];
+        float x = values[0];
+        float y = values[1];
+        float z = values[2];
         boolean result = false;
-        //Todo: Fix so works with enum
-        switch (""+exercise.getExerciseType()){
-            case "STAR_JUMPS":
-                result = detectStarJump(X, Z, timestamp);
-                break;
-            case "SQUATS":
-                //result = detectSquat(X, Z, timestamp);
-                break;
-            case "BURPEES":
-                result = detectBurpee(X, Z, timestamp);
-                break;
-            case "SITUPS":
-                result = detectSitup(X, Z, timestamp);
-                break;
-            case "PUSHUPS":
-              //  result = detectPushup(X, Z, timestamp);
-                break;
-            case "RUSSIAN_TWISTS":
-                result = detectRussianTwist(X, Y, timestamp);
-                break;
-            default:
-
-                result = false;
-
-        }
 
 
-        lastZ = Z;
+        switch (exercise.getExerciseType()){
+                        case STAR_JUMPS:
+                            result = detectStarJump(x, z, timestamp);
+                            break;
+                        case SQUATS:
+                            //result = detectSquat(x, Z, timestamp);
+                            break;
+                        case BURPEES:
+                            result = detectBurpee(x, z, timestamp);
+                            break;
+                        case SITUPS:
+                            result = detectSitup(x, z, timestamp);
+                            break;
+                        case PUSHUPS:
+                          //  result = detectPushup(x, Z, timestamp);
+                            break;
+                        case RUSSIAN_TWISTS:
+                            result = detectRussianTwist(x, y, timestamp);
+                            break;
+                        default:
+                            result = false;
+                    }
+
+        lastZ = z;
 
         return result;
     }
 
     //
-    private static boolean detectStarJump(float X, float Z, long timestamp){
+    private static boolean detectStarJump(float x, float z, long timestamp){
         boolean done = false;
         long minimumPause = 400000000;
         // Stopping upwards = 1 jump
-        if (X+Z < -12 && lastZ > 3){
+        if (x+z < -12 && lastZ > 3){
             // Don't count same jump multiple times
             if (timestamp-lastActivity > minimumPause){
                 Log.d("StarJump------", "StarJump");
@@ -68,14 +66,14 @@ public class detectActivities {
 
 
 
-    public static boolean detectSquat(float X, float Z, long timestamp){
+    public static boolean detectSquat(float x, float z, long timestamp){
         boolean done = false;
         long minimumPause = 600000000L;
         long minUp =        400000000L;
         long maxUp =       2000000000L;
-        if (X+Z < -1.3){
+        if (x+z < -1.3){
             lastDown = timestamp;
-        } else if (X+Z > 1.5 && timestamp-lastDown < maxUp && timestamp-lastDown > minUp){
+        } else if (x+z > 1.5 && timestamp-lastDown < maxUp && timestamp-lastDown > minUp){
             // Don't count same squat multiple times
             if (timestamp-lastActivity > minimumPause){
                 Log.d("Squat------", "UP ");
@@ -88,15 +86,15 @@ public class detectActivities {
     }
 
 
-    private static boolean detectBurpee(float X, float Z, long timestamp){
+    private static boolean detectBurpee(float x, float z, long timestamp){
         boolean done = false;
         long minimumPause = 1500000000L;
 
         long maxUp =         800000000L;
         // Stopping upwards = 1 jump
-        if (X+Z < -9){
+        if (x+z < -9){
             lastDown = timestamp;
-        } else if (X+Z > 2 && timestamp-lastDown < maxUp){
+        } else if (x+z > 2 && timestamp-lastDown < maxUp){
             // Don't count same jump multiple times
             if (timestamp-lastActivity > minimumPause){
                 Log.d("Burpee------", "Burpee");
@@ -107,7 +105,7 @@ public class detectActivities {
         return done;
     }
 
-    private static boolean detectSitup(float X, float Z, long timestamp){
+    private static boolean detectSitup(float x, float z, long timestamp){
 
 
         boolean done = false;
@@ -115,9 +113,9 @@ public class detectActivities {
         long minUp =        500000000L;
         long maxUp =        2500000000L;
         // Stopping upwards = 1 jump
-        if (X+Z < -5){
+        if (x+z < -5){
             lastDown = timestamp;
-        } else if (X+Z > 0.2 && timestamp-lastDown < maxUp && timestamp-lastDown > minUp){
+        } else if (x+z > 0.2 && timestamp-lastDown < maxUp && timestamp-lastDown > minUp){
             // Don't count same squat multiple times
             if (timestamp-lastActivity > minimumPause){
                 Log.d("SITUP------", "SITUP ");
@@ -128,14 +126,14 @@ public class detectActivities {
         return done;
     }
 
-    public static boolean detectPushup(float X, float Z, long timestamp){
+    public static boolean detectPushup(float x, float z, long timestamp){
         boolean done = false;
         long minimumPause = 600000000L;
         long maxUp =        2000000000L;
         // Stopping upwards = 1 jump
-        if (X+Z > 0.4){
+        if (x+z > 0.4){
             lastDown = timestamp;
-        } else if (X+Z < -0.4 && timestamp-lastDown < maxUp){
+        } else if (x+z < -0.4 && timestamp-lastDown < maxUp){
             // Don't count same squat multiple times
             if (timestamp-lastActivity > minimumPause){
                 Log.d("Pushup------", "Pushup");
@@ -147,15 +145,15 @@ public class detectActivities {
     }
 
     private static boolean first = true;
-    private static boolean detectRussianTwist(float X, float Y, long timestamp){
+    private static boolean detectRussianTwist(float x, float y, long timestamp){
 
         boolean done = false;
         long minimumPause = 400000000L;
         long maxUp =        2500000000L;
         // Stopping upwards = 1 jump
-        if (X+Y < -1){
+        if (x+y < -1){
             lastDown = timestamp;
-        } else if (X+Y > 1 && timestamp-lastDown < maxUp){
+        } else if (x+y > 1 && timestamp-lastDown < maxUp){
             // Don't count same squat multiple times
             if (timestamp-lastActivity > minimumPause){
                 Log.d("Twist------", "Twist");

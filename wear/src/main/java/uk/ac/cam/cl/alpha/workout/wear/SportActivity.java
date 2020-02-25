@@ -2,7 +2,6 @@ package uk.ac.cam.cl.alpha.workout.wear;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.drawable.Animatable;
 import android.graphics.drawable.AnimationDrawable;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -13,7 +12,6 @@ import android.os.VibrationEffect;
 import android.os.Vibrator;
 import android.support.wearable.activity.WearableActivity;
 import android.util.Log;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -32,7 +30,6 @@ import uk.ac.cam.cl.alpha.workout.R;
 import uk.ac.cam.cl.alpha.workout.shared.Circuit;
 import uk.ac.cam.cl.alpha.workout.shared.Constants;
 import uk.ac.cam.cl.alpha.workout.shared.Exercise;
-import uk.ac.cam.cl.alpha.workout.shared.PureCircuit;
 import uk.ac.cam.cl.alpha.workout.shared.PausableTimer;
 import uk.ac.cam.cl.alpha.workout.shared.Serializer;
 import uk.ac.cam.cl.alpha.workout.shared.Signal;
@@ -47,7 +44,8 @@ public class SportActivity extends WearableActivity
     private static final String MESSAGE = "SportActivity";
     private static final  long[] VIBRATION_PATTERN_LONG = {0, 500, 50, 800};
     private static final  long[] VIBRATION_PATTERN_SHORT = {0, 500};
-
+    public static final String NULL_MESSAGE_RECEIVED = "Null Message Received";
+    public static final String FAILED_TO_RECEIVE_MESSAGE = "Failed to receive message";
 
     private TextView activityText;
     private TextView timeText;
@@ -144,7 +142,7 @@ public class SportActivity extends WearableActivity
     @Override
     public void onSensorChanged(SensorEvent event) {
         if (exerciseStarted){
-            if (detectActivities.detectActivity(event.values, event.timestamp, exercise)){
+            if (DetectActivities.detectActivity(event.values, event.timestamp, exercise)){
                 count ++;
             }
         }
@@ -283,7 +281,7 @@ public class SportActivity extends WearableActivity
         String messagePath = messageEvent.getPath();
 
         if(messageEvent.getData() == null) {
-            Log.d(MESSAGE, "Null Message Received");
+            Log.d(MESSAGE, NULL_MESSAGE_RECEIVED);
             return;
         }
 
@@ -297,7 +295,7 @@ public class SportActivity extends WearableActivity
         try {
             message = Serializer.deserialize(data);
         } catch (ClassNotFoundException | IOException e) {
-            Log.e(MESSAGE, "Failed to receive message", e);
+            Log.e(MESSAGE, FAILED_TO_RECEIVE_MESSAGE, e);
             return;
         }
 
