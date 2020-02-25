@@ -10,6 +10,7 @@ import androidx.room.Update;
 import java.util.List;
 
 import uk.ac.cam.cl.alpha.workout.shared.Exercise;
+import uk.ac.cam.cl.alpha.workout.shared.ExerciseType;
 
 @Dao
 interface ExerciseDao {
@@ -30,4 +31,7 @@ interface ExerciseDao {
 
     @Query("SELECT count(*) FROM exercises WHERE circuit_id = :circuitId")
     int countExercises(long circuitId);
+
+    @Query("SELECT type FROM exercises WHERE circuit_id = :circuitId AND position = :position")
+    ExerciseType getType(long circuitId, int position);
 }

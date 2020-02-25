@@ -1,8 +1,7 @@
-package uk.ac.cam.cl.alpha.workout.mobile;
+package uk.ac.cam.cl.alpha.workout.mobile.drag;
 
 import android.content.ClipData;
 import android.content.ClipDescription;
-import android.content.Intent;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -18,7 +17,7 @@ public class ExerciseDragInitiatedListener implements OnDragInitiatedListener {
     private SelectionTracker<Long> registeredTracker;
     private RecyclerView recyclerView;
 
-    void setFields(SelectionTracker<Long> theTracker, RecyclerView theRecyclerView){
+    public void setFields(SelectionTracker<Long> theTracker, RecyclerView theRecyclerView) {
         registeredTracker = theTracker;
         recyclerView = theRecyclerView;
     }

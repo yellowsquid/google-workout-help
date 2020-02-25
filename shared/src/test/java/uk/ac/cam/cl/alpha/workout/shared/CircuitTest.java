@@ -20,11 +20,11 @@ public class CircuitTest {
     @Before
     public void setUp() {
         List<Exercise> exercises = new ArrayList<>(5);
-        exercises.add(Exercise.create(0, 30, 0, ExerciseType.BURPEES));
-        exercises.add(Exercise.create(0, 30, 1, ExerciseType.STAR_JUMPS));
-        exercises.add(Exercise.create(0, 30, 2, ExerciseType.RUSSIAN_TWISTS));
-        exercises.add(Exercise.create(0, 30, 3, ExerciseType.SITUPS));
-        exercises.add(Exercise.create(0, 15, 4, ExerciseType.REST));
+        exercises.add(Exercise.create(0, 0, 30, ExerciseType.BURPEES));
+        exercises.add(Exercise.create(0, 1, 30, ExerciseType.STAR_JUMPS));
+        exercises.add(Exercise.create(0, 2, 30, ExerciseType.RUSSIAN_TWISTS));
+        exercises.add(Exercise.create(0, 3, 30, ExerciseType.SITUPS));
+        exercises.add(Exercise.create(0, 4, 15, ExerciseType.REST));
         BareCircuit pureCircuit = BareCircuit.create(0, "fred", 3);
         circuit = new Circuit(pureCircuit, exercises);
     }

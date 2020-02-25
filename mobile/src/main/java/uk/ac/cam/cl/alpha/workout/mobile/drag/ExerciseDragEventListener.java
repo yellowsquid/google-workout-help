@@ -1,4 +1,4 @@
-package uk.ac.cam.cl.alpha.workout.mobile;
+package uk.ac.cam.cl.alpha.workout.mobile.drag;
 
 import android.content.ClipData;
 import android.content.ClipDescription;
@@ -11,15 +11,11 @@ public class ExerciseDragEventListener implements View.OnDragListener {
     @Override
     public boolean onDrag(View v, DragEvent event) {
 
-        final int action = event.getAction();
+        int action = event.getAction();
 
         switch (action){
             case DragEvent.ACTION_DRAG_STARTED:
-                if (event.getClipDescription().hasMimeType(ClipDescription.MIMETYPE_TEXT_PLAIN)){
-                    return true;
-                } else {
-                    return false;
-                }
+                return event.getClipDescription().hasMimeType(ClipDescription.MIMETYPE_TEXT_PLAIN);
             // Deliberate fall through, ignore these events
             case DragEvent.ACTION_DRAG_ENTERED:
             case DragEvent.ACTION_DRAG_LOCATION:

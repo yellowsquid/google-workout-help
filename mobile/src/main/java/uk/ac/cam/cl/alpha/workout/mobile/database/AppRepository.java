@@ -76,4 +76,13 @@ public final class AppRepository {
     public LiveData<String> getCircuitName(long circuitId) {
         return database.getCircuitDao().getName(circuitId);
     }
+
+    public Task<?> updateExerciseDuration(long circuitId, int position, int duration) {
+        return new Task<>(() -> {
+            ExerciseType type = database.getExerciseDao().getType(circuitId, position);
+            Exercise exercise = Exercise.create(circuitId, position, duration, type);
+            database.getExerciseDao().updateExercise(exercise);
+            return null;
+        });
+    }
 }

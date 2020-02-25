@@ -19,8 +19,12 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import uk.ac.cam.cl.alpha.workout.R;
 import uk.ac.cam.cl.alpha.workout.mobile.adapter.ExerciseAdapter;
+import uk.ac.cam.cl.alpha.workout.mobile.drag.ExerciseDetailsLookup;
+import uk.ac.cam.cl.alpha.workout.mobile.drag.ExerciseDragEventListener;
+import uk.ac.cam.cl.alpha.workout.mobile.drag.ExerciseDragInitiatedListener;
+import uk.ac.cam.cl.alpha.workout.mobile.drag.ExerciseSelectedActionMode;
+import uk.ac.cam.cl.alpha.workout.mobile.drag.ExerciseSelectionObserver;
 import uk.ac.cam.cl.alpha.workout.mobile.model.CircuitEditModel;
-import uk.ac.cam.cl.alpha.workout.shared.Exercise;
 import uk.ac.cam.cl.alpha.workout.shared.ExerciseType;
 
 public class EditActivity extends AppCompatActivity {
@@ -49,7 +53,7 @@ public class EditActivity extends AppCompatActivity {
 
         RecyclerView recyclerView = findViewById(R.id.circuitEditRecyclerView);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
-        ExerciseAdapter adapter = new ExerciseAdapter();
+        ExerciseAdapter adapter = new ExerciseAdapter(model::updateItemDuration);
         model.getExercises().observe(this, adapter::submitList);
 
         recyclerView.setLayoutManager(layoutManager);
@@ -83,7 +87,7 @@ public class EditActivity extends AppCompatActivity {
         if (requestCode == ADD_EXERCISE_REQUEST && resultCode == RESULT_OK) {
             ExerciseType type =
                     (ExerciseType) data.getSerializableExtra(AddExerciseActivity.EXERCISE_ID);
-            model.dispatch(model.appendExercise(type));
+            model.appendExercise(type);
         }
     }
 
@@ -93,17 +97,18 @@ public class EditActivity extends AppCompatActivity {
     }
 
     // Used to start the contextual action mode when an exercise is selected
-    void startExerciseActionMode(){
+    public void startExerciseActionMode() {
         if (actionMode == null) {
             actionMode = startActionMode(new ExerciseSelectedActionMode(this));
         }
     }
 
     // Called when the contextual action mode is ended
-    void finishExerciseActionMode(){
+    public void finishExerciseActionMode() {
         if (tracker != null) {
             tracker.clearSelection();
         }
+
         actionMode = null;
     }
 

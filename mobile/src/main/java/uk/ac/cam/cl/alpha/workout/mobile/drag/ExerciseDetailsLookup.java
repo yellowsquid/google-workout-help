@@ -1,4 +1,4 @@
-package uk.ac.cam.cl.alpha.workout.mobile;
+package uk.ac.cam.cl.alpha.workout.mobile.drag;
 
 import android.view.MotionEvent;
 import android.view.View;
@@ -14,7 +14,7 @@ public class ExerciseDetailsLookup extends ItemDetailsLookup<Long> {
 
     private final RecyclerView recyclerView;
 
-    ExerciseDetailsLookup(RecyclerView theRecyclerView){
+    public ExerciseDetailsLookup(RecyclerView theRecyclerView) {
         recyclerView = theRecyclerView;
     }
 

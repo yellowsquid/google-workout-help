@@ -1,22 +1,21 @@
-package uk.ac.cam.cl.alpha.workout.mobile;
+package uk.ac.cam.cl.alpha.workout.mobile.drag;
 
+import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
-import android.view.ActionMode;
-
 import java.util.List;
 
 import uk.ac.cam.cl.alpha.workout.R;
-import uk.ac.cam.cl.alpha.workout.mobile.model.CircuitEditModel;
+import uk.ac.cam.cl.alpha.workout.mobile.EditActivity;
 import uk.ac.cam.cl.alpha.workout.shared.Exercise;
 
 public class ExerciseSelectedActionMode implements ActionMode.Callback {
 
     private final EditActivity parentActivity;
 
-    ExerciseSelectedActionMode(EditActivity theParentActivity) {
+    public ExerciseSelectedActionMode(EditActivity theParentActivity) {
         parentActivity = theParentActivity;
     }
 
@@ -56,6 +55,7 @@ public class ExerciseSelectedActionMode implements ActionMode.Callback {
     }
 
     private void deleteClickedHandler(){
+        // TODO: overload getExercises with list parameter.
         for (long key : parentActivity.getTracker().getSelection()) {
             List<Exercise> exercises = parentActivity.getModel().getExercises().getValue();
             if (exercises != null) {

@@ -20,10 +20,10 @@ public abstract class Exercise implements Serializable {
 
     @Ignore
     public static Exercise create(long circuitId, int position, ExerciseType exerciseType) {
-        return create(circuitId, DEFAULT_DURATION, position, exerciseType);
+        return create(circuitId, position, DEFAULT_DURATION, exerciseType);
     }
 
-    public static Exercise create(long circuitId, int duration, int position,
+    public static Exercise create(long circuitId, int position, int duration,
                                   ExerciseType exerciseType) {
         if (duration <= 0) {
             throw new IllegalArgumentException("Duration must be positive");
