@@ -21,7 +21,7 @@ public class ExerciseViewHolder extends RecyclerView.ViewHolder {
 
     ExerciseViewHolder(View view) {
         super(view);
-        view.setTag("exercise in circuit");
+        view.setTag(Long.toString(getItemDetails().getSelectionKey()));
 
         nameTextView = view.findViewById(R.id.exercise_name);
         durationNumberPicker = view.findViewById(R.id.exercise_duration);

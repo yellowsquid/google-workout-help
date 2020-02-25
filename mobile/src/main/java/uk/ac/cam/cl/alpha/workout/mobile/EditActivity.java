@@ -20,6 +20,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import uk.ac.cam.cl.alpha.workout.R;
 import uk.ac.cam.cl.alpha.workout.mobile.adapter.ExerciseAdapter;
 import uk.ac.cam.cl.alpha.workout.mobile.model.CircuitEditModel;
+import uk.ac.cam.cl.alpha.workout.shared.Exercise;
 import uk.ac.cam.cl.alpha.workout.shared.ExerciseType;
 
 public class EditActivity extends AppCompatActivity {
@@ -28,7 +29,7 @@ public class EditActivity extends AppCompatActivity {
 
     private CircuitEditModel model;
     private ActionMode actionMode;
-    private SelectionTracker tracker;
+    private SelectionTracker<Long> tracker;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +54,7 @@ public class EditActivity extends AppCompatActivity {
 
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);
+        recyclerView.setOnDragListener(new ExerciseDragEventListener());
 
         // TODO: SELECTION STUFF HERE, MAYBE EXTRACT TO PRIVATE METHOD?
         ItemKeyProvider<Long> itemKeyProvider = new StableIdKeyProvider(recyclerView);
@@ -105,4 +107,11 @@ public class EditActivity extends AppCompatActivity {
         actionMode = null;
     }
 
+    public SelectionTracker<Long> getTracker() {
+        return tracker;
+    }
+
+    public CircuitEditModel getModel() {
+        return model;
+    }
 }

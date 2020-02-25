@@ -6,11 +6,15 @@ import android.view.MenuItem;
 
 import android.view.ActionMode;
 
+import java.util.List;
+
 import uk.ac.cam.cl.alpha.workout.R;
+import uk.ac.cam.cl.alpha.workout.mobile.model.CircuitEditModel;
+import uk.ac.cam.cl.alpha.workout.shared.Exercise;
 
 public class ExerciseSelectedActionMode implements ActionMode.Callback {
 
-    private EditActivity parentActivity;
+    private final EditActivity parentActivity;
 
     ExerciseSelectedActionMode(EditActivity theParentActivity) {
         parentActivity = theParentActivity;
@@ -33,12 +37,12 @@ public class ExerciseSelectedActionMode implements ActionMode.Callback {
     // Called when user selects a contextual menu item
     @Override
     public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
-        // TODO: Handle these
         switch (item.getItemId()) {
             case R.id.confirm_edited_circuit:
                 mode.finish();
                 return true;
             case R.id.delete_selected_exercises:
+                deleteClickedHandler();
                 return true;
             default:
                 return false;
@@ -49,6 +53,16 @@ public class ExerciseSelectedActionMode implements ActionMode.Callback {
     @Override
     public void onDestroyActionMode(ActionMode mode) {
         parentActivity.finishExerciseActionMode();
+    }
+
+    private void deleteClickedHandler(){
+        for (long key : parentActivity.getTracker().getSelection()) {
+            List<Exercise> exercises = parentActivity.getModel().getExercises().getValue();
+            if (exercises != null) {
+
+                // TODO: Call delete exercise here
+            }
+        }
     }
 
 }
