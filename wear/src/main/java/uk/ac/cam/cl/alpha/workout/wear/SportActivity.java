@@ -101,13 +101,8 @@ public class SportActivity extends WearableActivity
                 cir = (Circuit) Serializer.deserialize(serial);
 
                 nextExercise();
-            // TODO Duplication in catch clauses
-            } catch (IOException e) {
-                // TODO Logging
-                e.printStackTrace();
-                finish();
-            } catch (ClassNotFoundException e) {
-                // TODO Logging
+            } catch (IOException | ClassNotFoundException e) {
+                // TODO: More robust logging
                 e.printStackTrace();
                 finish();
             }
