@@ -21,7 +21,7 @@ interface ExerciseDao {
     void updateExercise(Exercise exercise);
 
     @Delete
-    void deleteExercise(Exercise exercise);
+    void deleteExercises(List<Exercise> exercises);
 
     @Query("SELECT * FROM exercises WHERE circuit_id = :circuitId ORDER BY position")
     LiveData<List<Exercise>> getExercises(long circuitId);

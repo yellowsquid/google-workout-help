@@ -82,7 +82,12 @@ public final class AppRepository {
             ExerciseType type = database.getExerciseDao().getType(circuitId, position);
             Exercise exercise = Exercise.create(circuitId, position, duration, type);
             database.getExerciseDao().updateExercise(exercise);
-            return null;
+        });
+    }
+
+    public Task<?> deleteExercises(List<Exercise> exercises) {
+        return new Task<>(() -> {
+            database.getExerciseDao().deleteExercises(exercises);
         });
     }
 }

@@ -120,4 +120,8 @@ public class EditActivity extends AppCompatActivity {
     public CircuitEditModel getModel() {
         return model;
     }
+
+    public void deleteSelected() {
+        model.deleteExercises(tracker.getSelection());
+    }
 }
