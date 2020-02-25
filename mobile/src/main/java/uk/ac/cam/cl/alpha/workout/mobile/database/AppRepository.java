@@ -104,4 +104,19 @@ public final class AppRepository {
             circuitDao.updateCircuit(circuit);
         });
     }
+
+    public Task<?> updateName(long circuitId, String name) {
+        return new Task<>(() -> {
+            CircuitDao circuitDao = database.getCircuitDao();
+            String oldName = circuitDao.getNameNow(circuitId);
+
+            if (name.equals(oldName)) {
+                return;
+            }
+
+            int laps = circuitDao.getLapsNow(circuitId);
+            BareCircuit circuit = BareCircuit.create(circuitId, name, laps);
+            circuitDao.updateCircuit(circuit);
+        });
+    }
 }

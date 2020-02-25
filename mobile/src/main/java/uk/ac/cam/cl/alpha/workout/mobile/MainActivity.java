@@ -59,16 +59,18 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()){
             case R.id.add_new_circuit:
-                // Add new circuit
+                // Create new circuit and start editor
                 Task<Long> task = model.createCircuit(BareCircuit.create(0, "New Circuit", 1)).chain(id-> {
                     model.setCircuitId(id);
                     editClicked(null);
                     return null;});
                 model.dispatch(task);
                 return true;
+
             case R.id.delete_selected_circuits:
                 // Delete selected circuits
                 return true;
+
             default:
                 return false;
         }

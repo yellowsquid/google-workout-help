@@ -16,4 +16,6 @@
     <string name="laps_is">Laps: %d</string>
     <string name="pure_duration">%d</string>
     <string name="pure_laps">%d</string>
+    <string name="pure_name">%s</string>
+    <string name="circuit_name_label">Circuit Name:</string>
 </resources>

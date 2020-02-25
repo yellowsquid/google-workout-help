@@ -32,6 +32,10 @@ public class CircuitEditModel extends AndroidViewModel {
         return repository.getLaps(circuitId);
     }
 
+    public LiveData<String> getName() {
+        return repository.getCircuitName(circuitId);
+    }
+
     public void setCircuitId(long circuitId) {
         this.circuitId = circuitId;
     }
@@ -53,5 +57,9 @@ public class CircuitEditModel extends AndroidViewModel {
 
     public void updateLaps(int laps) {
         repository.dispatch(repository.updateLaps(circuitId, laps));
+    }
+
+    public void updateName(String name) {
+        repository.dispatch(repository.updateName(circuitId, name));
     }
 }

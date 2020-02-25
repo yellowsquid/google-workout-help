@@ -7,14 +7,13 @@
     tools:application=".EditActivity">
 
     <TextView
+        android:id="@+id/lapsTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:labelFor="@id/numLapsEditText"
         android:text="@string/laps"
         app:layout_constraintBottom_toTopOf="@+id/circuitEditRecyclerView"
-        app:layout_constraintEnd_toStartOf="@+id/guideline"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/guideline75"
         app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
@@ -29,7 +28,7 @@
         app:layout_constraintBottom_toTopOf="@id/circuitEditRecyclerView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/guideline"
+        app:layout_constraintStart_toStartOf="@+id/guideline75"
         app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.recyclerview.widget.RecyclerView
@@ -51,11 +50,42 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline"
+        <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline25"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.5" />
+        app:layout_constraintGuide_percent="0.25" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline75"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.75" />
+
+    <TextView
+        android:id="@+id/circuitNameTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/circuit_name_label"
+        app:layout_constraintBottom_toTopOf="@+id/circuitEditRecyclerView"
+        app:layout_constraintEnd_toStartOf="@+id/guideline25"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/circuitNameEditText"
+        android:layout_width="140dp"
+        android:layout_height="0dp"
+        android:layout_marginEnd="2dp"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:text="Circuit Name"
+        app:layout_constraintBottom_toTopOf="@+id/circuitEditRecyclerView"
+        app:layout_constraintEnd_toStartOf="@+id/lapsTextView"
+        app:layout_constraintStart_toStartOf="@+id/guideline25"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
