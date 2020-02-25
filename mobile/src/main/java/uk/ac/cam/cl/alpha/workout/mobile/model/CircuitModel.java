@@ -45,4 +45,8 @@ public class CircuitModel extends AndroidViewModel {
     public boolean isCircuitSelected() {
         return circuitId != 0;
     }
+
+    public void dispatch(Task<Long> task) {
+        repository.dispatch(task);
+    }
 }
