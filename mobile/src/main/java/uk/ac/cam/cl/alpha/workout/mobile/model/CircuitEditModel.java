@@ -50,4 +50,8 @@ public class CircuitEditModel extends AndroidViewModel {
                 .collect(Collectors.toList());
         repository.dispatch(repository.deleteExercises(exercises));
     }
+
+    public void updateLaps(int laps) {
+        repository.dispatch(repository.updateLaps(circuitId, laps));
+    }
 }
