@@ -52,7 +52,7 @@ public class CircuitEditModel extends AndroidViewModel {
         List<Exercise> exercises = StreamSupport.stream(positions.spliterator(), false)
                 .map(pos -> Exercise.create(circuitId, Math.toIntExact(pos), ExerciseType.REST))
                 .collect(Collectors.toList());
-        repository.dispatch(repository.deleteExercises(exercises));
+        repository.dispatch(repository.deleteExercises(exercises, circuitId));
     }
 
     public void updateLaps(int laps) {

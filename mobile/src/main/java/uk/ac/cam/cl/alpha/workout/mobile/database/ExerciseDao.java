@@ -17,6 +17,9 @@ interface ExerciseDao {
     @Insert
     void insertExercise(Exercise exercise);
 
+    @Insert
+    void insertExercises(List<Exercise> exercise);
+
     @Update
     void updateExercise(Exercise exercise);
 
@@ -28,6 +31,9 @@ interface ExerciseDao {
 
     @Query("SELECT * FROM exercises WHERE circuit_id = :circuitId ORDER BY position")
     LiveData<List<Exercise>> getExercises(long circuitId);
+
+    @Query("SELECT * FROM exercises WHERE circuit_id = :circuitId ORDER BY position")
+    List<Exercise> getExercisesNow(long circuitId);
 
     @Query("SELECT * FROM exercises WHERE circuit_id = :circuitId AND position = :position")
     Exercise getExerciseNow(long circuitId, long position);
