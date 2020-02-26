@@ -20,8 +20,6 @@ public class ExerciseViewHolder extends RecyclerView.ViewHolder {
 
     ExerciseViewHolder(View view, DurationChangeListener listener) {
         super(view);
-        view.setTag(Long.toString(getItemDetails().getSelectionKey()));
-
         nameTextView = view.findViewById(R.id.exercise_name);
         durationNumberPicker = view.findViewById(R.id.exercise_duration);
         exerciseImageView = view.findViewById(R.id.exerciseImageView);
@@ -39,6 +37,9 @@ public class ExerciseViewHolder extends RecyclerView.ViewHolder {
                                      TextView.BufferType.EDITABLE);
         exerciseImageView.setBackgroundResource(exercise.getIcon());
         exerciseImageView.setContentDescription(resources.getString(name));
+
+        // Set the tag to be the item id so that it can be extracted for drag and drop
+        itemView.setTag(Long.toString(getItemId()));
     }
 
     public ItemDetailsLookup.ItemDetails<Long> getItemDetails() {

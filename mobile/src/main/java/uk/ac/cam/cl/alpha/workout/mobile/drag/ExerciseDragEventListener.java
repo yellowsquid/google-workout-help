@@ -2,6 +2,7 @@ package uk.ac.cam.cl.alpha.workout.mobile.drag;
 
 import android.content.ClipData;
 import android.content.ClipDescription;
+import android.util.Log;
 import android.view.DragEvent;
 import android.view.View;
 
@@ -35,8 +36,7 @@ public class ExerciseDragEventListener implements View.OnDragListener {
             case DragEvent.ACTION_DROP:
                 RecyclerView recyclerView = (RecyclerView) v;
                 ClipData.Item item = event.getClipData().getItemAt(0);
-                View fromView =
-                        recyclerView.getChildAt(Integer.getInteger((String) item.getText()));
+                View fromView = recyclerView.getChildAt(Integer.parseInt(item.getText().toString()));
                 View toView = recyclerView.findChildViewUnder(event.getX(), event.getY());
 
                 // For exercise list, id is position in lap.
