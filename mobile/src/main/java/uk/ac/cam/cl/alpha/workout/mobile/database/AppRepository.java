@@ -94,42 +94,32 @@ public final class AppRepository {
     }
 
     public Task<?> deleteExercises(List<Exercise> toDelete, long circuitID) {
-        //return new Task<>(() -> database.getExerciseDao().deleteExercises(exercises));
         return new Task<>(() -> {
-            List<Exercise> current = database.getExerciseDao().getExercisesNow(circuitID);
+            List<Exercise> currentList = database.getExerciseDao().getExercisesNow(circuitID);
             List<Exercise> newList = new ArrayList<>();
-            for(Exercise e1 : current) {
-                boolean delete = false;
+            for(Exercise e1 : currentList) {
+                boolean keep = true;
                 for(Exercise e2 : toDelete) {
                     if(e1.getPosition() == e2.getPosition()) {
-                        Log.d("Deleting position", ""+ e2.getPosition());
-                        delete = true;
+                        Log.d("Deleting position", "" + e2.getPosition());
+                        keep = false;
                         break;
                     }
                 }
-                if(!delete) {
+
+                if(keep) {
                     newList.add(e1);
                 }
             }
 
-            Log.d("Deleting Exercise", "A");
-
             final int size = newList.size();
-
-            try {
-                for(int i = 0; i < size; i++) {
-                    Exercise old = newList.get(i);
-                    newList.set(i, Exercise.create(circuitID,  i, old.getDuration(), old.getExerciseType()));
-                }
-            } catch (RuntimeException e) {
-                Log.e("Deleting exception", "", e);
+            for(int i = 0; i < size; i++) {
+                Exercise old = newList.get(i);
+                newList.set(i, Exercise.create(circuitID,  i, old.getDuration(), old.getExerciseType()));
             }
 
-            Log.d("Deleting Exercise", "B");
-
-            database.getExerciseDao().deleteExercises(current);
+            database.getExerciseDao().deleteExercises(currentList);
             database.getExerciseDao().insertExercises(newList);
-            Log.d("Deleting Exercise", "Deleting exercise.");
         });
     }
 
