@@ -11,6 +11,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.selection.ItemKeyProvider;
+import androidx.recyclerview.selection.Selection;
 import androidx.recyclerview.selection.SelectionTracker;
 import androidx.recyclerview.selection.StableIdKeyProvider;
 import androidx.recyclerview.selection.StorageStrategy;
@@ -36,6 +37,7 @@ public class EditActivity extends AppCompatActivity {
     private CircuitEditModel model;
     private ActionMode actionMode;
     private SelectionTracker<Long> tracker;
+    private RecyclerView recyclerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,7 +64,7 @@ public class EditActivity extends AppCompatActivity {
         nameText.addTextChangedListener((NameWatcher) name -> model.updateName(name));
 
         // Create the RecyclerView that contains the circuit's exercises
-        RecyclerView recyclerView = findViewById(R.id.circuitEditRecyclerView);
+        recyclerView = findViewById(R.id.circuitEditRecyclerView);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
         ExerciseAdapter adapter = new ExerciseAdapter(model::updateItemDuration);
         model.getExercises().observe(this, adapter::submitList);
@@ -72,7 +74,7 @@ public class EditActivity extends AppCompatActivity {
         recyclerView.setOnDragListener(new ExerciseDragEventListener());
 
         // TODO: SELECTION STUFF HERE, MAYBE EXTRACT TO PRIVATE METHOD?
-        ItemKeyProvider<Long> itemKeyProvider = new StableIdKeyProvider(recyclerView);
+        ItemKeyProvider<Long> itemKeyProvider = new ExerciseKeyProvider(recyclerView);
         ExerciseSelectionObserver observer = new ExerciseSelectionObserver(this);
         ExerciseDragInitiatedListener exerciseDragListener = new ExerciseDragInitiatedListener();
 
@@ -133,7 +135,14 @@ public class EditActivity extends AppCompatActivity {
     }
 
     public void deleteSelected() {
-        model.deleteExercises(tracker.getSelection());
+        Selection<Long> selection = tracker.getSelection();
+        int initialSize = recyclerView.getAdapter().getItemCount();
+        model.deleteExercises(selection);
+        for (long key : selection) {
+            recyclerView.getAdapter().notifyItemRemoved(Math.toIntExact(key));
+            recyclerView.getAdapter().notifyItemRangeChanged(Math.toIntExact(key), initialSize);
+            initialSize -= 1;
+        }
         tracker.clearSelection();
     }
 }
