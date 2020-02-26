@@ -98,6 +98,10 @@ public class SportActivity extends WearableActivity
             try {
                 cir = (Circuit) Serializer.deserialize(serial);
 
+                if (cir.getLaps() <= 0 || cir.countExercises() <= 0){
+                    Log.d(MESSAGE, "D");
+                    finish();
+                }
                 nextExercise();
             } catch (IOException | ClassNotFoundException e) {
                 Log.d(MESSAGE, "Issue de-serializing circuit");
@@ -183,15 +187,16 @@ public class SportActivity extends WearableActivity
     private void nextExercise() {
         ++currentExerciseNo;
         // Exits workout once done
+
         if (currentExerciseNo >= cir.countExercises()) {
             // Finished last exercise in lap
+            currentLap++;
             if (currentLap >= cir.getLaps()) {
                 // Finished last lap
                 finish();
             } else {
                 // More laps to go
                 currentExerciseNo = 0;
-                currentLap++;
             }
         }
         // Update current variables
