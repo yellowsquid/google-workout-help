@@ -39,6 +39,7 @@ public class ExerciseSelectedActionMode implements ActionMode.Callback {
                 return true;
             case R.id.delete_selected_exercises:
                 deleteClickedHandler();
+                mode.finish();
                 return true;
             default:
                 return false;

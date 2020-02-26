@@ -142,6 +142,5 @@ public class EditActivity extends AppCompatActivity {
             recyclerView.getAdapter().notifyItemRangeChanged(Math.toIntExact(key), initialSize);
             initialSize -= 1;
         }
-        tracker.clearSelection();
     }
 }
