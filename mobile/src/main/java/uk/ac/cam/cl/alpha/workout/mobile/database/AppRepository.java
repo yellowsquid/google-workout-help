@@ -119,4 +119,18 @@ public final class AppRepository {
             circuitDao.updateCircuit(circuit);
         });
     }
+
+    public Task<?> swapExercises(long circuitId, int fromPos, int toPos) {
+        return new Task<>(() -> {
+            ExerciseDao exerciseDao = database.getExerciseDao();
+            Exercise fromExercise = exerciseDao.getExerciseNow(circuitId, fromPos);
+            Exercise toExercise = exerciseDao.getExerciseNow(circuitId, toPos);
+
+            Exercise newFromExercise = Exercise.create(circuitId, fromPos, toExercise.getDuration(),
+                                                       toExercise.getExerciseType());
+            Exercise newToExercise = Exercise.create(circuitId, toPos, fromExercise.getDuration(),
+                                                     fromExercise.getExerciseType());
+            exerciseDao.updateExercises(newFromExercise, newToExercise);
+        });
+    }
 }

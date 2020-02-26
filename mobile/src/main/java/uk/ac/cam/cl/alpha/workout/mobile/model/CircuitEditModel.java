@@ -62,4 +62,8 @@ public class CircuitEditModel extends AndroidViewModel {
     public void updateName(String name) {
         repository.dispatch(repository.updateName(circuitId, name));
     }
+
+    public void swapExercises(int fromPos, int toPos) {
+        repository.dispatch(repository.swapExercises(circuitId, fromPos, toPos));
+    }
 }

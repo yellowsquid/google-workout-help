@@ -20,6 +20,9 @@ interface ExerciseDao {
     @Update
     void updateExercise(Exercise exercise);
 
+    @Update
+    void updateExercises(Exercise... exercises);
+
     @Delete
     void deleteExercises(List<Exercise> exercises);
 
@@ -27,7 +30,7 @@ interface ExerciseDao {
     LiveData<List<Exercise>> getExercises(long circuitId);
 
     @Query("SELECT * FROM exercises WHERE circuit_id = :circuitId AND position = :position")
-    LiveData<Exercise> getExercise(long circuitId, long position);
+    Exercise getExerciseNow(long circuitId, long position);
 
     @Query("SELECT count(*) FROM exercises WHERE circuit_id = :circuitId")
     int countExercises(long circuitId);

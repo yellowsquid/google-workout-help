@@ -13,7 +13,6 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.selection.ItemKeyProvider;
 import androidx.recyclerview.selection.Selection;
 import androidx.recyclerview.selection.SelectionTracker;
-import androidx.recyclerview.selection.StableIdKeyProvider;
 import androidx.recyclerview.selection.StorageStrategy;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -71,7 +70,7 @@ public class EditActivity extends AppCompatActivity {
 
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);
-        recyclerView.setOnDragListener(new ExerciseDragEventListener());
+        recyclerView.setOnDragListener(new ExerciseDragEventListener(model));
 
         // TODO: SELECTION STUFF HERE, MAYBE EXTRACT TO PRIVATE METHOD?
         ItemKeyProvider<Long> itemKeyProvider = new ExerciseKeyProvider(recyclerView);
