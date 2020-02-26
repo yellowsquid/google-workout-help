@@ -12,6 +12,8 @@ import androidx.recyclerview.selection.OnDragInitiatedListener;
 import androidx.recyclerview.selection.SelectionTracker;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.ArrayList;
+
 public class ExerciseDragInitiatedListener implements OnDragInitiatedListener {
 
     private SelectionTracker<Long> registeredTracker;
@@ -40,11 +42,21 @@ public class ExerciseDragInitiatedListener implements OnDragInitiatedListener {
                 }
             }
 
-            View v = recyclerView.getChildAt(Math.toIntExact(snapshot.iterator().next()));
-            ClipData.Item item = new ClipData.Item((CharSequence) v.getTag());
-            ClipData dragData = new ClipData((CharSequence) v.getTag(), new String[] { ClipDescription.MIMETYPE_TEXT_PLAIN }, item);
-            View.DragShadowBuilder shadow = new View.DragShadowBuilder(v);
+            View selectedView = null;
+            ClipData.Item newItem;
+            ArrayList<ClipData.Item> items = new ArrayList<>();
+            for (Long key : snapshot) {
+                selectedView = recyclerView.getChildAt(Math.toIntExact(key));
+                newItem = new ClipData.Item((CharSequence) selectedView.getTag());
+                items.add(newItem);
+            }
 
+            ClipData dragData = new ClipData("selected items", new String[] { ClipDescription.MIMETYPE_TEXT_PLAIN }, items.get(0));
+
+            for (int i = 1; i < items.size(); i++){
+                dragData.addItem(items.get(i));
+            }
+            View.DragShadowBuilder shadow = new View.DragShadowBuilder(selectedView);
             recyclerView.startDragAndDrop(dragData, shadow, null, 0);
 
             return true;
