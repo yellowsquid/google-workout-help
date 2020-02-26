@@ -307,6 +307,9 @@ public class SportActivity extends WearableActivity
                 case RESUME:
                     currentTimer.resume();
                     break;
+                case STOP:
+                    finish();
+                    break;
 
             }
         } else {
