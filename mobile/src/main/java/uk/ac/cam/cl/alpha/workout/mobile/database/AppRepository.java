@@ -7,7 +7,6 @@ import androidx.lifecycle.LiveData;
 import androidx.room.Room;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
@@ -64,10 +63,6 @@ public final class AppRepository {
         return database.getExerciseDao().getExercises(circuitId);
     }
 
-    public List<Exercise> getExercisesNow(long circuitId) {
-        return database.getExerciseDao().getExercisesNow(circuitId);
-    }
-
     public <V> Future<V> dispatch(Callable<V> task) {
         return executor.submit(task);
     }
@@ -112,7 +107,7 @@ public final class AppRepository {
                 }
             }
 
-            final int size = newList.size();
+            int size = newList.size();
             for(int i = 0; i < size; i++) {
                 Exercise old = newList.get(i);
                 newList.set(i, Exercise.create(circuitID,  i, old.getDuration(), old.getExerciseType()));
@@ -123,12 +118,8 @@ public final class AppRepository {
         });
     }
 
-    public Task<?> deleteCircuits(List<Circuit> toDelete){
-        return new Task<>(() -> {
-            for (Circuit circuit : toDelete) {
-                database.getCircuitDao().deleteCircuit(circuit.getCircuit());
-            }
-        });
+    public Task<?> deleteCircuits(List<BareCircuit> circuits) {
+        return new Task<>(() -> database.getCircuitDao().deleteCircuits(circuits));
     }
 
     public Task<?> updateLaps(long circuitId, int laps) {

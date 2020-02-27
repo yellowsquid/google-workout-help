@@ -22,7 +22,7 @@ public interface CircuitDao {
     void updateCircuit(BareCircuit circuit);
 
     @Delete
-    void deleteCircuit(BareCircuit circuit);
+    void deleteCircuits(List<BareCircuit> circuits);
 
     @Transaction
     @Query("SELECT * FROM circuits ORDER BY name")

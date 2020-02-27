@@ -39,12 +39,14 @@ public class CircuitModel extends AndroidViewModel {
         return repository.createCircuit(circuit);
     }
 
-    public void deleteCircuits(Iterable<Long> positions){
-        List<Circuit> toDelete = new ArrayList<>();
-        for (long position: positions) {
-            toDelete.add(getCircuit(position).getValue());
+    public void deleteCircuits(Iterable<Long> positions) {
+        List<BareCircuit> circuits = new ArrayList<>();
+
+        for (long id : positions) {
+            circuits.add(BareCircuit.create(id, "", 1));
         }
-        repository.dispatch(repository.deleteCircuits(toDelete));
+
+        repository.dispatch(repository.deleteCircuits(circuits));
     }
 
     public LiveData<Circuit> getCircuit(long id) {
