@@ -43,4 +43,30 @@ public interface CircuitDao {
 
     @Query("SELECT name FROM circuits WHERE id = :id")
     String getNameNow(long id);
+
+    @Transaction
+    default void updateName(long id, String name) {
+        String oldName = getNameNow(id);
+
+        if (name.equals(oldName)) {
+            return;
+        }
+
+        int laps = getLapsNow(id);
+        BareCircuit circuit = BareCircuit.create(id, name, laps);
+        updateCircuit(circuit);
+    }
+
+    @Transaction
+    default void updateLaps(long id, int laps) {
+        int oldLaps = getLapsNow(id);
+
+        if (laps == oldLaps) {
+            return;
+        }
+
+        String name = getNameNow(id);
+        BareCircuit circuit = BareCircuit.create(id, name, laps);
+        updateCircuit(circuit);
+    }
 }

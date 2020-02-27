@@ -1,12 +1,10 @@
 package uk.ac.cam.cl.alpha.workout.mobile.database;
 
 import android.app.Application;
-import android.util.Log;
 
 import androidx.lifecycle.LiveData;
 import androidx.room.Room;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
@@ -50,13 +48,7 @@ public final class AppRepository {
     }
 
     public Task<Integer> appendExercise(long circuitId, ExerciseType type) {
-        return new Task<>(() -> {
-            ExerciseDao dao = database.getExerciseDao();
-            int position = dao.countExercises(circuitId);
-            Exercise exercise = Exercise.create(circuitId, position, type);
-            dao.insertExercise(exercise);
-            return position;
-        });
+        return new Task<>(() -> database.getExerciseDao().appendExercise(circuitId, type));
     }
 
     public LiveData<List<Exercise>> getExercises(long circuitId) {
@@ -80,42 +72,12 @@ public final class AppRepository {
     }
 
     public Task<?> updateExerciseDuration(long circuitId, int position, int duration) {
-        return new Task<>(() -> {
-            ExerciseDao exerciseDao = database.getExerciseDao();
-            ExerciseType type = exerciseDao.getType(circuitId, position);
-            Exercise exercise = Exercise.create(circuitId, position, duration, type);
-            exerciseDao.updateExercise(exercise);
-        });
+        return new Task<>(() -> database.getExerciseDao()
+                .updateExerciseDuration(circuitId, position, duration));
     }
 
-    public Task<?> deleteExercises(List<Exercise> toDelete, long circuitID) {
-        return new Task<>(() -> {
-            List<Exercise> currentList = database.getExerciseDao().getExercisesNow(circuitID);
-            List<Exercise> newList = new ArrayList<>();
-            for(Exercise e1 : currentList) {
-                boolean keep = true;
-                for(Exercise e2 : toDelete) {
-                    if(e1.getPosition() == e2.getPosition()) {
-                        Log.d("Deleting position", "" + e2.getPosition());
-                        keep = false;
-                        break;
-                    }
-                }
-
-                if(keep) {
-                    newList.add(e1);
-                }
-            }
-
-            int size = newList.size();
-            for(int i = 0; i < size; i++) {
-                Exercise old = newList.get(i);
-                newList.set(i, Exercise.create(circuitID,  i, old.getDuration(), old.getExerciseType()));
-            }
-
-            database.getExerciseDao().deleteExercises(currentList);
-            database.getExerciseDao().insertExercises(newList);
-        });
+    public Task<?> deleteExercises(long circuitID, List<Integer> positions) {
+        return new Task<>(() -> database.getExerciseDao().deleteExercises(circuitID, positions));
     }
 
     public Task<?> deleteCircuits(List<BareCircuit> circuits) {
@@ -123,46 +85,14 @@ public final class AppRepository {
     }
 
     public Task<?> updateLaps(long circuitId, int laps) {
-        return new Task<>(() -> {
-            CircuitDao circuitDao = database.getCircuitDao();
-            int oldLaps = circuitDao.getLapsNow(circuitId);
-
-            if (laps == oldLaps) {
-                return;
-            }
-
-            String name = circuitDao.getNameNow(circuitId);
-            BareCircuit circuit = BareCircuit.create(circuitId, name, laps);
-            circuitDao.updateCircuit(circuit);
-        });
+        return new Task<>(() -> database.getCircuitDao().updateLaps(circuitId, laps));
     }
 
     public Task<?> updateName(long circuitId, String name) {
-        return new Task<>(() -> {
-            CircuitDao circuitDao = database.getCircuitDao();
-            String oldName = circuitDao.getNameNow(circuitId);
-
-            if (name.equals(oldName)) {
-                return;
-            }
-
-            int laps = circuitDao.getLapsNow(circuitId);
-            BareCircuit circuit = BareCircuit.create(circuitId, name, laps);
-            circuitDao.updateCircuit(circuit);
-        });
+        return new Task<>(() -> database.getCircuitDao().updateName(circuitId, name));
     }
 
     public Task<?> swapExercises(long circuitId, int fromPos, int toPos) {
-        return new Task<>(() -> {
-            ExerciseDao exerciseDao = database.getExerciseDao();
-            Exercise fromExercise = exerciseDao.getExerciseNow(circuitId, fromPos);
-            Exercise toExercise = exerciseDao.getExerciseNow(circuitId, toPos);
-
-            Exercise newFromExercise = Exercise.create(circuitId, fromPos, toExercise.getDuration(),
-                                                       toExercise.getExerciseType());
-            Exercise newToExercise = Exercise.create(circuitId, toPos, fromExercise.getDuration(),
-                                                     fromExercise.getExerciseType());
-            exerciseDao.updateExercises(newFromExercise, newToExercise);
-        });
+        return new Task<>(() -> database.getExerciseDao().swapExercises(circuitId, fromPos, toPos));
     }
 }

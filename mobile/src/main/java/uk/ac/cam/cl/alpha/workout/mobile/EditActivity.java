@@ -17,6 +17,9 @@ import androidx.recyclerview.selection.StorageStrategy;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import uk.ac.cam.cl.alpha.workout.R;
 import uk.ac.cam.cl.alpha.workout.mobile.adapter.ExerciseAdapter;
 import uk.ac.cam.cl.alpha.workout.mobile.adapter.NameWatcher;
@@ -135,13 +138,12 @@ public class EditActivity extends AppCompatActivity {
 
     public void deleteSelected() {
         Selection<Long> selection = tracker.getSelection();
-        int initialSize = recyclerView.getAdapter().getItemCount();
-        model.deleteExercises(selection);
+        List<Integer> selected = new ArrayList<>(selection.size());
 
-        for (long key : selection) {
-            recyclerView.getAdapter().notifyItemRemoved(Math.toIntExact(key));
-            recyclerView.getAdapter().notifyItemRangeChanged(Math.toIntExact(key), initialSize);
-            initialSize -= 1;
+        for (Long id : selection) {
+            selected.add(Math.toIntExact(id));
         }
+
+        model.deleteExercises(selected);
     }
 }

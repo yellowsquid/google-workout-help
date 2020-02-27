@@ -8,8 +8,6 @@ import androidx.lifecycle.LiveData;
 
 import java.util.List;
 import java.util.concurrent.Future;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 import uk.ac.cam.cl.alpha.workout.mobile.database.AppRepository;
 import uk.ac.cam.cl.alpha.workout.shared.Exercise;
@@ -48,11 +46,8 @@ public class CircuitEditModel extends AndroidViewModel {
         repository.dispatch(repository.updateExerciseDuration(circuitId, position, duration));
     }
 
-    public void deleteExercises(Iterable<Long> positions) {
-        List<Exercise> exercises = StreamSupport.stream(positions.spliterator(), false)
-                .map(pos -> Exercise.create(circuitId, Math.toIntExact(pos), ExerciseType.REST))
-                .collect(Collectors.toList());
-        repository.dispatch(repository.deleteExercises(exercises, circuitId));
+    public void deleteExercises(List<Integer> positions) {
+        repository.dispatch(repository.deleteExercises(circuitId, positions));
     }
 
     public void updateLaps(int laps) {
