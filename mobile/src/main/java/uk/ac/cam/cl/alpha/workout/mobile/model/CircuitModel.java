@@ -6,6 +6,7 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import uk.ac.cam.cl.alpha.workout.mobile.database.AppRepository;
@@ -36,6 +37,14 @@ public class CircuitModel extends AndroidViewModel {
 
     public Task<Long> createCircuit(BareCircuit circuit) {
         return repository.createCircuit(circuit);
+    }
+
+    public void deleteCircuits(Iterable<Long> positions){
+        List<Circuit> toDelete = new ArrayList<>();
+        for (long position: positions) {
+            toDelete.add(getCircuit(position).getValue());
+        }
+        repository.dispatch(repository.deleteCircuits(toDelete));
     }
 
     public LiveData<Circuit> getCircuit(long id) {

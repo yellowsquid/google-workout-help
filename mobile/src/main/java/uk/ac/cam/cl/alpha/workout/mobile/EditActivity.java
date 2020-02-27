@@ -78,7 +78,7 @@ public class EditActivity extends AppCompatActivity {
         ExerciseDragInitiatedListener exerciseDragListener = new ExerciseDragInitiatedListener();
 
         tracker = new SelectionTracker.Builder<>(
-                "selection tracker",
+                "exercise selection tracker",
                 recyclerView,
                 itemKeyProvider,
                 new ExerciseDetailsLookup(recyclerView),

@@ -4,6 +4,8 @@ import android.content.res.Resources;
 import android.view.View;
 import android.widget.TextView;
 
+import androidx.annotation.Nullable;
+import androidx.recyclerview.selection.ItemDetailsLookup;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.text.SimpleDateFormat;
@@ -18,25 +20,19 @@ import uk.ac.cam.cl.alpha.workout.shared.TimeFormatter;
 import static uk.ac.cam.cl.alpha.workout.shared.Constants.MILLISECONDS_IN_SECOND;
 import static uk.ac.cam.cl.alpha.workout.shared.Constants.SECONDS_IN_HOUR;
 
-class CircuitViewHolder extends RecyclerView.ViewHolder {
-    private final View view;
+public class CircuitViewHolder extends RecyclerView.ViewHolder {
     private final TextView nameView;
     private final TextView durationView;
     private final TextView restView;
     private final TextView lapsView;
 
-    CircuitViewHolder(View view, OnItemClickListener itemClickListener) {
+    CircuitViewHolder(View view) {
         super(view);
 
-        this.view = view;
         nameView = view.findViewById(R.id.circuitName);
         durationView = view.findViewById(R.id.circuitDuration);
         restView = view.findViewById(R.id.circuitRestTime);
         lapsView = view.findViewById(R.id.circuitLaps);
-
-        View.OnClickListener listener = v -> itemClickListener.onItemClick(getItemId(), v);
-        view.setOnClickListener(listener);
-        view.getTouchables().forEach(v -> v.setOnClickListener(listener));
     }
 
     void setCircuit(Circuit circuit) {
@@ -51,6 +47,19 @@ class CircuitViewHolder extends RecyclerView.ViewHolder {
         restView.setText(resources.getString(R.string.rest_is, TimeFormatter.format(rest)));
         lapsView.setText(resources.getString(R.string.laps_is, laps));
 
-        view.setBackgroundColor(resources.getColor(R.color.design_default_color_background));
+    }
+
+    public ItemDetailsLookup.ItemDetails<Long> getItemDetails() {
+        return new ItemDetailsLookup.ItemDetails<Long>() {
+            @Override
+            public int getPosition() {
+                return Math.toIntExact(getItemId());
+            }
+
+            @Override
+            public Long getSelectionKey() {
+                return getItemId();
+            }
+        };
     }
 }

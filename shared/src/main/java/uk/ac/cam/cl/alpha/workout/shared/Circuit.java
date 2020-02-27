@@ -23,6 +23,10 @@ public class Circuit implements PureCircuit, Iterable<Exercise> {
         this.exercises = Collections.unmodifiableList(exercises);
     }
 
+    public BareCircuit getCircuit() {
+        return circuit;
+    }
+
     public List<Exercise> getExercises() {
         return exercises;
     }

@@ -5,6 +5,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.recyclerview.selection.SelectionTracker;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.ListAdapter;
 
@@ -13,12 +14,15 @@ import uk.ac.cam.cl.alpha.workout.shared.Circuit;
 
 public class CircuitAdapter extends ListAdapter<Circuit, CircuitViewHolder> {
     private static final DiffUtil.ItemCallback<Circuit> DIFF_CALLBACK = new CircuitItemCallback<>();
-    private final OnItemClickListener itemClickListener;
+    private SelectionTracker<Long> tracker;
 
-    public CircuitAdapter(OnItemClickListener itemClickListener) {
+    public CircuitAdapter() {
         super(DIFF_CALLBACK);
-        this.itemClickListener = itemClickListener;
         setHasStableIds(true);
+    }
+
+    public void setTracker(SelectionTracker tracker) {
+        this.tracker = tracker;
     }
 
     @NonNull
@@ -26,12 +30,16 @@ public class CircuitAdapter extends ListAdapter<Circuit, CircuitViewHolder> {
     public CircuitViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.circuit_select_layout, parent, false);
-        return new CircuitViewHolder(view, itemClickListener);
+        return new CircuitViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull CircuitViewHolder holder, int position) {
         holder.setCircuit(getItem(position));
+
+        if (tracker != null) {
+            holder.itemView.setActivated(tracker.isSelected(getItemId(position)));
+        }
     }
 
     @Override

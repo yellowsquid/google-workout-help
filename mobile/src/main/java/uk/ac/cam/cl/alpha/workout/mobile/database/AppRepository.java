@@ -123,6 +123,14 @@ public final class AppRepository {
         });
     }
 
+    public Task<?> deleteCircuits(List<Circuit> toDelete){
+        return new Task<>(() -> {
+            for (Circuit circuit : toDelete) {
+                database.getCircuitDao().deleteCircuit(circuit.getCircuit());
+            }
+        });
+    }
+
     public Task<?> updateLaps(long circuitId, int laps) {
         return new Task<>(() -> {
             CircuitDao circuitDao = database.getCircuitDao();
