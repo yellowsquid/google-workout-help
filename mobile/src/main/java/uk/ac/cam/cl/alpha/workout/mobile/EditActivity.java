@@ -113,7 +113,11 @@ public class EditActivity extends AppCompatActivity {
         if (actionMode == null) {
             actionMode = startActionMode(new ExerciseSelectedActionMode(this));
         }
-        actionMode.setTitle(String.format("Selected: %d", tracker.getSelection().size()));
+        if (tracker.getSelection().isEmpty()) {
+            actionMode.finish();
+        } else {
+            actionMode.setTitle(String.format("Selected: %d", tracker.getSelection().size()));
+        }
     }
 
     // Called when the contextual action mode is ended
