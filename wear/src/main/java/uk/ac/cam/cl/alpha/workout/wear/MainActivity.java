@@ -61,8 +61,12 @@ public class MainActivity extends WearableActivity implements
         }
 
         if (messagePath.equals(Constants.CIRCUIT_PATH)) {
-            statText.setText(((PureCircuit) message).getName());
-            circuit = data;
+
+            if (message instanceof PureCircuit){
+                statText.setText(((PureCircuit) message).getName());
+                circuit = data;
+            }
+
         } else if (messagePath.equals(Constants.SIGNAL_PATH)) {
             switch ((Signal) message) {
                 case START:
@@ -73,10 +77,6 @@ public class MainActivity extends WearableActivity implements
                     }
 
                     break;
-                case STOP:
-                case PAUSE:
-                case RESUME:
-
             }
         } else {
             Log.w(TAG, "Unknown msg");
@@ -117,7 +117,7 @@ public class MainActivity extends WearableActivity implements
     @Override
     protected void onDestroy() {
         super.onDestroy();
-
+        Log.d(TAG, "MainActivity Destroyed");
 
     }
   }
