@@ -10,6 +10,7 @@ import androidx.room.Update;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import uk.ac.cam.cl.alpha.workout.shared.Exercise;
 import uk.ac.cam.cl.alpha.workout.shared.ExerciseType;
@@ -25,13 +26,6 @@ interface ExerciseDao {
     @Update
     void updateExercise(Exercise exercise);
 
-    @Transaction
-    default void updateExerciseDuration(long circuitId, int position, int duration) {
-        ExerciseType type = getType(circuitId, position);
-        Exercise exercise = Exercise.create(circuitId, position, duration, type);
-        updateExercise(exercise);
-    }
-
     @Delete
     void deleteExercises(List<Exercise> exercises);
 
@@ -41,14 +35,21 @@ interface ExerciseDao {
     @Query("SELECT * FROM exercises WHERE circuit_id = :circuitId ORDER BY position")
     List<Exercise> getExercisesNow(long circuitId);
 
-    @Query("SELECT * FROM exercises WHERE circuit_id = :circuitId AND position = :position")
-    Exercise getExerciseNow(long circuitId, long position);
-
     @Query("SELECT count(*) FROM exercises WHERE circuit_id = :circuitId")
     int countExercises(long circuitId);
 
     @Query("SELECT type FROM exercises WHERE circuit_id = :circuitId AND position = :position")
     ExerciseType getType(long circuitId, int position);
+
+    @Update
+    void updateExercises(List<Exercise> exercises);
+
+    @Transaction
+    default void updateExerciseDuration(long circuitId, int position, int duration) {
+        ExerciseType type = getType(circuitId, position);
+        Exercise exercise = Exercise.create(circuitId, position, duration, type);
+        updateExercise(exercise);
+    }
 
     @Transaction
     default int appendExercise(long circuitId, ExerciseType type) {
@@ -61,19 +62,14 @@ interface ExerciseDao {
     @Transaction
     default void deleteExercises(long circuitId, List<Integer> positions) {
         List<Exercise> currentList = getExercisesNow(circuitId);
-        List<Exercise> newList = new ArrayList<>(currentList.size());
-
-        for (Exercise exercise : currentList) {
-            if (!positions.contains(exercise.getPosition())) {
-                newList.add(exercise);
-            }
-        }
+        List<Exercise> newList =
+                currentList.stream().filter(exercise -> !positions.contains(exercise.getPosition()))
+                        .collect(Collectors.toList());
 
         int size = newList.size();
 
         for (int i = 0; i < size; i++) {
-            Exercise old = newList.get(i);
-            newList.set(i, Exercise.create(circuitId, i, old.getDuration(), old.getExerciseType()));
+            newList.set(i, newList.get(i).withPosition(i));
         }
 
         deleteExercises(currentList);
@@ -89,20 +85,16 @@ interface ExerciseDao {
         int steps = Math.abs(toPos - fromPos);
         int direction = (int) Math.signum(toPos - fromPos);
 
-        Exercise start = getExerciseNow(circuitId, fromPos);
-
+        List<Exercise> oldExercises = getExercisesNow(circuitId);
         List<Exercise> updated = new ArrayList<>(steps);
 
+        Exercise start = oldExercises.get(fromPos);
+
         for (int i = 0, j = fromPos; i < steps; i++, j += direction) {
-            Exercise next = getExerciseNow(circuitId, j + direction);
-            updated.add(Exercise.create(circuitId, j, next.getDuration(), next.getExerciseType()));
+            updated.add(oldExercises.get(j + direction).withPosition(j));
         }
 
-        updated.add(
-                Exercise.create(circuitId, toPos, start.getDuration(), start.getExerciseType()));
+        updated.add(start.withPosition(toPos));
         updateExercises(updated);
     }
-
-    @Update
-    void updateExercises(List<Exercise> exercises);
 }

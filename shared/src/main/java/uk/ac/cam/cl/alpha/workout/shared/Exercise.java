@@ -44,22 +44,26 @@ public abstract class Exercise implements Serializable {
 
     public abstract int getDuration();
 
-    @StringRes
-    public int getName() {
-        return getExerciseType().getName();
-    }
-
     @AutoValue.CopyAnnotations
     @ColumnInfo(name = "type")
     @NonNull
     public abstract ExerciseType getExerciseType();
+
+    @AutoValue.CopyAnnotations
+    @ColumnInfo(name = "position")
+    public abstract int getPosition();
+
+    @StringRes
+    public int getName() {
+        return getExerciseType().getName();
+    }
 
     @DrawableRes
     public int getIcon() {
         return getExerciseType().getIcon();
     }
 
-    @AutoValue.CopyAnnotations
-    @ColumnInfo(name = "position")
-    public abstract int getPosition();
+    public Exercise withPosition(int position) {
+        return create(getCircuitId(), position, getDuration(), getExerciseType());
+    }
 }
