@@ -1,6 +1,4 @@
-package uk.ac.cam.cl.alpha.workout.mobile;
-
-import android.util.Log;
+package uk.ac.cam.cl.alpha.workout.mobile.drag;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -9,9 +7,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 public class ExerciseKeyProvider extends ItemKeyProvider<Long> {
 
-    private RecyclerView recyclerView;
+    private final RecyclerView recyclerView;
 
-    ExerciseKeyProvider(RecyclerView theRecyclerView) {
+    public ExerciseKeyProvider(RecyclerView theRecyclerView) {
         super(SCOPE_MAPPED);
         recyclerView = theRecyclerView;
     }

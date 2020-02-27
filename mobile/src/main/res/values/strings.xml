@@ -20,4 +20,5 @@
     <string name="circuit_name_label">Circuit Name:</string>
     <string name="pause">Pause</string>
     <string name="resume">Resume</string>
+    <string name="selected_title">Selected: %d</string>
 </resources>

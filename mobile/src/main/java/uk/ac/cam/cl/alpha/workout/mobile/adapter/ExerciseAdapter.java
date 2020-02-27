@@ -1,12 +1,10 @@
 package uk.ac.cam.cl.alpha.workout.mobile.adapter;
 
-import android.annotation.SuppressLint;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
-import androidx.recyclerview.selection.SelectionTracker;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.ListAdapter;
 
@@ -16,16 +14,13 @@ import uk.ac.cam.cl.alpha.workout.shared.Exercise;
 public class ExerciseAdapter extends ListAdapter<Exercise, ExerciseViewHolder> {
     private static final DiffUtil.ItemCallback<Exercise> DIFF_CALLBACK = new ExerciseDiffCallback();
     private final DurationChangeListener listener;
-    private SelectionTracker tracker;
+    private final SelectionChecker checker;
 
-    public ExerciseAdapter(DurationChangeListener listener) {
+    public ExerciseAdapter(DurationChangeListener listener, SelectionChecker checker) {
         super(DIFF_CALLBACK);
         this.listener = listener;
+        this.checker = checker;
         setHasStableIds(true);
-    }
-
-    public void setTracker(SelectionTracker tracker) {
-        this.tracker = tracker;
     }
 
     @NonNull
@@ -37,30 +32,13 @@ public class ExerciseAdapter extends ListAdapter<Exercise, ExerciseViewHolder> {
     }
 
     @Override
-    public long getItemId(int position) {
-        return getItem(position).getPosition();
+    public void onBindViewHolder(@NonNull ExerciseViewHolder holder, int position) {
+        holder.setExercise(getItem(position));
+        holder.setSelected(checker.isSelected(getItemId(position)));
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ExerciseViewHolder holder, int position) {
-        holder.setExercise(getItem(position));
-
-        if (tracker != null) {
-            holder.itemView.setActivated(tracker.isSelected(getItemId(position)));
-        }
-    }
-
-    static class ExerciseDiffCallback extends DiffUtil.ItemCallback<Exercise> {
-        @Override
-        public boolean areItemsTheSame(@NonNull Exercise oldItem, @NonNull Exercise newItem) {
-            return oldItem.getCircuitId() == newItem.getCircuitId()
-                    && oldItem.getPosition() == newItem.getPosition();
-        }
-
-        @SuppressLint("DiffUtilEquals")
-        @Override
-        public boolean areContentsTheSame(@NonNull Exercise oldItem, @NonNull Exercise newItem) {
-            return oldItem.equals(newItem);
-        }
+    public long getItemId(int position) {
+        return getItem(position).getPosition();
     }
 }

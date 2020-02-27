@@ -1,26 +1,25 @@
-package uk.ac.cam.cl.alpha.workout.mobile;
+package uk.ac.cam.cl.alpha.workout.mobile.drag;
 
 import android.view.MotionEvent;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.selection.ItemDetailsLookup;
 import androidx.recyclerview.selection.OnItemActivatedListener;
-import androidx.recyclerview.selection.SelectionTracker;
 
 public class CircuitItemActivatedListener implements OnItemActivatedListener<Long> {
+    private final ItemSelector selector;
 
-    private SelectionTracker<Long> tracker;
-
-    public void setTracker(SelectionTracker<Long> tracker) {
-        this.tracker = tracker;
+    public CircuitItemActivatedListener(ItemSelector selector) {
+        this.selector = selector;
     }
 
     @Override
     public boolean onItemActivated(@NonNull ItemDetailsLookup.ItemDetails<Long> item,
                                    @NonNull MotionEvent e) {
-        if (tracker != null) {
-            tracker.select(item.getSelectionKey());
+        if (selector != null) {
+            selector.select(item.getSelectionKey());
         }
+
         return true;
     }
 }

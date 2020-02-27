@@ -17,15 +17,36 @@ public class ExerciseViewHolder extends RecyclerView.ViewHolder {
     private final TextView nameTextView;
     private final EditText durationNumberPicker;
     private final ImageView exerciseImageView;
+    private final View rootView;
 
     ExerciseViewHolder(View view, DurationChangeListener listener) {
         super(view);
+
+        rootView = view;
         nameTextView = view.findViewById(R.id.exercise_name);
         durationNumberPicker = view.findViewById(R.id.exercise_duration);
         exerciseImageView = view.findViewById(R.id.exerciseImageView);
 
         durationNumberPicker.addTextChangedListener((NumberWatcher) number -> listener
                 .onDurationChange(Math.toIntExact(getItemId()), number));
+    }
+
+    public ItemDetailsLookup.ItemDetails<Long> getItemDetails() {
+        return new ItemDetailsLookup.ItemDetails<Long>() {
+            @Override
+            public int getPosition() {
+                return getAdapterPosition();
+            }
+
+            @Override
+            public Long getSelectionKey() {
+                return getItemId();
+            }
+        };
+    }
+
+    public void setSelected(boolean selected) {
+        rootView.setActivated(selected);
     }
 
     void setExercise(Exercise exercise) {
@@ -40,19 +61,5 @@ public class ExerciseViewHolder extends RecyclerView.ViewHolder {
 
         // Set the tag to be the item id so that it can be extracted for drag and drop
         itemView.setTag(Long.toString(getItemId()));
-    }
-
-    public ItemDetailsLookup.ItemDetails<Long> getItemDetails() {
-        return new ItemDetailsLookup.ItemDetails<Long>() {
-            @Override
-            public int getPosition() {
-                return Math.toIntExact(getItemId());
-            }
-
-            @Override
-            public Long getSelectionKey() {
-                return getItemId();
-            }
-        };
     }
 }

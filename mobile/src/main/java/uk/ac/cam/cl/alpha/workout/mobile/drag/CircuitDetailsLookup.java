@@ -22,12 +22,15 @@ public class CircuitDetailsLookup extends ItemDetailsLookup<Long> {
     @Override
     public ItemDetails<Long> getItemDetails(@NonNull MotionEvent e) {
         View view = recyclerView.findChildViewUnder(e.getX(), e.getY());
+
         if (view != null) {
             RecyclerView.ViewHolder holder = recyclerView.getChildViewHolder(view);
+
             if (holder instanceof CircuitViewHolder) {
                 return ((CircuitViewHolder) holder).getItemDetails();
             }
         }
+
         return null;
     }
 }
