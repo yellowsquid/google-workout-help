@@ -45,18 +45,17 @@ interface ExerciseDao {
     void updateExercises(List<Exercise> exercises);
 
     @Transaction
-    default void updateExerciseDuration(long circuitId, int position, int duration) {
+    default void updateDuration(long circuitId, int position, int duration) {
         ExerciseType type = getType(circuitId, position);
         Exercise exercise = Exercise.create(circuitId, position, duration, type);
         updateExercise(exercise);
     }
 
     @Transaction
-    default int appendExercise(long circuitId, ExerciseType type) {
+    default void appendExercise(long circuitId, ExerciseType type) {
         int position = countExercises(circuitId);
         Exercise exercise = Exercise.create(circuitId, position, type);
         insertExercise(exercise);
-        return position;
     }
 
     @Transaction

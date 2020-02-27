@@ -6,13 +6,21 @@
 
     <item android:id="@+id/add_new_circuit"
         android:icon="@drawable/ic_add_black_24dp"
-        android:title="Create new circuit"
+        android:title="@string/add"
         app:showAsAction="ifRoom" />
 
     <item
+        android:id="@+id/edit_selected_circuit"
+        android:enabled="false"
+        android:icon="@drawable/ic_edit_black_24dp"
+        android:title="@string/edit"
+        android:visible="false"
+        app:showAsAction="ifRoom" />
+    <item
         android:id="@+id/delete_selected_circuits"
+        android:enabled="false"
         android:icon="@drawable/ic_delete_black_24dp"
-        android:title="Delete selected circuits"
+        android:title="@string/delete"
         android:visible="false"
         app:showAsAction="ifRoom" />
 

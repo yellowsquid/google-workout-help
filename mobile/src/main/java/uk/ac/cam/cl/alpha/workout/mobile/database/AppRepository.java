@@ -6,10 +6,8 @@ import androidx.lifecycle.LiveData;
 import androidx.room.Room;
 
 import java.util.List;
-import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 
 import uk.ac.cam.cl.alpha.workout.shared.BareCircuit;
 import uk.ac.cam.cl.alpha.workout.shared.Circuit;
@@ -47,16 +45,16 @@ public final class AppRepository {
         return new Task<>(() -> database.getCircuitDao().insertCircuit(circuit));
     }
 
-    public Task<Integer> appendExercise(long circuitId, ExerciseType type) {
-        return new Task<>(() -> database.getExerciseDao().appendExercise(circuitId, type));
+    public Runnable appendExercise(long circuitId, ExerciseType type) {
+        return () -> database.getExerciseDao().appendExercise(circuitId, type);
     }
 
     public LiveData<List<Exercise>> getExercises(long circuitId) {
         return database.getExerciseDao().getExercises(circuitId);
     }
 
-    public <V> Future<V> dispatch(Callable<V> task) {
-        return executor.submit(task);
+    public void dispatch(Runnable task) {
+        executor.submit(task);
     }
 
     public LiveData<Circuit> getCircuit(long id) {
@@ -71,28 +69,27 @@ public final class AppRepository {
         return database.getCircuitDao().getName(circuitId);
     }
 
-    public Task<?> updateExerciseDuration(long circuitId, int position, int duration) {
-        return new Task<>(() -> database.getExerciseDao()
-                .updateExerciseDuration(circuitId, position, duration));
+    public Runnable updateExerciseDuration(long circuitId, int position, int duration) {
+        return () -> database.getExerciseDao().updateDuration(circuitId, position, duration);
     }
 
-    public Task<?> deleteExercises(long circuitID, List<Integer> positions) {
-        return new Task<>(() -> database.getExerciseDao().deleteExercises(circuitID, positions));
+    public Runnable deleteExercises(long circuitID, List<Integer> positions) {
+        return () -> database.getExerciseDao().deleteExercises(circuitID, positions);
     }
 
-    public Task<?> deleteCircuits(List<BareCircuit> circuits) {
-        return new Task<>(() -> database.getCircuitDao().deleteCircuits(circuits));
+    public Runnable deleteCircuits(List<BareCircuit> circuits) {
+        return () -> database.getCircuitDao().deleteCircuits(circuits);
     }
 
-    public Task<?> updateLaps(long circuitId, int laps) {
-        return new Task<>(() -> database.getCircuitDao().updateLaps(circuitId, laps));
+    public Runnable updateLaps(long circuitId, int laps) {
+        return () -> database.getCircuitDao().updateLaps(circuitId, laps);
     }
 
-    public Task<?> updateName(long circuitId, String name) {
-        return new Task<>(() -> database.getCircuitDao().updateName(circuitId, name));
+    public Runnable updateName(long circuitId, String name) {
+        return () -> database.getCircuitDao().updateName(circuitId, name);
     }
 
-    public Task<?> swapExercises(long circuitId, int fromPos, int toPos) {
-        return new Task<>(() -> database.getExerciseDao().swapExercises(circuitId, fromPos, toPos));
+    public Runnable swapExercises(long circuitId, int fromPos, int toPos) {
+        return () -> database.getExerciseDao().swapExercises(circuitId, fromPos, toPos);
     }
 }

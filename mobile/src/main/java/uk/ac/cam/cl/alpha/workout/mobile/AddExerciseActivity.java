@@ -3,7 +3,6 @@ package uk.ac.cam.cl.alpha.workout.mobile;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
-import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.DividerItemDecoration;
@@ -45,7 +44,7 @@ public class AddExerciseActivity extends AppCompatActivity {
                                                                  DividerItemDecoration.VERTICAL));
     }
 
-    public void exerciseClicked(long id, View view) {
+    public void exerciseClicked(long id) {
         // Get exercise type out of the clicked view and pass it  back to the edit activity
         Intent result = new Intent();
         result.putExtra(EXERCISE_ID, ExerciseType.values()[Math.toIntExact(id)]);

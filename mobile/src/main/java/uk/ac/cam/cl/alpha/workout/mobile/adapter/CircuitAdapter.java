@@ -14,10 +14,12 @@ import uk.ac.cam.cl.alpha.workout.shared.Circuit;
 public class CircuitAdapter extends ListAdapter<Circuit, CircuitViewHolder> {
     private static final DiffUtil.ItemCallback<Circuit> DIFF_CALLBACK = new CircuitItemCallback<>();
     private final SelectionChecker checker;
+    private final OnItemClickListener onClickListener;
 
-    public CircuitAdapter(SelectionChecker checker) {
+    public CircuitAdapter(SelectionChecker checker, OnItemClickListener onClickListener) {
         super(DIFF_CALLBACK);
         this.checker = checker;
+        this.onClickListener = onClickListener;
         setHasStableIds(true);
     }
 
@@ -26,7 +28,7 @@ public class CircuitAdapter extends ListAdapter<Circuit, CircuitViewHolder> {
     public CircuitViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.circuit_select_layout, parent, false);
-        return new CircuitViewHolder(view);
+        return new CircuitViewHolder(view, onClickListener);
     }
 
     @Override

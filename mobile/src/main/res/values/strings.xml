@@ -21,4 +21,6 @@
     <string name="pause">Pause</string>
     <string name="resume">Resume</string>
     <string name="selected_title">Selected: %d</string>
+    <string name="delete">Delete</string>
+    <string name="add">Add</string>
 </resources>

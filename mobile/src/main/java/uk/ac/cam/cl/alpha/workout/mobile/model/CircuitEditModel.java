@@ -7,7 +7,6 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 
 import java.util.List;
-import java.util.concurrent.Future;
 
 import uk.ac.cam.cl.alpha.workout.mobile.database.AppRepository;
 import uk.ac.cam.cl.alpha.workout.shared.Exercise;
@@ -38,8 +37,8 @@ public class CircuitEditModel extends AndroidViewModel {
         this.circuitId = circuitId;
     }
 
-    public Future<Integer> appendExercise(ExerciseType type) {
-        return repository.dispatch(repository.appendExercise(circuitId, type));
+    public void appendExercise(ExerciseType type) {
+        repository.dispatch(repository.appendExercise(circuitId, type));
     }
 
     public void updateItemDuration(int position, int duration) {

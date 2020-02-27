@@ -20,7 +20,7 @@ public class CircuitViewHolder extends RecyclerView.ViewHolder {
     private final TextView restView;
     private final TextView lapsView;
 
-    CircuitViewHolder(View view) {
+    CircuitViewHolder(View view, OnItemClickListener onClickListener) {
         super(view);
 
         baseView = view.findViewById(R.id.circuitCard);
@@ -28,6 +28,8 @@ public class CircuitViewHolder extends RecyclerView.ViewHolder {
         durationView = view.findViewById(R.id.circuitDuration);
         restView = view.findViewById(R.id.circuitRestTime);
         lapsView = view.findViewById(R.id.circuitLaps);
+
+        baseView.setOnClickListener(v -> onClickListener.onItemClick(getItemId()));
     }
 
     public ItemDetailsLookup.ItemDetails<Long> getItemDetails() {

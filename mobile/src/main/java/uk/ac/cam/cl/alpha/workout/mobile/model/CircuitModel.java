@@ -16,7 +16,6 @@ import uk.ac.cam.cl.alpha.workout.shared.Circuit;
 
 public class CircuitModel extends AndroidViewModel {
     private final AppRepository repository;
-    private long circuitId;
 
     public CircuitModel(@NonNull Application application) {
         super(application);
@@ -25,14 +24,6 @@ public class CircuitModel extends AndroidViewModel {
 
     public LiveData<List<Circuit>> getCircuits() {
         return repository.getCircuits();
-    }
-
-    public long getCircuitId() {
-        return circuitId;
-    }
-
-    public void setCircuitId(long circuitId) {
-        this.circuitId = circuitId;
     }
 
     public Task<Long> createCircuit(BareCircuit circuit) {
@@ -49,15 +40,7 @@ public class CircuitModel extends AndroidViewModel {
         repository.dispatch(repository.deleteCircuits(circuits));
     }
 
-    public LiveData<Circuit> getCircuit(long id) {
-        return repository.getCircuit(id);
-    }
-
-    public boolean isCircuitSelected() {
-        return circuitId != 0;
-    }
-
-    public void dispatch(Task<Long> task) {
+    public void dispatch(Runnable task) {
         repository.dispatch(task);
     }
 }
