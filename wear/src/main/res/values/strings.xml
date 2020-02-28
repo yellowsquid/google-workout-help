@@ -9,5 +9,6 @@
     <string name="status">Status</string>
     <string name="next_activity">%s for [%ds]</string>
     <string name="no_circuit_loaded">No circuit loaded</string>
+    <string name="TIMEANDDONE">Time: %.0f s\nDone: %d</string>
 
 </resources>

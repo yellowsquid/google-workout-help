@@ -2,6 +2,7 @@ package uk.ac.cam.cl.alpha.workout.wear;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.Animatable;
 import android.graphics.drawable.AnimationDrawable;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -48,17 +49,17 @@ public class SportActivity extends WearableActivity
     public static final String FAILED_TO_RECEIVE_MESSAGE = "Failed to receive message";
     public static final String UNKNOWN_MSG = "Unknown msg";
 
-    private TextView activityText;
+    TextView activityText;
     private TextView timeText;
-    private ProgressBar pBar;
-    private PausableTimer currentTimer;
+    ProgressBar pBar;
+    PausableTimer currentTimer;
     private ImageView iconStill;
     private Circuit cir;
     private int currentLap;     // Index of current lap
     /**
      * Index of current exercise, -1 as pre-increment in nextExercise()
      */
-    private int currentExerciseNo = -1;
+    int currentExerciseNo = -1;
 
 
     // For detecting the activities
@@ -66,8 +67,8 @@ public class SportActivity extends WearableActivity
     private Sensor mAccelerometer;
 
     private Exercise exercise;
-    private Boolean exerciseStarted = false;
-    private int count;
+    Boolean exerciseStarted = false;
+    int count;
 
 
     // Run on activity creation
@@ -95,11 +96,11 @@ public class SportActivity extends WearableActivity
 
         Intent intent = getIntent();
         byte[] serial = intent.getByteArrayExtra(CIRCUIT_ID);
-        if (serial != null) {
+        if (null != serial) {
             try {
                 cir = (Circuit) Serializer.deserialize(serial);
 
-                if (cir.getLaps() <= 0 || cir.countExercises() <= 0){
+                if (0 >= cir.getLaps() || 0 >= cir.countExercises()){
 
                     finish();
                 } else {
@@ -112,7 +113,8 @@ public class SportActivity extends WearableActivity
         }
 
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
-        if (sensorManager != null && sensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION) != null){
+        if (null != sensorManager
+                && null != sensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION)){
             mAccelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION);
         }
     }
@@ -136,7 +138,7 @@ public class SportActivity extends WearableActivity
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (currentTimer != null){
+        if (null != currentTimer){
             currentTimer.cancel();
         }
 
@@ -164,9 +166,9 @@ public class SportActivity extends WearableActivity
      * @param msRemaining
      * @param msTotal
      */
-    private void displayProgress(long msRemaining, long msTotal) {
+    void displayProgress(long msRemaining, long msTotal) {
         // Progress Bar
-        // TODO Progress bar has max of 100, so limited resolution, maybe increase max & progress
+
         int progress = Math.toIntExact(100 * (msTotal - msRemaining) / msTotal);
         pBar.setProgress(progress);
 
@@ -176,7 +178,7 @@ public class SportActivity extends WearableActivity
         if (count == 0){
             timeText.setText(String.format(Locale.getDefault(), "Time: %.0f s", timeLeft));
         } else {
-            timeText.setText(String.format(Locale.getDefault(), "Time: %.0f s\nDone: %d", timeLeft, count));
+            timeText.setText(String.format(Locale.getDefault(), getString(R.string.TIMEANDDONE), timeLeft, count));
         }
 
     }
@@ -186,7 +188,7 @@ public class SportActivity extends WearableActivity
      * in the circuit and starts them. If the end of the circuit has
      * been reached the activity is closed.
      */
-    private void nextExercise() {
+    void nextExercise() {
         ++currentExerciseNo;
         // Exits workout once done
 
@@ -218,7 +220,7 @@ public class SportActivity extends WearableActivity
 
         // Set Icon
         iconStill.setBackgroundResource(currentExercise.getIcon());
-        AnimationDrawable iconAnimated = (AnimationDrawable) iconStill.getBackground();
+        Animatable iconAnimated = (Animatable) iconStill.getBackground();
         iconAnimated.start();
 
         // Count down timer
@@ -276,7 +278,7 @@ public class SportActivity extends WearableActivity
     public void hapticFeedback(long[] vibrationPattern) {
         Vibrator vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
         //-1 - don't repeat
-        if (vibrator != null) {
+        if (null != vibrator) {
             // -1 means don't repeat
             vibrator.vibrate(VibrationEffect.createWaveform(vibrationPattern, -1));
         }
@@ -286,7 +288,7 @@ public class SportActivity extends WearableActivity
     public void onMessageReceived(@NonNull MessageEvent messageEvent) {
         String messagePath = messageEvent.getPath();
 
-        if(messageEvent.getData() == null) {
+        if(null == messageEvent.getData()) {
             Log.d(MESSAGE, NULL_MESSAGE_RECEIVED);
             return;
         }
