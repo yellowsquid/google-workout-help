@@ -100,10 +100,11 @@ public class SportActivity extends WearableActivity
                 cir = (Circuit) Serializer.deserialize(serial);
 
                 if (cir.getLaps() <= 0 || cir.countExercises() <= 0){
-                    Log.d(MESSAGE, "D");
+
                     finish();
+                } else {
+                    nextExercise();
                 }
-                nextExercise();
             } catch (IOException | ClassNotFoundException e) {
                 Log.d(MESSAGE, "Issue de-serializing circuit");
                 finish();
