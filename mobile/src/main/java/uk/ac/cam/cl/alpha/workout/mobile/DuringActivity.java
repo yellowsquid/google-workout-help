@@ -48,6 +48,9 @@ public class DuringActivity extends AppCompatActivity {
         serverModel = viewModelProvider.get(ServerModel.class);
         serverModel.setCircuitId(circuitId);
         serverModel.getDevicesList().observe(this, adaptor::submitList);
+
+        serverModel.getCircuitName().observe(this, this::setTitle);
+
     }
 
     public void pauseClicked(View v) {

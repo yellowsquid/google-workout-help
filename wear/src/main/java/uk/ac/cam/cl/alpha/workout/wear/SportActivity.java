@@ -46,6 +46,7 @@ public class SportActivity extends WearableActivity
     private static final  long[] VIBRATION_PATTERN_SHORT = {0, 500};
     public static final String NULL_MESSAGE_RECEIVED = "Null Message Received";
     public static final String FAILED_TO_RECEIVE_MESSAGE = "Failed to receive message";
+    public static final String UNKNOWN_MSG = "Unknown msg";
 
     private TextView activityText;
     private TextView timeText;
@@ -318,7 +319,7 @@ public class SportActivity extends WearableActivity
 
             }
         } else {
-            Log.w(MESSAGE, "Unknown msg");
+            Log.w(MESSAGE, UNKNOWN_MSG);
         }
     }
 }

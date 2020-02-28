@@ -18,6 +18,11 @@ public class ServerModel extends AndroidViewModel {
     private final AppRepository repository;
     private final Application application;
     private final Observer<Circuit> circuitObserver;
+
+    public long getCircuitId() {
+        return circuitId;
+    }
+
     private long circuitId;
     private LiveData<? extends Circuit> data;
     private final LiveData<List<String>> devicesList;
@@ -55,6 +60,8 @@ public class ServerModel extends AndroidViewModel {
     public LiveData<String> getCircuitName() {
         return repository.getCircuitName(circuitId);
     }
+
+
 
     public LiveData<List<String>> getDevicesList() {
         return devicesList;

@@ -47,6 +47,7 @@ public class WaitingActivity extends AppCompatActivity {
     public void startClicked(View v) {
         serverModel.sendStartSignal();
         Intent intent = new Intent(this, DuringActivity.class);
+        intent.putExtra(CIRCUIT_ID, serverModel.getCircuitId());
         startActivity(intent);
     }
 }

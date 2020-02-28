@@ -67,10 +67,10 @@ public class MainActivity extends WearableActivity implements
                 circuit = data;
             }
 
-        } else if (messagePath.equals(Constants.SIGNAL_PATH)) {
+        } else {
             switch ((Signal) message) {
                 case START:
-                    if (circuit == null){
+                    if (null == circuit){
                         statText.setText(R.string.no_circuit_loaded);
                     } else {
                         openSportActivity();
@@ -78,8 +78,6 @@ public class MainActivity extends WearableActivity implements
 
                     break;
             }
-        } else {
-            Log.w(TAG, "Unknown msg");
         }
     }
 
