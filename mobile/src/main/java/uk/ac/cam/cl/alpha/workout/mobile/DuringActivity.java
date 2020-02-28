@@ -34,7 +34,7 @@ public class DuringActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivityDuringBinding.inflate(getLayoutInflater());
-        setContentView(R.layout.activity_during);
+        setContentView(binding.getRoot());
 
         paused = false;
         // Retrieve circuit

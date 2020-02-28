@@ -9,7 +9,6 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import uk.ac.cam.cl.alpha.workout.R;
 import uk.ac.cam.cl.alpha.workout.databinding.ActivityAddExerciseBinding;
 import uk.ac.cam.cl.alpha.workout.mobile.adapter.ExerciseTypeAdapter;
 import uk.ac.cam.cl.alpha.workout.shared.ExerciseType;
@@ -34,7 +33,7 @@ public class AddExerciseActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         ActivityAddExerciseBinding binding =
                 ActivityAddExerciseBinding.inflate(getLayoutInflater());
-        setContentView(R.layout.activity_add_exercise);
+        setContentView(binding.getRoot());
 
         RecyclerView recyclerView = binding.exerciseTypeList;
         RecyclerView.LayoutManager layout = new LinearLayoutManager(this);
@@ -42,7 +41,6 @@ public class AddExerciseActivity extends AppCompatActivity {
 
         recyclerView.setLayoutManager(layout);
         recyclerView.setAdapter(adapter);
-
         recyclerView.addItemDecoration(new DividerItemDecoration(recyclerView.getContext(),
                                                                  DividerItemDecoration.VERTICAL));
     }
