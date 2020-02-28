@@ -1,6 +1,10 @@
 package uk.ac.cam.cl.alpha.workout.mobile.adapter;
 
 import android.content.res.Resources;
+import android.util.Log;
+import android.view.View;
+import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.recyclerview.selection.ItemDetailsLookup;
@@ -19,8 +23,7 @@ public class ExerciseViewHolder extends RecyclerView.ViewHolder {
 
         this.binding = binding;
 
-        binding.duration.addTextChangedListener((NumberWatcher) number -> listener
-                .onDurationChange(Math.toIntExact(getItemId()), number));
+
     }
 
     public ItemDetailsLookup.ItemDetails<Long> getItemDetails() {
@@ -54,5 +57,14 @@ public class ExerciseViewHolder extends RecyclerView.ViewHolder {
         itemView.setTag(Long.toString(getItemId()));
     }
 
+    public int getTime() {
+        int time = 0;
+        try {
+            time = Integer.parseInt(binding.duration.getText().toString());
+        } catch (NumberFormatException e) {
+            Log.e("ExerciseViewHolder", "input not a number", e);
+        }
+        return time;
+    }
 
 }

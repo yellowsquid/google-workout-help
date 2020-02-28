@@ -8,6 +8,7 @@ import android.view.View;
 
 import androidx.recyclerview.widget.RecyclerView;
 
+import uk.ac.cam.cl.alpha.workout.mobile.adapter.ExerciseViewHolder;
 import uk.ac.cam.cl.alpha.workout.mobile.model.CircuitEditModel;
 
 public class ExerciseDragEventListener implements View.OnDragListener {
@@ -21,9 +22,15 @@ public class ExerciseDragEventListener implements View.OnDragListener {
     public boolean onDrag(View v, DragEvent event) {
 
         int action = event.getAction();
+        RecyclerView recyclerView = (RecyclerView) v;
 
         switch (action){
             case DragEvent.ACTION_DRAG_STARTED:
+                // Update the individual exercise durations
+                int size = recyclerView.getAdapter().getItemCount();
+                for (int i = 0; i < size; i++) {
+                    model.updateItemDuration(i, ((ExerciseViewHolder) recyclerView.findViewHolderForAdapterPosition(i)).getTime());
+                }
                 return event.getClipDescription().hasMimeType(ClipDescription.MIMETYPE_TEXT_PLAIN);
 
             // Deliberate fall through, ignore these events
@@ -37,8 +44,6 @@ public class ExerciseDragEventListener implements View.OnDragListener {
                 if (event.getClipData().getItemCount() != 1) {
                     return false;
                 }
-
-                RecyclerView recyclerView = (RecyclerView) v;
 
                 ClipData.Item item = event.getClipData().getItemAt(0);
                 View fromView = recyclerView.getChildAt(Integer.parseInt(item.getText().toString()));

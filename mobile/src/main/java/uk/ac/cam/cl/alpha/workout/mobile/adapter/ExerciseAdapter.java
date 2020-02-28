@@ -32,6 +32,7 @@ public class ExerciseAdapter extends ListAdapter<Exercise, ExerciseViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull ExerciseViewHolder holder, int position) {
+
         holder.setExercise(getItem(position));
         holder.setSelected(checker.isSelected(getItemId(position)));
     }

@@ -3,6 +3,7 @@ package uk.ac.cam.cl.alpha.workout.mobile;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.ActionMode;
 import android.view.View;
 import android.widget.EditText;
@@ -23,7 +24,7 @@ import java.util.List;
 import uk.ac.cam.cl.alpha.workout.R;
 import uk.ac.cam.cl.alpha.workout.databinding.ActivityEditBinding;
 import uk.ac.cam.cl.alpha.workout.mobile.adapter.ExerciseAdapter;
-import uk.ac.cam.cl.alpha.workout.mobile.adapter.NameWatcher;
+import uk.ac.cam.cl.alpha.workout.mobile.adapter.ExerciseViewHolder;
 import uk.ac.cam.cl.alpha.workout.mobile.adapter.NumberWatcher;
 import uk.ac.cam.cl.alpha.workout.mobile.drag.ExerciseDetailsLookup;
 import uk.ac.cam.cl.alpha.workout.mobile.drag.ExerciseDragEventListener;
@@ -41,11 +42,12 @@ public class EditActivity extends AppCompatActivity {
     private CircuitEditModel model;
     private ActionMode actionMode;
     private SelectionTracker<Long> tracker;
+    private ActivityEditBinding binding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        ActivityEditBinding binding = ActivityEditBinding.inflate(getLayoutInflater());
+        binding = ActivityEditBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
         // Retrieve circuit and token.
@@ -59,13 +61,11 @@ public class EditActivity extends AppCompatActivity {
         EditText lapsText = binding.lapCount;
         model.getLaps().observe(this, laps -> lapsText
                 .setText(resources.getString(R.string.pure_laps, laps)));
-        lapsText.addTextChangedListener((NumberWatcher) number -> model.updateLaps(number));
 
         // Show the circuit laps and change value in store if user changes text
         EditText nameText = binding.circuitName;
         model.getName().observe(this, name -> nameText
                 .setText(resources.getString(R.string.pure_name, name)));
-        nameText.addTextChangedListener((NameWatcher) name -> model.updateName(name));
 
         // Create the RecyclerView that contains the circuit's exercises
         RecyclerView recyclerView = binding.exerciseList;
@@ -146,5 +146,34 @@ public class EditActivity extends AppCompatActivity {
         }
 
         model.deleteExercises(selected);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        // Update the circuit laps
+        String lapsString = binding.lapCount.getText().toString();
+        if (lapsString.isEmpty()) {
+            lapsString = "0";
+        }
+        try {
+            model.updateLaps(Integer.parseInt(lapsString));
+        } catch (NumberFormatException e) {
+            Log.e("EditActivity", "input not a number", e);
+        }
+
+        // Update the circuit name
+        String nameString = binding.circuitName.getText().toString();
+        if (nameString.isEmpty()) {
+            nameString = "Circuit";
+        }
+        model.updateName(nameString);
+
+        // Update the individual exercise durations
+        int size = binding.exerciseList.getAdapter().getItemCount();
+        for (int i = 0; i < size; i++) {
+            model.updateItemDuration(i, ((ExerciseViewHolder) binding.exerciseList.findViewHolderForAdapterPosition(i)).getTime());
+        }
     }
 }
