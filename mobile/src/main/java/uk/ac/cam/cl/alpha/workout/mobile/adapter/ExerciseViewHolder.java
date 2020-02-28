@@ -1,33 +1,25 @@
 package uk.ac.cam.cl.alpha.workout.mobile.adapter;
 
 import android.content.res.Resources;
-import android.view.View;
-import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.recyclerview.selection.ItemDetailsLookup;
 import androidx.recyclerview.widget.RecyclerView;
 
 import uk.ac.cam.cl.alpha.workout.R;
+import uk.ac.cam.cl.alpha.workout.databinding.ExerciseLayoutBinding;
 import uk.ac.cam.cl.alpha.workout.shared.Exercise;
 
 // Reference to the view of each data item.
 public class ExerciseViewHolder extends RecyclerView.ViewHolder {
-    private final TextView nameTextView;
-    private final EditText durationNumberPicker;
-    private final ImageView exerciseImageView;
-    private final View rootView;
+    private final ExerciseLayoutBinding binding;
 
-    ExerciseViewHolder(View view, DurationChangeListener listener) {
-        super(view);
+    ExerciseViewHolder(ExerciseLayoutBinding binding, DurationChangeListener listener) {
+        super(binding.getRoot());
 
-        rootView = view;
-        nameTextView = view.findViewById(R.id.exercise_name);
-        durationNumberPicker = view.findViewById(R.id.exercise_duration);
-        exerciseImageView = view.findViewById(R.id.exerciseImageView);
+        this.binding = binding;
 
-        durationNumberPicker.addTextChangedListener((NumberWatcher) number -> listener
+        binding.duration.addTextChangedListener((NumberWatcher) number -> listener
                 .onDurationChange(Math.toIntExact(getItemId()), number));
     }
 
@@ -46,18 +38,17 @@ public class ExerciseViewHolder extends RecyclerView.ViewHolder {
     }
 
     public void setSelected(boolean selected) {
-        rootView.setActivated(selected);
+        binding.getRoot().setActivated(selected);
     }
 
     void setExercise(Exercise exercise) {
-        Resources resources = nameTextView.getResources();
-        int duration = exercise.getDuration();
-        int name = exercise.getName();
-        nameTextView.setText(name);
-        durationNumberPicker.setText(resources.getString(R.string.pure_duration, duration),
-                                     TextView.BufferType.EDITABLE);
-        exerciseImageView.setBackgroundResource(exercise.getIcon());
-        exerciseImageView.setContentDescription(resources.getString(name));
+        Resources resources = binding.getRoot().getResources();
+        binding.name.setText(exercise.getName());
+        binding.duration
+                .setText(resources.getString(R.string.pure_duration, exercise.getDuration()),
+                         TextView.BufferType.EDITABLE);
+        binding.icon.setBackgroundResource(exercise.getIcon());
+        binding.icon.setContentDescription(resources.getString(exercise.getName()));
 
         // Set the tag to be the item id so that it can be extracted for drag and drop
         itemView.setTag(Long.toString(getItemId()));

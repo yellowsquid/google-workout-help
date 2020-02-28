@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import uk.ac.cam.cl.alpha.workout.R;
+import uk.ac.cam.cl.alpha.workout.databinding.ActivityEditBinding;
 import uk.ac.cam.cl.alpha.workout.mobile.adapter.ExerciseAdapter;
 import uk.ac.cam.cl.alpha.workout.mobile.adapter.NameWatcher;
 import uk.ac.cam.cl.alpha.workout.mobile.adapter.NumberWatcher;
@@ -40,12 +41,12 @@ public class EditActivity extends AppCompatActivity {
     private CircuitEditModel model;
     private ActionMode actionMode;
     private SelectionTracker<Long> tracker;
-    private RecyclerView recyclerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_edit);
+        ActivityEditBinding binding = ActivityEditBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
 
         // Retrieve circuit and token.
         // TODO: something sensible when get id 0
@@ -55,19 +56,19 @@ public class EditActivity extends AppCompatActivity {
 
         // Show the circuit laps and change value in store if user changes text
         Resources resources = getResources();
-        EditText lapsText = findViewById(R.id.numLapsEditText);
+        EditText lapsText = binding.lapCount;
         model.getLaps().observe(this, laps -> lapsText
                 .setText(resources.getString(R.string.pure_laps, laps)));
         lapsText.addTextChangedListener((NumberWatcher) number -> model.updateLaps(number));
 
         // Show the circuit laps and change value in store if user changes text
-        EditText nameText = findViewById(R.id.circuitNameEditText);
+        EditText nameText = binding.circuitName;
         model.getName().observe(this, name -> nameText
                 .setText(resources.getString(R.string.pure_name, name)));
         nameText.addTextChangedListener((NameWatcher) name -> model.updateName(name));
 
         // Create the RecyclerView that contains the circuit's exercises
-        recyclerView = findViewById(R.id.circuitEditRecyclerView);
+        RecyclerView recyclerView = binding.exerciseList;
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
         ExerciseAdapter adapter =
                 new ExerciseAdapter(model::updateItemDuration, this::isExerciseSelected);

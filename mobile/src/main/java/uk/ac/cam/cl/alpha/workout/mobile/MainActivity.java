@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import uk.ac.cam.cl.alpha.workout.R;
+import uk.ac.cam.cl.alpha.workout.databinding.ActivityMainBinding;
 import uk.ac.cam.cl.alpha.workout.mobile.adapter.CircuitAdapter;
 import uk.ac.cam.cl.alpha.workout.mobile.drag.CircuitDetailsLookup;
 import uk.ac.cam.cl.alpha.workout.mobile.drag.CircuitKeyProvider;
@@ -90,11 +91,12 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        ActivityMainBinding binding = ActivityMainBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
 
         model = new ViewModelProvider(this).get(CircuitModel.class);
 
-        RecyclerView recyclerView = findViewById(R.id.circuitSelectRecyclerView);
+        RecyclerView recyclerView = binding.circuitList;
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
         CircuitAdapter circuitSelectAdapter =
                 new CircuitAdapter(this::isCircuitSelected, this::circuitClicked);

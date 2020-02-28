@@ -1,13 +1,12 @@
 package uk.ac.cam.cl.alpha.workout.mobile.adapter;
 
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import uk.ac.cam.cl.alpha.workout.R;
+import uk.ac.cam.cl.alpha.workout.databinding.ExerciseTypeLayoutBinding;
 import uk.ac.cam.cl.alpha.workout.shared.ExerciseType;
 
 public class ExerciseTypeAdapter extends RecyclerView.Adapter<ExerciseTypeViewHolder> {
@@ -21,9 +20,10 @@ public class ExerciseTypeAdapter extends RecyclerView.Adapter<ExerciseTypeViewHo
     @NonNull
     @Override
     public ExerciseTypeViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.add_exercise_layout, parent, false);
-        return new ExerciseTypeViewHolder(view, onClickListener);
+        LayoutInflater inflater = LayoutInflater.from(parent.getContext());
+        ExerciseTypeLayoutBinding binding =
+                ExerciseTypeLayoutBinding.inflate(inflater, parent, false);
+        return new ExerciseTypeViewHolder(binding, onClickListener);
     }
 
     @Override

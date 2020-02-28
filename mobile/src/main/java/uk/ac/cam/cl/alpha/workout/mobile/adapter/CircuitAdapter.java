@@ -1,14 +1,13 @@
 package uk.ac.cam.cl.alpha.workout.mobile.adapter;
 
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.ListAdapter;
 
-import uk.ac.cam.cl.alpha.workout.R;
+import uk.ac.cam.cl.alpha.workout.databinding.CircuitLayoutBinding;
 import uk.ac.cam.cl.alpha.workout.shared.Circuit;
 
 public class CircuitAdapter extends ListAdapter<Circuit, CircuitViewHolder> {
@@ -26,9 +25,9 @@ public class CircuitAdapter extends ListAdapter<Circuit, CircuitViewHolder> {
     @NonNull
     @Override
     public CircuitViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.circuit_select_layout, parent, false);
-        return new CircuitViewHolder(view, onClickListener);
+        LayoutInflater inflater = LayoutInflater.from(parent.getContext());
+        CircuitLayoutBinding binding = CircuitLayoutBinding.inflate(inflater, parent, false);
+        return new CircuitViewHolder(binding, onClickListener);
     }
 
     @Override

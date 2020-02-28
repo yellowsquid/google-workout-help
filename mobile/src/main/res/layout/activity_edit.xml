@@ -10,14 +10,14 @@
         android:id="@+id/lapsTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:labelFor="@id/numLapsEditText"
+        android:labelFor="@id/lap_count"
         android:text="@string/laps"
-        app:layout_constraintBottom_toTopOf="@+id/circuitEditRecyclerView"
+        app:layout_constraintBottom_toTopOf="@+id/exercise_list"
         app:layout_constraintEnd_toStartOf="@id/guideline75"
         app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
-        android:id="@+id/numLapsEditText"
+        android:id="@+id/lap_count"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:ems="2"
@@ -25,20 +25,20 @@
         android:inputType="number"
         android:singleLine="true"
         android:textAlignment="textEnd"
-        app:layout_constraintBottom_toTopOf="@id/circuitEditRecyclerView"
+        app:layout_constraintBottom_toTopOf="@id/exercise_list"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/guideline75"
         app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/circuitEditRecyclerView"
+        android:id="@+id/exercise_list"
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/numLapsEditText" />
+        app:layout_constraintTop_toBottomOf="@+id/lap_count" />
 
     <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
         android:layout_width="wrap_content"
@@ -69,21 +69,21 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/circuit_name_label"
-        app:layout_constraintBottom_toTopOf="@+id/circuitEditRecyclerView"
+        app:layout_constraintBottom_toTopOf="@+id/exercise_list"
         app:layout_constraintEnd_toStartOf="@+id/guideline25"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
-        android:id="@+id/circuitNameEditText"
+        android:id="@+id/circuit_name"
         android:layout_width="140dp"
         android:layout_height="0dp"
         android:layout_marginEnd="2dp"
         android:ems="10"
         android:inputType="textPersonName"
         android:text="Circuit Name"
-        app:layout_constraintBottom_toTopOf="@+id/circuitEditRecyclerView"
+        app:layout_constraintBottom_toTopOf="@+id/exercise_list"
         app:layout_constraintEnd_toStartOf="@+id/lapsTextView"
         app:layout_constraintStart_toStartOf="@+id/guideline25"
         app:layout_constraintTop_toTopOf="parent" />

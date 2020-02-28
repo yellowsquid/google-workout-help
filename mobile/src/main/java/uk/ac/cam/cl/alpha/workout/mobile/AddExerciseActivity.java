@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import uk.ac.cam.cl.alpha.workout.R;
+import uk.ac.cam.cl.alpha.workout.databinding.ActivityAddExerciseBinding;
 import uk.ac.cam.cl.alpha.workout.mobile.adapter.ExerciseTypeAdapter;
 import uk.ac.cam.cl.alpha.workout.shared.ExerciseType;
 
@@ -31,9 +32,11 @@ public class AddExerciseActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        ActivityAddExerciseBinding binding =
+                ActivityAddExerciseBinding.inflate(getLayoutInflater());
         setContentView(R.layout.activity_add_exercise);
 
-        RecyclerView recyclerView = findViewById(R.id.addExerciseRecyclerView);
+        RecyclerView recyclerView = binding.exerciseTypeList;
         RecyclerView.LayoutManager layout = new LinearLayoutManager(this);
         ExerciseTypeAdapter adapter = new ExerciseTypeAdapter(this::exerciseClicked);
 
