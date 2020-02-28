@@ -72,6 +72,7 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             case R.id.delete_selected_circuits:
                 model.deleteCircuits(tracker.getSelection());
+                tracker.clearSelection();
                 return true;
             case R.id.edit_selected_circuit:
                 Selection<Long> selection = tracker.getSelection();

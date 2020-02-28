@@ -53,4 +53,6 @@ public class ExerciseViewHolder extends RecyclerView.ViewHolder {
         // Set the tag to be the item id so that it can be extracted for drag and drop
         itemView.setTag(Long.toString(getItemId()));
     }
+
+
 }
