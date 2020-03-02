@@ -57,6 +57,10 @@ public class ServerModel extends AndroidViewModel {
         new SendTask(application, Signal.RESUME, Constants.SIGNAL_PATH).execute();
     }
 
+    public void sendStopSignal() {
+        new SendTask(application, Signal.STOP, Constants.SIGNAL_PATH).execute();
+    }
+
     public LiveData<String> getCircuitName() {
         return repository.getCircuitName(circuitId);
     }

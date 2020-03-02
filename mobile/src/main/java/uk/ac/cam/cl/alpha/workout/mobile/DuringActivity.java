@@ -1,6 +1,7 @@
 package uk.ac.cam.cl.alpha.workout.mobile;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 
@@ -64,5 +65,17 @@ public class DuringActivity extends AppCompatActivity {
             serverModel.sendPauseSignal();
         }
 
+    }
+
+    public void stopClicked(View v) {
+        serverModel.sendStopSignal();
+        this.finish();
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        serverModel.sendStopSignal();
+        this.finish();
     }
 }
