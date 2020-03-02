@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">Shared</string>
+    <string name="burpees">Burpees</string>
+    <string name="russian_twists">Russian Twists</string>
+    <string name="pushups">Pushups</string>
+    <string name="star_jumps">Star Jumps</string>
+    <string name="squats">Squats</string>
+    <string name="rest">Rest</string>
+    <string name="situps">Situps</string>
+</resources>
